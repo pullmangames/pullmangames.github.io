@@ -1,0 +1,57 @@
+
+
+    <!doctype html>
+    <html ng-app="TravApp">
+      <head>
+        <script src="lib/angular.js"></script>
+        <script src="travmain.js"></script>
+        <link rel="stylesheet" href="travmain.css">
+      </head>
+      <body>
+        
+        <h2>Roll</h2>
+        <div ng-controller="RollController as roller">
+        	
+        	<form ng-submit="roller.roll()">
+            	<input type="text" ng-model="roller.numdice" size="1" placeholder="Count">
+            	d<input type="text" ng-model="roller.sides" size="1" placeholder="Sides">
+            	<input class="btn-primary" type="submit" value="Roll">
+          	</form>
+          	
+          	<form ng-submit="roller.d66()">
+          	<input class="btn-primary" type="submit" value="d66">
+          	</form>
+          	
+          	<span>Total: {{roller.result.total}}</span>
+        
+        <span>Individual Rolls:</span>  	
+        <ul class="unstyled">
+        	<li ng-repeat="roll in roller.result.rolls track by $index">
+        	<span> {{roll}} </span>
+        	</li>
+        </ul> 	
+          	
+        </div>
+        
+        
+        
+                
+        <h2>Todo</h2>
+        <div ng-controller="TodoListController as todoList">
+          <span>{{todoList.remaining()}} of {{todoList.todos.length}} remaining</span>
+          [ <a href="" ng-click="todoList.archive()">archive</a> ]
+          <ul class="unstyled">
+            <li ng-repeat="todo in todoList.todos">
+              <input type="checkbox" ng-model="todo.done">
+              <span class="done-{{todo.done}}">{{todo.text}}</span>
+            </li>
+          </ul>
+          <form ng-submit="todoList.addTodo()">
+            <input type="text" ng-model="todoList.todoText"  size="30"
+                   placeholder="add new todo here">
+            <input class="btn-primary" type="submit" value="add">
+          </form>
+        </div>
+      </body>
+    </html>
+
