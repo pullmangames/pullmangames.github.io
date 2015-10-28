@@ -4,15 +4,21 @@
     <html ng-app="TravApp">
       <head>
         <script src="lib/angular.js"></script>
+        <script src="lib/angular-route.js"></script>
         <script src="travmain.js"></script>
         <!--<link rel="stylesheet" href="travmain.css">-->
             <!-- Bootstrap -->
    		<link href="lib/bootstrap-combined.min.css" rel="stylesheet">
       </head>
       <body>
-        
+         <a href="#/roll">Roll Test</a> | <a href="#/characters">Character Test</a><br><br>
+         <div ng-view></div>
+      </body>
+
+<!--------------------------------- Roll view --------------------------------->
+<script type="text/ng-template" id="roll.view">
         <h2>Roll</h2>
-        <div ng-controller="RollController as roller">
+        <div>
         	
         	<form ng-submit="roller.roll()">
             	<input type="text" ng-model="roller.numdice" size="1" placeholder="Count">
@@ -84,6 +90,12 @@
           </form>
         </div>
         -->
-      </body>
-    </html>
+</script>
+
+<!------------------------------ Character view ------------------------------->
+<script type="text/ng-template" id="characters.view">
+Test!
+</script>
+
+      </html>
 
