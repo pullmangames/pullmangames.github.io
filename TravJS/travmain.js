@@ -1,6 +1,13 @@
 
-     app = angular.module('TravApp', []) //declare the main module
+     app = angular.module('TravApp', ['ngRoute', 'travellerCharacters']) //declare the main module
       
+app.config(function ($routeProvider) {
+   $routeProvider
+      .when("/roll",       {controller: "RollController as roller",           templateUrl: "roll.view"})
+      .when("/characters", {controller: "charactersController as characters", templateUrl: "characters.view"})
+      .otherwise({redirectTo: "/roll"});
+});
+
       app.controller('RollController', function() {
 			var roller = this;
 			roller.sides=6;
