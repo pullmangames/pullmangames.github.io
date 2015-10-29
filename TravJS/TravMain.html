@@ -95,7 +95,26 @@
 
 <!------------------------------ Character view ------------------------------->
 <script type="text/ng-template" id="characters.view">
-{{characters.testString}}
+  <form>
+    <table>
+      <tr><td>Name:</td><td><input ng-model="characters.char1.name"></td></tr>
+      <tr><td>Age:</td><td><input ng-model="characters.char1.age"></td></tr>
+      <tr><td>Homeworld:</td><td><input ng-model="characters.char1.homeworld"></td></tr>
+      <tr><td>Race:</td><td><input ng-model="characters.char1.race"></td></tr>
+      <tr><td>Racial Traits:</td><td><input ng-model="characters.char1.racialTraits"></td></tr>
+    </table>
+    <br>
+    Characteristics
+    <table>
+    <tr align=center><td align=right>Modifier</td> <td>-3</td> <td colspan=2>-2</td> <td colspan=3>-1</td>          <td colspan=3>+0</td>          <td colspan=3>+1</td>            <td colspan=3>+2</td>             <td>+3</td></tr>
+    <tr align=center><td align=right>Score</td>    <td>0</td>  <td>1</td><td>2</td>  <td>3</td><td>4</td><td>5</td> <td>6</td><td>7</td><td>8</td> <td>9</td><td>10</td><td>11</td> <td>12</td><td>13</td><td>14</td> <td>15</td></tr>
+    <tr align=center><td align=right>Str</td>      <td></td>   <td></td><td></td>    <td></td><td></td><td></td>    <td></td><td></td><td></td>    <td></td><td></td><td></td>      <td></td><td></td><td></td>       <td></td></tr>
+    <tr align=center><td align=right>Dex</td>      <td></td>   <td></td><td></td>    <td></td><td></td><td></td>    <td></td><td></td><td></td>    <td></td><td></td><td></td>      <td></td><td></td><td></td>       <td></td></tr>
+    <tr align=center><td align=right>End</td>      <td></td>   <td></td><td></td>    <td></td><td></td><td></td>    <td></td><td></td><td></td>    <td></td><td></td><td></td>      <td></td><td></td><td></td>       <td></td></tr>
+    <tr align=center><td align=right>Int</td>      <td></td>   <td></td><td></td>    <td></td><td></td><td></td>    <td></td><td></td><td></td>    <td></td><td></td><td></td>      <td></td><td></td><td></td>       <td></td></tr>
+    <tr align=center><td align=right>Edu</td>      <td></td>   <td></td><td></td>    <td></td><td></td><td></td>    <td></td><td></td><td></td>    <td></td><td></td><td></td>      <td></td><td></td><td></td>       <td></td></tr>
+    <tr align=center><td align=right>Soc</td>      <td></td>   <td></td><td></td>    <td></td><td></td><td></td>    <td></td><td></td><td></td>    <td></td><td></td><td></td>      <td></td><td></td><td></td>       <td></td></tr>
+  </form>
 </script>
 
       </html>
