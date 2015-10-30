@@ -8,6 +8,7 @@
         <script src="travmain.js"></script>
         <script src="traveller-characters.js"></script>
         <script src="diceRoller.js"></script>
+        <script src="ship-management.js"></script>
         <!--<link rel="stylesheet" href="travmain.css">-->
             <!-- Bootstrap -->
    		<link href="lib/bootstrap-combined.min.css" rel="stylesheet">
@@ -17,12 +18,17 @@
       	<ul class="nav nav-pills">
       	<li> <a href="#/roll">Roll Test</a> </li> 
         <li> <a href="#/characters">Character Test</a></li>
+        <li> <a href="#/shipManagement">Ship Management</a></li>
         </ul>
       </section>
         <br><br>
-        
          <div ng-view></div>
       </body>
+      
+<!----------------------------------Ship Manager View-------------------------->
+<script type="text/ng-template" id="shipMan.view">
+	<h2>Ship Management</h2>
+</script>
 
 <!--------------------------------- Roll view --------------------------------->
 <script type="text/ng-template" id="roll.view">
