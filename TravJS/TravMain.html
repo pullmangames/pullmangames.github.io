@@ -13,7 +13,14 @@
    		<link href="lib/bootstrap-combined.min.css" rel="stylesheet">
       </head>
       <body>
-         <a href="#/roll">Roll Test</a> | <a href="#/characters">Character Test</a><br><br>
+      <section>
+      	<ul class="nav nav-pills">
+      	<li> <a href="#/roll">Roll Test</a> </li> 
+        <li> <a href="#/characters">Character Test</a></li>
+        </ul>
+      </section>
+        <br><br>
+        
          <div ng-view></div>
       </body>
 
@@ -43,8 +50,8 @@
         </ul> 
         
         <h2>Throw/Check</h2>
-        <ul>
-            <li ng-repeat="dm in roller.dms">
+        <ul class="list-group">
+            <li class="list-group-item" ng-repeat="dm in roller.dms">
               <input type="checkbox" ng-model="dm.include">
               <span class="done-{{!dm.include}}">{{dm.desc}} : {{dm.value}}</span>
             </li>
