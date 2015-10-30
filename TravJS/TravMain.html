@@ -34,6 +34,9 @@
 .bgDimGray {
    background-color: DimGray;
 }
+.indented {
+   padding-left: 15px;
+}
 #characteristicsTable col:nth-child(2),col:nth-child(6n+5),col:nth-child(6n+6),col:nth-child(6n+7) {
    background: LightGray;
 }
@@ -216,7 +219,7 @@
   <form>
     <h3>Skills</h3>
     <table>
-      <tr ng-repeat="skill in skillList" ng-if="char1.skills.displaySkill(skill.name)"><td><h4><span style="cursor:pointer" ng-click="char1.skills.toggleEnabled(skill.name)">{{skill.name}}</span></h4></td><td>{{skill.value}}</td></tr>
+      <tr ng-repeat="skill in skillList" ng-if="skill.displayMe()"><td ng-class="{indented:skill.indentMe}"><h4><span style="cursor:pointer" ng-click="skill.toggleMe()">{{skill.name}}</span></h4></td><td style="padding-left:5px">{{skill.value}}</td></tr>
     </table>
   </form>
 
