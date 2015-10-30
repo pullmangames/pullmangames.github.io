@@ -1,0 +1,52 @@
+        <h2>Roll</h2>
+        <div>
+        	
+        	<form ng-submit="roller.roll()">
+            	<input type="text" ng-model="roller.numdice" size="1" placeholder="Count">
+            	d<input type="text" ng-model="roller.sides" size="1" placeholder="Sides">
+            	<input class="btn-primary" type="submit" value="Roll">
+          	</form>
+          	
+          	<form ng-submit="roller.d66()">
+          	<input class="btn-primary" type="submit" value="d66">
+          	</form>
+          	
+          	<span>Total: {{roller.result.total}}</span>
+          	<br>
+        
+        <span>Individual Rolls:</span>  	
+        <ul class="list-group">
+        	<li class="list-group-item" ng-repeat="roll in roller.result.rolls track by $index">
+        	<span> {{roll}} </span>
+        	</li>
+        </ul> 
+        
+        <h2>Throw/Check</h2>
+        <ul class="list-group">
+            <li class="list-group-item" ng-repeat="dm in roller.dms">
+              <input type="checkbox" ng-model="dm.include">
+              <span class="done-{{!dm.include}}">{{dm.desc}} : {{dm.value}}</span>
+            </li>
+          </ul>
+          <form ng-submit="roller.addDM()">
+            <input type="text" ng-model="roller.dmtext"  size="30"
+                   placeholder="add new DM description">
+            <input type="number" ng-model="roller.dmvalue"  size="3"
+                   placeholder="0">
+            <input class="btn-primary" type="submit" value="add">
+          </form>
+         	
+
+         <form ng-submit="roller.dicethrow()">
+         
+         <!--	<select ng-model="roller.currentdifficulty">
+        		<option ng-repeat="option in roller.difficulties" value="{{option.value}}">{{option.name}}</option>
+         -->
+        	<select name="mySelect" id="mySelect"
+     			 ng-options="option.name for option in roller.difficulties track by option.value"
+      			ng-model="roller.currentdifficulty"></select>
+        	<input type="submit" value="Throw">
+         </form>
+         Throw Result:
+         {{roller.throwresult}}
+        </div>

@@ -21,92 +21,11 @@
         <li> <a href="#/shipManagement">Ship Management</a></li>
         </ul>
       </section>
+     
         <br><br>
          <div ng-view></div>
       </body>
       
-<!----------------------------------Ship Manager View-------------------------->
-<script type="text/ng-template" id="shipMan.view">
-	<h2>Ship Management</h2>
-</script>
-
-<!--------------------------------- Roll view --------------------------------->
-<script type="text/ng-template" id="roll.view">
-        <h2>Roll</h2>
-        <div>
-        	
-        	<form ng-submit="roller.roll()">
-            	<input type="text" ng-model="roller.numdice" size="1" placeholder="Count">
-            	d<input type="text" ng-model="roller.sides" size="1" placeholder="Sides">
-            	<input class="btn-primary" type="submit" value="Roll">
-          	</form>
-          	
-          	<form ng-submit="roller.d66()">
-          	<input class="btn-primary" type="submit" value="d66">
-          	</form>
-          	
-          	<span>Total: {{roller.result.total}}</span>
-          	<br>
-        
-        <span>Individual Rolls:</span>  	
-        <ul class="unstyled">
-        	<li ng-repeat="roll in roller.result.rolls track by $index">
-        	<span> {{roll}} </span>
-        	</li>
-        </ul> 
-        
-        <h2>Throw/Check</h2>
-        <ul class="list-group">
-            <li class="list-group-item" ng-repeat="dm in roller.dms">
-              <input type="checkbox" ng-model="dm.include">
-              <span class="done-{{!dm.include}}">{{dm.desc}} : {{dm.value}}</span>
-            </li>
-          </ul>
-          <form ng-submit="roller.addDM()">
-            <input type="text" ng-model="roller.dmtext"  size="30"
-                   placeholder="add new DM description">
-            <input type="number" ng-model="roller.dmvalue"  size="3"
-                   placeholder="0">
-            <input class="btn-primary" type="submit" value="add">
-          </form>
-         	
-
-         <form ng-submit="roller.dicethrow()">
-         
-         <!--	<select ng-model="roller.currentdifficulty">
-        		<option ng-repeat="option in roller.difficulties" value="{{option.value}}">{{option.name}}</option>
-         -->
-        	<select name="mySelect" id="mySelect"
-     			 ng-options="option.name for option in roller.difficulties track by option.value"
-      			ng-model="roller.currentdifficulty"></select>
-        	<input type="submit" value="Throw">
-         </form>
-         Throw Result:
-         {{roller.throwresult}}
-
-        		
-        </div>
-        
-        
-        <!--  
-        <h2>Todo</h2>
-        <div ng-controller="TodoListController as todoList">
-          <span>{{todoList.remaining()}} of {{todoList.todos.length}} remaining</span>
-          [ <a href="" ng-click="todoList.archive()">archive</a> ]
-          <ul class="unstyled">
-            <li ng-repeat="todo in todoList.todos">
-              <input type="checkbox" ng-model="todo.done">
-              <span class="done-{{todo.done}}">{{todo.text}}</span>
-            </li>
-          </ul>
-          <form ng-submit="todoList.addTodo()">
-            <input type="text" ng-model="todoList.todoText"  size="30"
-                   placeholder="add new todo here">
-            <input class="btn-primary" type="submit" value="add">
-          </form>
-        </div>
-        -->
-</script>
 
 <!------------------------------ Character view ------------------------------->
 <script type="text/ng-template" id="characters.view">
