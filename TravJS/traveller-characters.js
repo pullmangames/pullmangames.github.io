@@ -29,8 +29,6 @@ charModule.controller('charactersController', ['$scope', 'charactersService', fu
    {
       return (id === $scope.selectedCharacter.id);
    }
-   
-   $scope.addCharacter();
 }]);
 
 charModule.factory('character', ['skills', function(skills) {

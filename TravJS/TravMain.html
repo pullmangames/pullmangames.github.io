@@ -53,6 +53,14 @@ input[type="number"].skillValueInput {
 .learnedSkill {
    background: LightGray;
 }
+.deleteButton {
+   padding: 3px;
+   border: solid 3px black;
+   background: red;
+   color: white;
+   float: right;
+   cursor: pointer
+}
 #characteristicsTable col:nth-child(2),col:nth-child(6n+5),col:nth-child(6n+6),col:nth-child(6n+7) {
    background: LightGray;
 }
@@ -61,7 +69,6 @@ input[type="number"].skillValueInput {
    border: solid black 1px;
 }
 </style>
-
   <!-- TODO: refactor this page to move logic out of the view, and view out of the model -->
   <!-- TODO: multiple characters - possibly tabbed -->
   <!-- TODO: add/remove characters -->
@@ -69,67 +76,69 @@ input[type="number"].skillValueInput {
     <li ng-repeat="character in characterList" ng-class="{active: isActive(character.id)}" ng-click="selectCharacter(character.id)"><a style="cursor:default">{{character.name}}</a></li>
     <li><a style="cursor:pointer" ng-click="addCharacter()">Create New Character</a></li>
   </ul>
-  
-  <span style="padding:2px;border:solid 2px black;background:red;color:white;float:right;text-align:right;cursor:pointer" ng-click="deleteCharacter(selectedCharacter.id)"><h4>DELETE</h4></span>
-  
-  <form>
-    <h3>Identity</h3>
-    <table>
-      <tr><td><h4>Name</h4></td><td><input ng-model="selectedCharacter.name"></td></tr>
-      <tr><td><h4>Age</h4></td><td><input ng-model="selectedCharacter.age"></td></tr>
-      <tr><td><h4>Homeworld</h4></td><td><input ng-model="selectedCharacter.homeworld"></td></tr>
-      <tr><td><h4>Race</h4></td><td><input ng-model="selectedCharacter.race"></td></tr>
-      <tr><td><h4>Racial Traits</h4></td><td><input ng-model="selectedCharacter.racialTraits"></td></tr>
-    </table>
-  </form>
 
-  <h3>Characteristics</h3> Click on a box to set the characteristic score
-  <table id="characteristicsTable">
-    <col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col>
-    <tr align=center>
-      <td align=right>Modifier</td>
-      <td>-3</td>
-      <td colspan=2>-2</td>
-      <td colspan=3>-1</td>
-      <td colspan=3>+0</td>
-      <td colspan=3>+1</td>
-      <td colspan=3>+2</td>
-      <td>+3</td>
-    </tr>
-    <tr align=center>
-      <td align=right>Score</td>
-      <td ng-repeat='val in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]'>{{val}}</td>
-    </tr>
-    <tr align=center ng-repeat='stat in ["Str","Dex","End","Int","Edu","Soc"]'>
-      <td align=right>{{stat}}</td>
-      <td ng-repeat='val in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]' style="cursor:pointer" ng-click="selectedCharacter[stat]=val" ng-class="{bgDimGray: selectedCharacter[stat]>=val}"></td>
-    </tr>
-  </table>
+  <span ng-if="characterList.length > 0">
+    <span class="deleteButton" ng-click="deleteCharacter(selectedCharacter.id)"><h4>DELETE</h4></span>
   
-  <br>
-  <form>
-    <h3>Armour</h3>
-    <table>
-      <tr><td><h4>Type</h4></td><td><input ng-model="selectedCharacter.armourType"></td></tr>
-      <tr><td><h4>Rating</h4></td><td><input ng-model="selectedCharacter.armourRating"></td></tr>
-      <tr><td><h4>Special Notes</h4></td><td><input ng-model="selectedCharacter.armourSpecialNotes"></td></tr>
-    </table>
-  </form>
+    <form>
+      <h3>Identity</h3>
+      <table>
+        <tr><td><h4>Name</h4></td><td><input ng-model="selectedCharacter.name"></td></tr>
+        <tr><td><h4>Age</h4></td><td><input ng-model="selectedCharacter.age"></td></tr>
+        <tr><td><h4>Homeworld</h4></td><td><input ng-model="selectedCharacter.homeworld"></td></tr>
+        <tr><td><h4>Race</h4></td><td><input ng-model="selectedCharacter.race"></td></tr>
+        <tr><td><h4>Racial Traits</h4></td><td><input ng-model="selectedCharacter.racialTraits"></td></tr>
+      </table>
+    </form>
 
-  <!-- TODO: make sure skills are always sorted properly (browsers aren't required to follow the order in the array) -->
-  <br>
-  <form>
-    <h3>Skills</h3> Click on a skill to learn/forget it. Click on the skill level to change it.
-    <table>
-      <tr ng-repeat="skill in skillList" ng-if="skill.displayMe()" ng-class="{learnedSkill: skill.hasBeenLearned}">
-        <td><h4><span ng-class="{specialty:skill.isSpecialty,skill:!skill.isSpecialty}" ng-click="skill.toggleMe()">{{skill.name}}</span></h4></td>
-        <td style="padding-left:10px">
-          <input ng-if="skill.editing && skill.editing===true" class="skillValueInput" id="{{skill.name}}" type="number" min="0" max="20" value="{{skill.value}}" ng-model="skill.value" ng-blur="skill.editing=!skill.editing">
-          <h4><span ng-if="!skill.editing || skill.editing===false" class="skillValue" ng-click="skill.editing=!skill.editing; setSkillFocus(skill.name)">{{skill.value}}</span></h4>
-        </td>
+    <h3>Characteristics</h3> Click on a box to set the characteristic score
+    <table id="characteristicsTable">
+      <col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col>
+      <tr align=center>
+        <td align=right>Modifier</td>
+        <td>-3</td>
+        <td colspan=2>-2</td>
+        <td colspan=3>-1</td>
+        <td colspan=3>+0</td>
+        <td colspan=3>+1</td>
+        <td colspan=3>+2</td>
+        <td>+3</td>
+      </tr>
+      <tr align=center>
+        <td align=right>Score</td>
+        <td ng-repeat='val in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]'>{{val}}</td>
+      </tr>
+      <tr align=center ng-repeat='stat in ["Str","Dex","End","Int","Edu","Soc"]'>
+        <td align=right>{{stat}}</td>
+        <td ng-repeat='val in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]' style="cursor:pointer" ng-click="selectedCharacter[stat]=val" ng-class="{bgDimGray: selectedCharacter[stat]>=val}"></td>
       </tr>
     </table>
-  </form>
+  
+    <br>
+    <form>
+      <h3>Armour</h3>
+      <table>
+        <tr><td><h4>Type</h4></td><td><input ng-model="selectedCharacter.armourType"></td></tr>
+        <tr><td><h4>Rating</h4></td><td><input ng-model="selectedCharacter.armourRating"></td></tr>
+        <tr><td><h4>Special Notes</h4></td><td><input ng-model="selectedCharacter.armourSpecialNotes"></td></tr>
+      </table>
+    </form>
+
+  <!-- TODO: make sure skills are always sorted properly (browsers aren't required to follow the order in the array) -->
+    <br>
+    <form>
+      <h3>Skills</h3> Click on a skill to learn/forget it. Click on the skill level to change it.
+      <table>
+        <tr ng-repeat="skill in skillList" ng-if="skill.displayMe()" ng-class="{learnedSkill: skill.hasBeenLearned}">
+          <td><h4><span ng-class="{specialty:skill.isSpecialty,skill:!skill.isSpecialty}" ng-click="skill.toggleMe()">{{skill.name}}</span></h4></td>
+          <td style="padding-left:10px">
+            <input ng-if="skill.editing && skill.editing===true" class="skillValueInput" id="{{skill.name}}" type="number" min="0" max="20" value="{{skill.value}}" ng-model="skill.value" ng-blur="skill.editing=!skill.editing">
+            <h4><span ng-if="!skill.editing || skill.editing===false" class="skillValue" ng-click="skill.editing=!skill.editing; setSkillFocus(skill.name)">{{skill.value}}</span></h4>
+          </td>
+        </tr>
+      </table>
+    </form>
+  </span>
 
 </script>
 
