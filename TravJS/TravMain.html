@@ -14,7 +14,7 @@
             <!-- Bootstrap -->
    		<link href="lib/bootstrap-combined.min.css" rel="stylesheet">
       </head>
-      <body>
+      <body style="margin:5px">
       <section>
       	<ul class="nav nav-pills">
       	<li> <a href="#/roll">Roll Test</a> </li> 
@@ -34,8 +34,24 @@
 .bgDimGray {
    background-color: DimGray;
 }
-.indented {
+.specialty {
    padding-left: 15px;
+   cursor: default;
+}
+.skill {
+   cursor: pointer;
+}
+.skillValue {
+   cursor: pointer;
+   padding-right: 10px;
+}
+input[type="number"].skillValueInput {
+   width: 35px;
+   padding: 0;
+   margin: 0;
+}
+.learnedSkill {
+   background: LightGray;
 }
 #characteristicsTable col:nth-child(2),col:nth-child(6n+5),col:nth-child(6n+6),col:nth-child(6n+7) {
    background: LightGray;
@@ -57,7 +73,7 @@
     </table>
   </form>
 
-  <h3>Characteristics</h3>
+  <h3>Characteristics</h3> Click on a box to set the characteristic score
   <table id="characteristicsTable">
     <col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col>
     <tr align=center>
@@ -95,9 +111,15 @@
 
   <br>
   <form>
-    <h3>Skills</h3>
+    <h3>Skills</h3> Click on a skill to learn/forget it. Click on the skill level to change it.
     <table>
-      <tr ng-repeat="skill in skillList" ng-if="skill.displayMe()"><td ng-class="{indented:skill.indentMe}"><h4><span style="cursor:pointer" ng-click="skill.toggleMe()">{{skill.name}}</span></h4></td><td style="padding-left:5px">{{skill.value}}</td></tr>
+      <tr ng-repeat="skill in skillList" ng-if="skill.displayMe()" ng-class="{learnedSkill: skill.hasBeenLearned}">
+        <td><h4><span ng-class="{specialty:skill.isSpecialty,skill:!skill.isSpecialty}" ng-click="skill.toggleMe()">{{skill.name}}</span></h4></td>
+        <td style="padding-left:10px">
+          <input ng-if="skill.editing && skill.editing===true" class="skillValueInput" id="{{skill.name}}" type="number" min="0" max="20" value="{{skill.value}}" ng-model="skill.value" ng-blur="skill.editing=!skill.editing">
+          <h4><span  ng-if="!skill.editing || skill.editing===false" class="skillValue" ng-click="skill.editing=!skill.editing; setSkillFocus(skill.name)">{{skill.value}}</span></h4>
+        </td>
+      </tr>
     </table>
   </form>
 

@@ -16,10 +16,12 @@ skillsModule.factory('skills', [function() {
       var _togglePlainSkill = function() {
          if (this.hasOwnProperty("value"))
          {
+            this.hasBeenLearned = false;
             delete this.value;
          }
          else
          {
+            this.hasBeenLearned = true;
             this.value = 0;
          }
       };
@@ -30,6 +32,7 @@ skillsModule.factory('skills', [function() {
             this.hasBeenLearned = true;
             for (var i = 0; i < this.specialties.length; i++)
             {
+               _skillLookup[this.specialties[i]].hasBeenLearned = true;
                _skillLookup[this.specialties[i]].value = 0;
             }
          }
@@ -38,6 +41,7 @@ skillsModule.factory('skills', [function() {
             this.hasBeenLearned = false;
             for (var i = 0; i < this.specialties.length; i++)
             {
+               _skillLookup[this.specialties[i]].hasBeenLearned = false;
                delete _skillLookup[this.specialties[i]].value;
             }
          }
@@ -173,59 +177,21 @@ skillsModule.factory('skills', [function() {
          if (this.fullList[i].parent) //child skill
          {
             this.fullList[i].toggleMe = _toggleChildSkill;
-            this.fullList[i].indentMe = true;
+            this.fullList[i].isSpecialty = true;
          }
          else if (   this.fullList[i].specialties
                   && this.fullList[i].specialties.length > 0) //parent skill
          {
             this.fullList[i].toggleMe = _toggleParentSkill;
-            this.fullList[i].indentMe = false;
+            this.fullList[i].isSpecialty = false;
          }
          else //neither parent nor child
          {
             this.fullList[i].toggleMe = _togglePlainSkill;
-            this.fullList[i].indentMe = false;
+            this.fullList[i].isSpecialty = false;
          }
       };
    };
-   
-   skills.prototype.displaySkill = function(name)
-   {
-      var skill = _skillLookup[name];
-      if (   !skill.parent
-          || _skillLookup[skill.parent].hasOwnProperty("value"))
-      {
-         return true;
-      }
-      return false;
-   }
-
-   skills.prototype.toggleEnabled = function(name)
-   {
-      var skill = _skillLookup[name];
-      if (!skill.parent)
-      {
-         if (skill.hasOwnProperty("value"))
-         {
-            if (skill.value === 0)
-            {
-               delete skill.value;
-               for (var i = 0, len = skill.specialties.length; i < len; i++)
-               {
-                  delete _skillLookup[skill.specialties[i]].value;
-               }
-            }
-         }
-         else
-         {
-            skill.value = 0;
-            for (var i = 0, len = skill.specialties.length; i < len; i++)
-            {
-               _skillLookup[skill.specialties[i]].value = 0;
-            }
-         }
-      }
-   }
 
    return skills;
 }]);

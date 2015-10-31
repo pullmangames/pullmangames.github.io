@@ -3,6 +3,10 @@ charModule = angular.module('travellerCharacters', []); //declare the module for
 charModule.controller('charactersController', ['$scope', 'charactersService', function($scope, charactersService) {
    $scope.char1 = charactersService.firstCharacter;
    $scope.skillList = charactersService.firstCharacter.skills.fullList;
+   $scope.setSkillFocus = function(name)
+   {
+      window.setTimeout(function() {document.getElementById(name).focus()}, 0);
+   };
 }]);
 
 charModule.factory('character', ['skills', function(skills) {
