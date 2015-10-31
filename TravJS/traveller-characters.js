@@ -29,6 +29,11 @@ charModule.controller('charactersController', ['$scope', 'charactersService', fu
    {
       return (id === $scope.selectedCharacter.id);
    }
+   
+   if ($scope.characterList.length)
+   {
+      $scope.selectCharacter(0);
+   }
 }]);
 
 charModule.factory('character', ['skills', function(skills) {
