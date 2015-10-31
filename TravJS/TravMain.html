@@ -7,13 +7,14 @@
         <script src="lib/angular-route.js"></script>
         <script src="travmain.js"></script>
         <script src="traveller-characters.js"></script>
+        <script src="traveller-skills.js"></script>
         <script src="diceRoller.js"></script>
         <script src="ship-management.js"></script>
         <!--<link rel="stylesheet" href="travmain.css">-->
             <!-- Bootstrap -->
    		<link href="lib/bootstrap-combined.min.css" rel="stylesheet">
       </head>
-      <body>
+      <body style="margin-left:8px">
       <section>
       	<ul class="nav nav-pills">
       	<li> <a href="#/roll">Roll Test</a> </li> 
@@ -32,9 +33,35 @@
 <style type="text/css">
 .bgDimGray {
    background-color: DimGray;
-   width: 25px;
 }
-#characteristicsTable col:nth-child(2),col:nth-child(6n+5),col:nth-child(6n+6),col:nth-child(6n+7),col:nth-child(17) {
+.specialty {
+   padding-left: 15px;
+   cursor: default;
+}
+.skill {
+   cursor: pointer;
+}
+.skillValue {
+   cursor: pointer;
+   padding-right: 10px;
+}
+input[type="number"].skillValueInput {
+   width: 35px;
+   padding: 0;
+   margin: 0;
+}
+.learnedSkill {
+   background: LightGray;
+}
+.deleteButton {
+   padding: 3px;
+   border: solid 3px black;
+   background: red;
+   color: white;
+   float: right;
+   cursor: pointer
+}
+#characteristicsTable col:nth-child(2),col:nth-child(6n+5),col:nth-child(6n+6),col:nth-child(6n+7) {
    background: LightGray;
 }
 #characteristicsTable td {
@@ -42,18 +69,29 @@
    border: solid black 1px;
 }
 </style>
+  <!-- TODO: refactor this page to move logic out of the view, and view out of the model -->
+  <!-- TODO: multiple characters - possibly tabbed -->
+  <!-- TODO: add/remove characters -->
+  <ul class="nav nav-tabs">
+    <li ng-repeat="character in characterList" ng-class="{active: isActive(character.id)}" ng-click="selectCharacter(character.id)"><a style="cursor:default">{{character.name}}</a></li>
+    <li><a style="cursor:pointer" ng-click="addCharacter()">Create New Character</a></li>
+  </ul>
 
-  <form>
-    <table>
-      <tr><td><h3>Name:</h3></td><td><input ng-model="characters.char1.name"></td></tr>
-      <tr><td><h3>Age:</h3></td><td><input ng-model="characters.char1.age"></td></tr>
-      <tr><td><h3>Homeworld:</h3></td><td><input ng-model="characters.char1.homeworld"></td></tr>
-      <tr><td><h3>Race:</h3></td><td><input ng-model="characters.char1.race"></td></tr>
-      <tr><td><h3>Racial Traits:</h3></td><td><input ng-model="characters.char1.racialTraits"></td></tr>
-    </table>
-    <br>
+  <span ng-if="characterList.length > 0">
+    <span class="deleteButton" ng-click="deleteCharacter(selectedCharacter.id)"><h4>DELETE</h4></span>
+  
+    <form>
+      <h3>Identity</h3>
+      <table>
+        <tr><td><h4>Name</h4></td><td><input ng-model="selectedCharacter.name"></td></tr>
+        <tr><td><h4>Age</h4></td><td><input ng-model="selectedCharacter.age"></td></tr>
+        <tr><td><h4>Homeworld</h4></td><td><input ng-model="selectedCharacter.homeworld"></td></tr>
+        <tr><td><h4>Race</h4></td><td><input ng-model="selectedCharacter.race"></td></tr>
+        <tr><td><h4>Racial Traits</h4></td><td><input ng-model="selectedCharacter.racialTraits"></td></tr>
+      </table>
+    </form>
 
-    <h3>Characteristics</h3>
+    <h3>Characteristics</h3> Click on a box to set the characteristic score
     <table id="characteristicsTable">
       <col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col>
       <tr align=center>
@@ -68,139 +106,40 @@
       </tr>
       <tr align=center>
         <td align=right>Score</td>
-        <td>0</td>
-        <td>1</td>
-        <td>2</td>
-        <td>3</td>
-        <td>4</td>
-        <td>5</td>
-        <td>6</td>
-        <td>7</td>
-        <td>8</td>
-        <td>9</td>
-        <td>10</td>
-        <td>11</td>
-        <td>12</td>
-        <td>13</td>
-        <td>14</td>
-        <td>15</td>
+        <td ng-repeat='val in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]'>{{val}}</td>
       </tr>
-      <tr align=center>
-        <td align=right>Str</td>
-        <td ng-click="characters.char1.str=0" ng-class="{bgDimGray: characters.char1.str>=0}"></td>
-        <td ng-click="characters.char1.str=1" ng-class="{bgDimGray: characters.char1.str>=1}"></td>
-        <td ng-click="characters.char1.str=2" ng-class="{bgDimGray: characters.char1.str>=2}"></td>
-        <td ng-click="characters.char1.str=3" ng-class="{bgDimGray: characters.char1.str>=3}"></td>
-        <td ng-click="characters.char1.str=4" ng-class="{bgDimGray: characters.char1.str>=4}"></td>
-        <td ng-click="characters.char1.str=5" ng-class="{bgDimGray: characters.char1.str>=5}"></td>
-        <td ng-click="characters.char1.str=6" ng-class="{bgDimGray: characters.char1.str>=6}"></td>
-        <td ng-click="characters.char1.str=7" ng-class="{bgDimGray: characters.char1.str>=7}"></td>
-        <td ng-click="characters.char1.str=8" ng-class="{bgDimGray: characters.char1.str>=8}"></td>
-        <td ng-click="characters.char1.str=9" ng-class="{bgDimGray: characters.char1.str>=9}"></td>
-        <td ng-click="characters.char1.str=10" ng-class="{bgDimGray: characters.char1.str>=10}"></td>
-        <td ng-click="characters.char1.str=11" ng-class="{bgDimGray: characters.char1.str>=11}"></td>
-        <td ng-click="characters.char1.str=12" ng-class="{bgDimGray: characters.char1.str>=12}"></td>
-        <td ng-click="characters.char1.str=13" ng-class="{bgDimGray: characters.char1.str>=13}"></td>
-        <td ng-click="characters.char1.str=14" ng-class="{bgDimGray: characters.char1.str>=14}"></td>
-        <td ng-click="characters.char1.str=15" ng-class="{bgDimGray: characters.char1.str>=15}"></td>
-      </tr>
-      <tr align=center>
-        <td align=right>Dex</td>
-        <td ng-click="characters.char1.dex=0" ng-class="{bgDimGray: characters.char1.dex>=0}"></td>
-        <td ng-click="characters.char1.dex=1" ng-class="{bgDimGray: characters.char1.dex>=1}"></td>
-        <td ng-click="characters.char1.dex=2" ng-class="{bgDimGray: characters.char1.dex>=2}"></td>
-        <td ng-click="characters.char1.dex=3" ng-class="{bgDimGray: characters.char1.dex>=3}"></td>
-        <td ng-click="characters.char1.dex=4" ng-class="{bgDimGray: characters.char1.dex>=4}"></td>
-        <td ng-click="characters.char1.dex=5" ng-class="{bgDimGray: characters.char1.dex>=5}"></td>
-        <td ng-click="characters.char1.dex=6" ng-class="{bgDimGray: characters.char1.dex>=6}"></td>
-        <td ng-click="characters.char1.dex=7" ng-class="{bgDimGray: characters.char1.dex>=7}"></td>
-        <td ng-click="characters.char1.dex=8" ng-class="{bgDimGray: characters.char1.dex>=8}"></td>
-        <td ng-click="characters.char1.dex=9" ng-class="{bgDimGray: characters.char1.dex>=9}"></td>
-        <td ng-click="characters.char1.dex=10" ng-class="{bgDimGray: characters.char1.dex>=10}"></td>
-        <td ng-click="characters.char1.dex=11" ng-class="{bgDimGray: characters.char1.dex>=11}"></td>
-        <td ng-click="characters.char1.dex=12" ng-class="{bgDimGray: characters.char1.dex>=12}"></td>
-        <td ng-click="characters.char1.dex=13" ng-class="{bgDimGray: characters.char1.dex>=13}"></td>
-        <td ng-click="characters.char1.dex=14" ng-class="{bgDimGray: characters.char1.dex>=14}"></td>
-        <td ng-click="characters.char1.dex=15" ng-class="{bgDimGray: characters.char1.dex>=15}"></td>
-      </tr>
-      <tr align=center>
-        <td align=right>End</td>
-        <td ng-click="characters.char1.end=0" ng-class="{bgDimGray: characters.char1.end>=0}"></td>
-        <td ng-click="characters.char1.end=1" ng-class="{bgDimGray: characters.char1.end>=1}"></td>
-        <td ng-click="characters.char1.end=2" ng-class="{bgDimGray: characters.char1.end>=2}"></td>
-        <td ng-click="characters.char1.end=3" ng-class="{bgDimGray: characters.char1.end>=3}"></td>
-        <td ng-click="characters.char1.end=4" ng-class="{bgDimGray: characters.char1.end>=4}"></td>
-        <td ng-click="characters.char1.end=5" ng-class="{bgDimGray: characters.char1.end>=5}"></td>
-        <td ng-click="characters.char1.end=6" ng-class="{bgDimGray: characters.char1.end>=6}"></td>
-        <td ng-click="characters.char1.end=7" ng-class="{bgDimGray: characters.char1.end>=7}"></td>
-        <td ng-click="characters.char1.end=8" ng-class="{bgDimGray: characters.char1.end>=8}"></td>
-        <td ng-click="characters.char1.end=9" ng-class="{bgDimGray: characters.char1.end>=9}"></td>
-        <td ng-click="characters.char1.end=10" ng-class="{bgDimGray: characters.char1.end>=10}"></td>
-        <td ng-click="characters.char1.end=11" ng-class="{bgDimGray: characters.char1.end>=11}"></td>
-        <td ng-click="characters.char1.end=12" ng-class="{bgDimGray: characters.char1.end>=12}"></td>
-        <td ng-click="characters.char1.end=13" ng-class="{bgDimGray: characters.char1.end>=13}"></td>
-        <td ng-click="characters.char1.end=14" ng-class="{bgDimGray: characters.char1.end>=14}"></td>
-        <td ng-click="characters.char1.end=15" ng-class="{bgDimGray: characters.char1.end>=15}"></td>
-      </tr>
-      <tr align=center>
-        <td align=right>Int</td>
-        <td ng-click="characters.char1.int=0" ng-class="{bgDimGray: characters.char1.int>=0}"></td>
-        <td ng-click="characters.char1.int=1" ng-class="{bgDimGray: characters.char1.int>=1}"></td>
-        <td ng-click="characters.char1.int=2" ng-class="{bgDimGray: characters.char1.int>=2}"></td>
-        <td ng-click="characters.char1.int=3" ng-class="{bgDimGray: characters.char1.int>=3}"></td>
-        <td ng-click="characters.char1.int=4" ng-class="{bgDimGray: characters.char1.int>=4}"></td>
-        <td ng-click="characters.char1.int=5" ng-class="{bgDimGray: characters.char1.int>=5}"></td>
-        <td ng-click="characters.char1.int=6" ng-class="{bgDimGray: characters.char1.int>=6}"></td>
-        <td ng-click="characters.char1.int=7" ng-class="{bgDimGray: characters.char1.int>=7}"></td>
-        <td ng-click="characters.char1.int=8" ng-class="{bgDimGray: characters.char1.int>=8}"></td>
-        <td ng-click="characters.char1.int=9" ng-class="{bgDimGray: characters.char1.int>=9}"></td>
-        <td ng-click="characters.char1.int=10" ng-class="{bgDimGray: characters.char1.int>=10}"></td>
-        <td ng-click="characters.char1.int=11" ng-class="{bgDimGray: characters.char1.int>=11}"></td>
-        <td ng-click="characters.char1.int=12" ng-class="{bgDimGray: characters.char1.int>=12}"></td>
-        <td ng-click="characters.char1.int=13" ng-class="{bgDimGray: characters.char1.int>=13}"></td>
-        <td ng-click="characters.char1.int=14" ng-class="{bgDimGray: characters.char1.int>=14}"></td>
-        <td ng-click="characters.char1.int=15" ng-class="{bgDimGray: characters.char1.int>=15}"></td>
-      </tr>
-      <tr align=center>
-        <td align=right>Edu</td>
-        <td ng-click="characters.char1.edu=0" ng-class="{bgDimGray: characters.char1.edu>=0}"></td>
-        <td ng-click="characters.char1.edu=1" ng-class="{bgDimGray: characters.char1.edu>=1}"></td>
-        <td ng-click="characters.char1.edu=2" ng-class="{bgDimGray: characters.char1.edu>=2}"></td>
-        <td ng-click="characters.char1.edu=3" ng-class="{bgDimGray: characters.char1.edu>=3}"></td>
-        <td ng-click="characters.char1.edu=4" ng-class="{bgDimGray: characters.char1.edu>=4}"></td>
-        <td ng-click="characters.char1.edu=5" ng-class="{bgDimGray: characters.char1.edu>=5}"></td>
-        <td ng-click="characters.char1.edu=6" ng-class="{bgDimGray: characters.char1.edu>=6}"></td>
-        <td ng-click="characters.char1.edu=7" ng-class="{bgDimGray: characters.char1.edu>=7}"></td>
-        <td ng-click="characters.char1.edu=8" ng-class="{bgDimGray: characters.char1.edu>=8}"></td>
-        <td ng-click="characters.char1.edu=9" ng-class="{bgDimGray: characters.char1.edu>=9}"></td>
-        <td ng-click="characters.char1.edu=10" ng-class="{bgDimGray: characters.char1.edu>=10}"></td>
-        <td ng-click="characters.char1.edu=11" ng-class="{bgDimGray: characters.char1.edu>=11}"></td>
-        <td ng-click="characters.char1.edu=12" ng-class="{bgDimGray: characters.char1.edu>=12}"></td>
-        <td ng-click="characters.char1.edu=13" ng-class="{bgDimGray: characters.char1.edu>=13}"></td>
-        <td ng-click="characters.char1.edu=14" ng-class="{bgDimGray: characters.char1.edu>=14}"></td>
-        <td ng-click="characters.char1.edu=15" ng-class="{bgDimGray: characters.char1.edu>=15}"></td>
-      </tr>
-      <tr align=center>
-        <td align=right>Soc</td>
-        <td ng-click="characters.char1.soc=0" ng-class="{bgDimGray: characters.char1.soc>=0}"></td>
-        <td ng-click="characters.char1.soc=1" ng-class="{bgDimGray: characters.char1.soc>=1}"></td>
-        <td ng-click="characters.char1.soc=2" ng-class="{bgDimGray: characters.char1.soc>=2}"></td>
-        <td ng-click="characters.char1.soc=3" ng-class="{bgDimGray: characters.char1.soc>=3}"></td>
-        <td ng-click="characters.char1.soc=4" ng-class="{bgDimGray: characters.char1.soc>=4}"></td>
-        <td ng-click="characters.char1.soc=5" ng-class="{bgDimGray: characters.char1.soc>=5}"></td>
-        <td ng-click="characters.char1.soc=6" ng-class="{bgDimGray: characters.char1.soc>=6}"></td>
-        <td ng-click="characters.char1.soc=7" ng-class="{bgDimGray: characters.char1.soc>=7}"></td>
-        <td ng-click="characters.char1.soc=8" ng-class="{bgDimGray: characters.char1.soc>=8}"></td>
-        <td ng-click="characters.char1.soc=9" ng-class="{bgDimGray: characters.char1.soc>=9}"></td>
-        <td ng-click="characters.char1.soc=10" ng-class="{bgDimGray: characters.char1.soc>=10}"></td>
-        <td ng-click="characters.char1.soc=11" ng-class="{bgDimGray: characters.char1.soc>=11}"></td>
-        <td ng-click="characters.char1.soc=12" ng-class="{bgDimGray: characters.char1.soc>=12}"></td>
-        <td ng-click="characters.char1.soc=13" ng-class="{bgDimGray: characters.char1.soc>=13}"></td>
-        <td ng-click="characters.char1.soc=14" ng-class="{bgDimGray: characters.char1.soc>=14}"></td>
-        <td ng-click="characters.char1.soc=15" ng-class="{bgDimGray: characters.char1.soc>=15}"></td>
+      <tr align=center ng-repeat='stat in ["Str","Dex","End","Int","Edu","Soc"]'>
+        <td align=right>{{stat}}</td>
+        <td ng-repeat='val in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]' style="cursor:pointer" ng-click="selectedCharacter[stat]=val" ng-class="{bgDimGray: selectedCharacter[stat]>=val}"></td>
       </tr>
     </table>
-  </form>
+  
+    <br>
+    <form>
+      <h3>Armour</h3>
+      <table>
+        <tr><td><h4>Type</h4></td><td><input ng-model="selectedCharacter.armourType"></td></tr>
+        <tr><td><h4>Rating</h4></td><td><input ng-model="selectedCharacter.armourRating"></td></tr>
+        <tr><td><h4>Special Notes</h4></td><td><input ng-model="selectedCharacter.armourSpecialNotes"></td></tr>
+      </table>
+    </form>
+
+  <!-- TODO: make sure skills are always sorted properly (browsers aren't required to follow the order in the array) -->
+    <br>
+    <form>
+      <h3>Skills</h3> Click on a skill to learn/forget it. Click on the skill level to change it.
+      <table>
+        <tr ng-repeat="skill in skillList" ng-if="skill.displayMe()" ng-class="{learnedSkill: skill.hasBeenLearned}">
+          <td><h4><span ng-class="{specialty:skill.isSpecialty,skill:!skill.isSpecialty}" ng-click="skill.toggleMe()">{{skill.name}}</span></h4></td>
+          <td style="padding-left:10px">
+            <input ng-if="skill.editing && skill.editing===true" class="skillValueInput" id="{{skill.name}}" type="number" min="0" max="20" value="{{skill.value}}" ng-model="skill.value" ng-blur="skill.editing=!skill.editing">
+            <h4><span ng-if="!skill.editing || skill.editing===false" class="skillValue" ng-click="skill.editing=!skill.editing; setSkillFocus(skill.name)">{{skill.value}}</span></h4>
+          </td>
+        </tr>
+      </table>
+    </form>
+  </span>
+
 </script>
 
       </html>
