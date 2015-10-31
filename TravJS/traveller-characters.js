@@ -5,7 +5,7 @@ charModule.controller('charactersController', ['$scope', 'charactersService', fu
 
    $scope.setSkillFocus = function(name)
    {
-      window.setTimeout(function() {document.getElementById(name).focus()}, 0);
+      window.setTimeout(function() {document.getElementById(name).focus()}, 50);
    };
 
    $scope.selectCharacter = function(id)

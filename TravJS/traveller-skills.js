@@ -49,6 +49,14 @@ skillsModule.factory('skills', [function() {
       
       var _toggleChildSkill = function() {};
 
+      var _showValueParentSkill = function() {
+         return false;
+      };
+      
+      var _showValuePlainOrChildSkill = function() {
+         return this.hasBeenLearned;
+      };
+      
       this.fullList = [
          { name:"Admin",                                                       specialties:[] },
          { name:"Advocate",                                                    specialties:[] },
@@ -173,22 +181,44 @@ skillsModule.factory('skills', [function() {
       for (var i = 0, len = this.fullList.length; i < len; i++)
       {
          _skillLookup[this.fullList[i].name] = this.fullList[i];
+
          this.fullList[i].displayMe = _displayMe;
+
+         this.fullList[i].editing = false;
+
+         this.fullList[i].editingInProgress = function() {
+            return this.editing;
+         };
+         this.fullList[i].startEditing = function() {
+            this.backupValue = this.value;
+            this.editing = true;
+         };
+         this.fullList[i].stopEditing = function() {
+            if (this.value === undefined)
+            {
+               this.value = this.backupValue;
+            }
+            this.editing = false;
+         };
+
          if (this.fullList[i].parent) //child skill
          {
             this.fullList[i].toggleMe = _toggleChildSkill;
             this.fullList[i].isSpecialty = true;
+            this.fullList[i].showValue = _showValuePlainOrChildSkill;
          }
          else if (   this.fullList[i].specialties
                   && this.fullList[i].specialties.length > 0) //parent skill
          {
             this.fullList[i].toggleMe = _toggleParentSkill;
             this.fullList[i].isSpecialty = false;
+            this.fullList[i].showValue = _showValueParentSkill;
          }
          else //neither parent nor child
          {
             this.fullList[i].toggleMe = _togglePlainSkill;
             this.fullList[i].isSpecialty = false;
+            this.fullList[i].showValue = _showValuePlainOrChildSkill;
          }
       };
    };
