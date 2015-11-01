@@ -1,7 +1,7 @@
 
 
-    <!doctype html>
-    <html ng-app="TravApp">
+    <!DOCTYPE html>
+    <html ng-app="TravApp" lang="en">
       <head>
       <!--angular-->
         <script src="lib/angular.js"></script>
@@ -22,6 +22,7 @@
       </head>
       <body style="margin-left:8px">
       <section>
+      <div class="container"> <!-- Main bootstrap container-->
       	<ul class="nav nav-pills">
       	<li> <a href="#/roll">Roll Test</a> </li> 
         <li> <a href="#/characters">Character Test</a></li>
@@ -31,6 +32,7 @@
      
         <br><br>
          <div ng-view></div>
+      </div> <!--Main bootstrap container-->
       </body>
       
 <!----------------------------------Ship Manager View-------------------------->
@@ -185,14 +187,14 @@ input[type="number"].skillValueInput {
   <h2>Roll</h2>
         <div>
         	
-        	<form ng-submit="roller.roll()">
-            	<input type="text" ng-model="roller.numdice" size="1" placeholder="Count">
-            	d<input type="text" ng-model="roller.sides" size="1" placeholder="Sides">
-            	<input class="btn-primary" type="submit" value="Roll">
+        	<form ng-submit="roller.roll()" class="form-inline">
+            	<input type="text"  class="form-control" ng-model="roller.numdice" size="1" placeholder="Count">
+            	d<input type="text" class="form-control" ng-model="roller.sides" size="1" placeholder="Sides">
+            	<input class="btn btn-default btn-primary" type="submit" value="Roll">
           	</form>
           	
           	<form ng-submit="roller.d66()">
-          	<input class="btn-primary" type="submit" value="d66">
+          	<input class="btn btn-default btn-primary" type="submit" value="d66">
           	</form>
           	
           	<span>Total: {{roller.result.total}}</span>
@@ -206,30 +208,31 @@ input[type="number"].skillValueInput {
         </ul> 
         
         <h2>Throw/Check</h2>
-        <ul class="list-group">
-            <li class="list-group-item" ng-repeat="dm in roller.dms">
-              <input type="checkbox" ng-model="dm.include">
-              <span class="done-{{!dm.include}}">{{dm.desc}} : {{dm.value}}</span>
-            </li>
-          </ul>
-          <form ng-submit="roller.addDM()">
-            <input type="text" ng-model="roller.dmtext"  size="30"
+        <Table class="table table-condensed">
+            <tr ng-repeat="dm in roller.dms" {{dm.include?'':'disabled'}}>
+              <td><input type="checkbox" ng-model="dm.include"></td>
+              <td><span>{{dm.desc}}</span></td>
+              <td class="{{dm.value>=0?'info':'warning'}}"><span class="">{{dm.value}}</span></td>
+            </tr>
+          </table>
+          <form ng-submit="roller.addDM()" class="form-inline">
+            <input type="text"  ng-model="roller.dmtext"  size="30" class="form-control"
                    placeholder="add new DM description">
-            <input type="number" ng-model="roller.dmvalue"  size="3"
+            <input type="number" class="sr" ng-model="roller.dmvalue"  size="3" class="form-control"
                    placeholder="0">
-            <input class="btn-primary" type="submit" value="add">
+            <input class="btn btn-default btn-primary" type="submit" value="add">
           </form>
          	
 
-         <form ng-submit="roller.dicethrow()">
+         <form ng-submit="roller.dicethrow()" class="form-inline">
          
          <!--	<select ng-model="roller.currentdifficulty">
         		<option ng-repeat="option in roller.difficulties" value="{{option.value}}">{{option.name}}</option>
          -->
-        	<select name="mySelect" id="mySelect"
+        	<select name="mySelect" id="mySelect" 
      			 ng-options="option.name for option in roller.difficulties track by option.value"
       			ng-model="roller.currentdifficulty"></select>
-        	<input type="submit" value="Throw">
+        	<input class="btn btn-default btn-primary" type="submit" value="Throw">
          </form>
          Throw Result:
          {{roller.throwresult}}
