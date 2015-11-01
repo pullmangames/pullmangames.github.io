@@ -1,7 +1,7 @@
 rollModule = angular.module('diceRoller', []); //declare the module for dice rolls
 
 
-rollModule.controller('RollController', function() {
+rollModule.controller('RollController', ['charactersService', function(charactersService) {
 		var roller = this;
 		roller.sides=6;
 		roller.numdice=1;
@@ -45,7 +45,7 @@ rollModule.controller('RollController', function() {
 			roller.dms.push({desc: roller.dmtext, value:roller.dmvalue, include:true}); //push new item from form to list
 			roller.dmtext = '';					//clear web form text item
 		};
-});
+}]);
 
 
 
