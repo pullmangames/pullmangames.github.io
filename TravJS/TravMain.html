@@ -82,6 +82,15 @@ input[type="number"].skillValueInput {
    width: 25px;
    border: solid black 1px;
 }
+#financesTable input[type="number"] {
+    width: 100px;
+    padding: 0;
+    margin: 0;
+    text-align: right;
+}
+#financesTable td:nth-child(2) {
+    padding-left: 15px;
+}
 </style>
   <!-- TODO: refactor this page to move logic out of the view, and view out of the model -->
   <ul class="nav nav-tabs">
@@ -150,10 +159,14 @@ input[type="number"].skillValueInput {
     </form>
 
     <form>
-      <h3>Finances</h3>
-      <table>
-        <tr><td><h4>Pension</h4></td><td>Cr. <input type="number" class="moneyInput" step="2000" min="10000"></td></tr>
-      </table>
+        <h3>Finances</h3>
+        <table id="financesTable">
+            <col><col>
+            <tr><td><h4>Pension</h4></td><td>Cr. <input type="number" class="moneyInput" step="2000" min="10000" ng-model="selectedCharacter.pension"></td></tr>
+            <tr><td><h4>Debt</h4></td><td>Cr. <input type="number" class="moneyInput" min="0" ng-model="selectedCharacter.debt"></td></tr>
+            <tr><td><h4>Cash on Hand</h4></td><td>Cr. <input type="number" class="moneyInput" min="0" ng-model="selectedCharacter.cashOnHand"></td></tr>
+            <tr><td><h4>Monthly Ship Payment</h4></td><td>Cr. <input type="number" class="moneyInput" min="0" ng-model="selectedCharacter.monthlyShipPayment"></td></tr>
+        </table>
     </form>
 
   </span>
