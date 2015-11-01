@@ -3,9 +3,9 @@ app = angular.module('TravApp', ['ngRoute', 'travellerCharacters', 'travellerSki
       
 app.config(function ($routeProvider) {
    $routeProvider
-      .when("/roll",       {controller: "RollController as roller",           templateUrl: "roll.html"})
+      .when("/roll",       {controller: "RollController as roller",           templateUrl: "roll.view"})
       .when("/characters", {controller: "charactersController as characters", templateUrl: "characters.view"})
-      .when("/shipManagement", {controller: "shipManagementController as shipMan", templateUrl: "shipMan.html"})
+      .when("/shipManagement", {controller: "shipManagementController as shipMan", templateUrl: "shipMan.view"})
       .otherwise({redirectTo: "/roll"});
 });
 

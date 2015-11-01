@@ -1,13 +1,14 @@
 shipManModule = angular.module('shipManagement', []); //declare the module for handling chracters
       
 shipManModule.controller('shipManagementController', ['$http',function($http) {
-  var shipMan=this;
+  /*var shipMan=this;
   
   shipMan.tradetables=[]
   
   $http.get("/tradetables.json").success(function(data){
   	shipMan.tradetables = data;
   	}) ;
+  	*/
 }]);
 
 //--------------------------------------------------------------------
