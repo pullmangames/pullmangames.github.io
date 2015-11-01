@@ -141,8 +141,8 @@ input[type="number"].skillValueInput {
         <tr ng-repeat="skill in skillList" ng-if="skill.displayMe()" ng-class="{learnedSkill: skill.hasBeenLearned}">
           <td><h4><span ng-class="{specialty:skill.isSpecialty,skill:!skill.isSpecialty}" ng-click="skill.toggleMe()">{{skill.name}}</span></h4></td>
           <td ng-if="skill.showValue()" style="padding-left:10px">
-            <input ng-if="skill.editingInProgress()" class="skillValueInput" id="{{skill.name}}" type="number" min="0" max="20" value="{{skill.value}}" ng-model="skill.value" ng-blur="skill.stopEditing()">
-            <h4><span ng-if="!skill.editingInProgress()" class="skillValue" ng-click="skill.startEditing(); setSkillFocus(skill.name)">{{skill.value}}</span></h4>
+            <input ng-if="skill.editingInProgress()" traveller-autofocus class="skillValueInput" id="{{skill.name}}" type="number" min="0" max="20" value="{{skill.value}}" ng-model="skill.value" ng-blur="skill.stopEditing()">
+            <h4><span ng-if="!skill.editingInProgress()" class="skillValue" ng-click="skill.startEditing()">{{skill.value}}</span></h4>
           </td>
           <td ng-if="!skill.showValue()"></td> <!-- else case for previous ng-if so we still have enough cells on unlearned or parent rows -->
         </tr>

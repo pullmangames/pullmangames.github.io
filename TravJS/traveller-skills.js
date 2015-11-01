@@ -190,11 +190,14 @@ skillsModule.factory('skills', [function() {
             return this.editing;
          };
          this.fullList[i].startEditing = function() {
-            this.backupValue = this.value;
+            if (!(this.value === undefined || this.value === null))
+            {
+               this.backupValue = this.value;
+            }
             this.editing = true;
          };
          this.fullList[i].stopEditing = function() {
-            if (this.value === undefined)
+            if (this.value === undefined || this.value === null)
             {
                this.value = this.backupValue;
             }

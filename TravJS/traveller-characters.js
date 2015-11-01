@@ -3,11 +3,6 @@ charModule = angular.module('travellerCharacters', []); //declare the module for
 charModule.controller('charactersController', ['$scope', 'charactersService', function($scope, charactersService) {
    $scope.characterList = charactersService.characters;
 
-   $scope.setSkillFocus = function(name)
-   {
-      window.setTimeout(function() {document.getElementById(name).focus()}, 50);
-   };
-
    $scope.selectCharacter = function(id)
    {
       $scope.selectedCharacter = $scope.characterList[id];
