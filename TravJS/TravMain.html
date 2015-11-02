@@ -28,11 +28,11 @@
         <li> <a href="#/characters">Character Test</a></li>
         <li> <a href="#/shipManagement">Ship Management</a></li>
         </ul>
+      </div>
       </section>
      
         <br><br>
          <div ng-view></div>
-      </div> <!--Main bootstrap container-->
       </body>
       
 <!----------------------------------Ship Manager View-------------------------->
@@ -48,14 +48,6 @@
 <style type="text/css">
 h3 {
    background:lightsteelblue;
-   padding: 0;
-   margin: 0;
-   vertical-align: middle;
-}
-input[type="number"].skillValueInput {
-   width: 35px;
-   padding: 0;
-   margin: 0;
 }
 .deleteButton {
    padding: 3px;
@@ -68,19 +60,9 @@ input[type="number"].skillValueInput {
 .bgDimGray {
    background-color: DimGray;
 }
-.specialty {
-   padding-left: 15px;
-   cursor: default;
-}
-.skill {
-   cursor: pointer;
-}
-.skillValue {
-   cursor: pointer;
-   padding-right: 10px;
-}
-.learnedSkill {
-   background: LightGray;
+#identityTable td:nth-child(1), #armorTable td:nth-child(1), #skillsTable td:nth-child(1), #financesTable td:nth-child(1) {
+    padding-right: 15px;
+    font-weight: bold;
 }
 #characteristicsTable col:nth-child(2),col:nth-child(6n+5),col:nth-child(6n+6),col:nth-child(6n+7) {
    background: LightGray;
@@ -89,14 +71,30 @@ input[type="number"].skillValueInput {
    width: 25px;
    border: solid black 1px;
 }
+.skill {
+   cursor: pointer;
+}
+.specialty {
+    padding-left: 15px;
+    cursor: default;
+}
+.learnedSkill {
+   background: LightGray;
+}
+.skillValue {
+   cursor: pointer;
+   padding-right: 10px;
+}
+input[type="number"].skillValueInput {
+   width: 35px;
+   padding: 0;
+   margin: 0;
+}
 #financesTable input[type="number"] {
     width: 100px;
     padding: 0;
     margin: 0;
     text-align: right;
-}
-#financesTable td:nth-child(2) {
-    padding-left: 15px;
 }
 </style>
   <!-- TODO: refactor this page to move logic out of the view, and view out of the model -->
@@ -110,42 +108,44 @@ input[type="number"].skillValueInput {
   
     <form>
       <h3>Identity</h3>
-      <span class="deleteButton" ng-click="deleteCharacter(selectedCharacter.id)"><h4>DELETE</h4></span>
-      <table>
-        <tr><td><h4>Name</h4></td><td><input ng-model="selectedCharacter.name"></td></tr>
-        <tr><td><h4>Age</h4></td><td><input ng-model="selectedCharacter.age"></td></tr>
-        <tr><td><h4>Homeworld</h4></td><td><input ng-model="selectedCharacter.homeworld"></td></tr>
-        <tr><td><h4>Race</h4></td><td><input ng-model="selectedCharacter.race"></td></tr>
-        <tr><td><h4>Racial Traits</h4></td><td><input ng-model="selectedCharacter.racialTraits"></td></tr>
+      <span class="deleteButton" ng-click="deleteCharacter(selectedCharacter.id)" style="font-weight:bold">DELETE</span>
+      <table id="identityTable">
+        <tr><td>Name</td><td><input ng-model="selectedCharacter.name"></td></tr>
+        <tr><td>Age</td><td><input ng-model="selectedCharacter.age"></td></tr>
+        <tr><td>Homeworld</td><td><input ng-model="selectedCharacter.homeworld"></td></tr>
+        <tr><td>Race</td><td><input ng-model="selectedCharacter.race"></td></tr>
+        <tr><td>Racial Traits</td><td><input ng-model="selectedCharacter.racialTraits"></td></tr>
       </table>
     </form>
 
     <h3>Characteristics</h3>
     Click on a box to set the characteristic score
     <table id="characteristicsTable">
-      <col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col>
-      <tr align=center>
-        <td align=right>Modifier</td>
-        <td>-3</td><td colspan=2>-2</td><td colspan=3>-1</td><td colspan=3>+0</td><td colspan=3>+1</td><td colspan=3>+2</td>
-        <td>+3</td>
-      </tr>
-      <tr align=center>
-        <td align=right>Score</td>
-        <td ng-repeat='val in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]'>{{val}}</td>
-      </tr>
-      <tr align=center ng-repeat='stat in ["Str","Dex","End","Int","Edu","Soc"]'>
-        <td align=right>{{stat}}</td>
-        <td ng-repeat='val in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]' style="cursor:pointer" ng-click="selectedCharacter[stat]=val" ng-class="{bgDimGray: selectedCharacter[stat]>=val}"></td>
-      </tr>
+        <colgroup>
+            <col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col>
+        </colgroup>
+        <tr align=center>
+            <td align=right>Modifier</td>
+            <td>-3</td><td colspan=2>-2</td><td colspan=3>-1</td><td colspan=3>+0</td><td colspan=3>+1</td><td colspan=3>+2</td>
+            <td>+3</td>
+        </tr>
+        <tr align=center>
+            <td align=right>Score</td>
+            <td ng-repeat='val in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]'>{{val}}</td>
+        </tr>
+        <tr align=center ng-repeat='stat in ["Str","Dex","End","Int","Edu","Soc"]'>
+            <td align=right>{{stat}}</td>
+            <td ng-repeat='val in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]' style="cursor:pointer" ng-click="selectedCharacter[stat]=val" ng-class="{bgDimGray: selectedCharacter[stat]>=val}"></td>
+        </tr>
     </table>
   
     <br>
     <form>
       <h3>Armour</h3>
-      <table>
-        <tr><td><h4>Type</h4></td><td><input ng-model="selectedCharacter.armourType"></td></tr>
-        <tr><td><h4>Rating</h4></td><td><input ng-model="selectedCharacter.armourRating"></td></tr>
-        <tr><td><h4>Special Notes</h4></td><td><input ng-model="selectedCharacter.armourSpecialNotes"></td></tr>
+      <table id="armorTable">
+        <tr><td>Type</td><td><input ng-model="selectedCharacter.armourType"></td></tr>
+        <tr><td>Rating</td><td><input ng-model="selectedCharacter.armourRating"></td></tr>
+        <tr><td>Special Notes</td><td><input ng-model="selectedCharacter.armourSpecialNotes"></td></tr>
       </table>
     </form>
 
@@ -153,12 +153,12 @@ input[type="number"].skillValueInput {
     <form>
       <h3>Skills</h3>
       Click on a skill to learn/forget it. Click on the skill level to change it.
-      <table>
+      <table id="skillsTable">
         <tr ng-repeat="skill in skillList" ng-if="skill.displayMe()" ng-class="{learnedSkill: skill.hasBeenLearned}">
-          <td><h4><span ng-class="{specialty:skill.isSpecialty,skill:!skill.isSpecialty}" ng-click="skill.toggleMe()">{{skill.name}}</span></h4></td>
-          <td ng-if="skill.showValue()" style="padding-left:10px">
+          <td><span ng-class="{specialty:skill.isSpecialty,skill:!skill.isSpecialty}" ng-click="skill.toggleMe()">{{skill.name}}</span></td>
+          <td ng-if="skill.showValue()">
             <input ng-if="skill.editingInProgress()" traveller-autofocus class="skillValueInput" id="{{skill.name}}" type="number" min="0" max="20" value="{{skill.value}}" ng-model="skill.value" ng-blur="skill.stopEditing()">
-            <h4><span ng-if="!skill.editingInProgress()" class="skillValue" ng-click="skill.startEditing()">{{skill.value}}</span></h4>
+            <span ng-if="!skill.editingInProgress()" class="skillValue" ng-click="skill.startEditing()" style="font-weight:bold">{{skill.value}}</span>
           </td>
           <td ng-if="!skill.showValue()"></td> <!-- else case for previous ng-if so we still have enough cells on unlearned or parent rows -->
         </tr>
@@ -169,10 +169,10 @@ input[type="number"].skillValueInput {
         <h3>Finances</h3>
         <table id="financesTable">
             <col><col>
-            <tr><td><h4>Pension</h4></td><td>Cr. <input type="number" class="moneyInput" step="2000" min="10000" ng-model="selectedCharacter.pension"></td></tr>
-            <tr><td><h4>Debt</h4></td><td>Cr. <input type="number" class="moneyInput" min="0" ng-model="selectedCharacter.debt"></td></tr>
-            <tr><td><h4>Cash on Hand</h4></td><td>Cr. <input type="number" class="moneyInput" min="0" ng-model="selectedCharacter.cashOnHand"></td></tr>
-            <tr><td><h4>Monthly Ship Payment</h4></td><td>Cr. <input type="number" class="moneyInput" min="0" ng-model="selectedCharacter.monthlyShipPayment"></td></tr>
+            <tr><td>Pension</td><td>Cr. <input type="number" class="moneyInput" step="2000" min="10000" ng-model="selectedCharacter.pension"></td></tr>
+            <tr><td>Debt</td><td>Cr. <input type="number" class="moneyInput" min="0" ng-model="selectedCharacter.debt"></td></tr>
+            <tr><td>Cash on Hand</td><td>Cr. <input type="number" class="moneyInput" min="0" ng-model="selectedCharacter.cashOnHand"></td></tr>
+            <tr><td>Monthly Ship Payment</td><td>Cr. <input type="number" class="moneyInput" min="0" ng-model="selectedCharacter.monthlyShipPayment"></td></tr>
         </table>
     </form>
 
