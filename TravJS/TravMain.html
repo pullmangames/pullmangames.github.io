@@ -40,7 +40,7 @@
 <script type="text/ng-template" id="shipMan.view">
 
 	<h2>Ship Management</h2>
-	
+	Not implemented yet
 </script>
 
 <!------------------------------ Character view ------------------------------->
@@ -234,8 +234,18 @@ input[type="number"].skillValueInput {
       			ng-model="roller.currentdifficulty"></select>
         	<input class="btn btn-default btn-primary" type="submit" value="Throw">
          </form>
-         Throw Result:
-         {{roller.throwresult}}
+         <form ng-submit="roller.clearThrows()" class="form-inline">
+          	<input class="btn btn-default btn-primary" type="submit" value="Clear Throws">
+          	</form>
+         Throw Result: 
+         <ol class="list-group">
+         	<li class="list-group-item" ng-repeat="throwresult in roller.throwresults">
+         	<button type="button" class="btn btn-{{throwresult.color}}" data-placement="top-right" title="{{throwresult.desc}}" 
+         	data-content="{{throwresult.effect}}" data-trigger="focus" bs-popover>{{throwresult.desc}}<br>
+  <small>Timing:{{throwresult.timing}}</small>
+</button>
+         	</li>
+         </ol>
         </div>
 </script>        
 

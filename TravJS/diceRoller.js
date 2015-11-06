@@ -20,6 +20,9 @@ rollModule.controller('RollController', ['charactersService', function(character
 							{name: "very difficult" ,value: -4},
 							{name: "formidable" ,value:  -6}
 							]
+		roller.throwresults=[]//holds previous dice rolls
+		
+		
 		
 		roller.roll = function() {
 			roller.result=rawroll(roller.numdice, roller.sides);
@@ -38,17 +41,26 @@ rollModule.controller('RollController', ['charactersService', function(character
 			});		
 			
 			roller.throwresult=dicethrow(roller.currentdifficulty.value, dmvalues);
+			roller.throwresult.desc=""+PASS_STRINGS[roller.throwresult.pass]+": "+MAGNITUDE_STRINGS[roller.throwresult.magnitude];
+			roller.throwresult.color=RESULT_COLORS[roller.throwresult.pass][roller.throwresult.magnitude]
+			roller.throwresults.unshift(roller.throwresult);
 			
 		};
 		
+		//create a new dice modifier type and add it to the list
 		roller.addDM = function() {    	
 			roller.dms.push({desc: roller.dmtext, value:roller.dmvalue, include:true}); //push new item from form to list
 			roller.dmtext = '';					//clear web form text item
 		};
+		
+		//clear list of previous throws
+		roller.clearThrows = function() {
+			roller.throwresults=[];
+			};
 }]);
 
 
-
+//------------------Raw JS (no Angular junk) below this line ----------------
 function rawroll(numdice, sides){	
 		var rollresult = { total:0, rolls:[] }
 	
@@ -81,19 +93,41 @@ function dicethrow(difficulty, DMs){
 	rollresult.effect = rollresult.total+difficulty+dmtotal-8;
 	
 	//sure would be nice if I could use an object and a loop for the below
-	if (rollresult.effect <= -6) rollresult.desc="Exceptional Failure";
-	if (rollresult.effect >-6 && rollresult.effect <= -2) rollresult.desc="Average Failure";
-	if (rollresult.effect ==-1) rollresult.desc="Marginal Failure";
-	if (rollresult.effect ==0)  rollresult.desc="Marginal Success";
-	if (rollresult.effect >=1 && rollresult.effect <= 5) rollresult.desc="Average Success";
-	if (rollresult.effect >= 6) rollresult.desc="Exceptional Success";
+	/*
+	if (rollresult.effect <= -6) rollresult.desc="Failure: Exceptional";
+	if (rollresult.effect >-6 && rollresult.effect <= -2) rollresult.desc="Failure: Average";
+	if (rollresult.effect ==-1) rollresult.desc="Failure: Marginal";
+	if (rollresult.effect ==0)  rollresult.desc="Success: Marginal";
+	if (rollresult.effect >=1 && rollresult.effect <= 5) rollresult.desc="Success: Average";
+	if (rollresult.effect >= 6) rollresult.desc="Success: Exceptional";
+	*/
+	if (rollresult.effect <= -6) 							{rollresult.pass=P_FAILURE; rollresult.magnitude=M_EXCEPTIONAL;}
+	if (rollresult.effect >-6 && rollresult.effect <= -2) 	{rollresult.pass=P_FAILURE; rollresult.magnitude=M_AVERAGE;}
+	if (rollresult.effect ==-1) 							{rollresult.pass=P_FAILURE; rollresult.magnitude=M_MARGINAL;}
+	if (rollresult.effect ==0)  							{rollresult.pass=P_SUCCESS; rollresult.magnitude=M_MARGINAL;}
+	if (rollresult.effect >=1 && rollresult.effect <= 5) 	{rollresult.pass=P_SUCCESS; rollresult.magnitude=M_AVERAGE;}
+	if (rollresult.effect >= 6) 							{rollresult.pass=P_SUCCESS; rollresult.magnitude=M_EXCEPTIONAL;}
 	
 	rollresult.timing=rawroll(1,6).total;
 	return rollresult;
 	
 	}	
 
+//------------------Constants and such below this line ----------------
 
+const P_FAILURE=0;
+const P_SUCCESS=1;
+
+const M_MARGINAL=0;
+const M_AVERAGE=1;
+const M_EXCEPTIONAL=2;
+
+const PASS_STRINGS=["Failure", "Success"];
+const MAGNITUDE_STRINGS=["Marginal", "Average", "Exceptional"]
+
+const RESULT_COLORS = [["warning", "danger", "danger"],['info','primary','success']]
+
+/* --not in use?
 const SIMPLE = 6;
 const EASY = 4;
 const ROUTINE = 2;
@@ -110,3 +144,4 @@ var diff = {	simple:6,
 				verydifficult:-4,
 				formidable: -6
 			}
+*/
