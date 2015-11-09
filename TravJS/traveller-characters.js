@@ -7,6 +7,28 @@ charModule.controller('charactersController', ['$scope', 'charactersService', fu
    {
       $scope.selectedCharacter = $scope.characterList[id];
       $scope.skillList = $scope.selectedCharacter.skills.fullList;
+      var len = $scope.characterList.length;
+      for (var i = 0; i < len; i++)
+      {
+         if (i === id)
+         {
+            $scope.characterList[i].active = true;
+         }
+         else
+         {
+            $scope.characterList[i].active = false;
+         }
+      }
+      
+   }
+   
+   $scope.exportAll = function()
+   {
+      var len = $scope.characterList.length;
+      for (var i = 0; i < len; i++)
+      {
+         $scope.characterList[i].exportToJson();
+      }
    }
    
    $scope.addCharacter = function()
@@ -34,6 +56,17 @@ charModule.controller('charactersController', ['$scope', 'charactersService', fu
 charModule.factory('character', ['skills', function(skills) {
    var character = function() {
       this.skills = new skills();
+      this.exportToJson = function()
+      {
+         var jsonified = angular.toJson(this, 3);
+         var element = document.createElement('a');
+         element.setAttribute('href', 'data:application/json,' + encodeURIComponent(jsonified));
+         element.setAttribute('download', this.name + '.json');
+         element.style.display = 'none';
+         document.body.appendChild(element);
+         element.click();
+         document.body.removeChild(element);
+      }
    };
    return character;
 }]);
