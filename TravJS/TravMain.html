@@ -1,212 +1,222 @@
-
-
-    <!DOCTYPE html>
-    <html ng-app="TravApp" lang="en">
-      <head>
-      <!--angular-->
-        <script src="lib/angular.js"></script>
-        <script src="lib/angular-route.js"></script>
-      <!--angular-strap-->
-    	<script src="lib/angular-animate/angular-animate.js"></script>
-    	<script src="lib/angular-strap/angular-strap.min.js"></script>
-    	<script src="lib/angular-strap/angular-strap.tpl.min.js"></script>
-	  <!--Stuff we wrote-->
-        <script src="travmain.js"></script>
-        <script src="traveller-characters.js"></script>
-        <script src="traveller-skills.js"></script>
-        <script src="diceRoller.js"></script>
-        <script src="ship-management.js"></script>
-        <link rel="stylesheet" href="travmain.css">
-      <!--Bootstrap-->
-   		<link href="lib/bootstrap.css" rel="stylesheet">
-      </head>
-      <body style="margin-left:8px">
-      <section>
+<!DOCTYPE html>
+<html ng-app="TravApp" lang="en">
+  <head>
+    <!--angular-->
+    <script src="lib/angular.js"></script>
+    <script src="lib/angular-route.js"></script>
+    <!--ui bootstrap-->
+    <script src="lib/ui-bootstrap-tpls-0.14.3.js"></script>
+    <!--Bootstrap-->
+    <link href="lib/bootstrap.css" rel="stylesheet">
+    <!--Stuff we wrote-->
+    <script src="travmain.js"></script>
+    <script src="traveller-characters.js"></script>
+    <script src="traveller-skills.js"></script>
+    <script src="diceRoller.js"></script>
+    <script src="ship-management.js"></script>
+    <link rel="stylesheet" href="travmain.css">
+  </head>
+  <body style="margin-left:8px">
+    <section>
       <div class="container"> <!-- Main bootstrap container-->
-      	<ul class="nav nav-pills">
-      	<li> <a href="#/roll">Roll Test</a> </li> 
-        <li> <a href="#/characters">Character Test</a></li>
-        <li> <a href="#/shipManagement">Ship Management</a></li>
+        <ul class="nav nav-pills">
+          <li> <a href="#/roll">Roll Test</a> </li>
+          <li> <a href="#/characters">Character Test</a></li>
+          <li> <a href="#/shipManagement">Ship Management</a></li>
         </ul>
       </div>
-      </section>
-     
-        <br><br>
-         <div ng-view></div>
-      </body>
-      
+    </section>
+    <div ng-view></div>
+  </body>
+
 <!----------------------------------Ship Manager View-------------------------->
-
-<script type="text/ng-template" id="shipMan.view">
-
-	<h2>Ship Management</h2>
-	Not implemented yet
-</script>
+  <script type="text/ng-template" id="shipMan.view">
+    <br><br>
+    <h2>Ship Management</h2>
+    Not implemented yet
+  </script>
 
 <!------------------------------ Character view ------------------------------->
-<script type="text/ng-template" id="characters.view">
-<style type="text/css">
-h3 {
-   background:lightsteelblue;
-}
-.deleteButton {
-   padding: 3px;
-   border: solid 3px black;
-   background: red;
-   color: white;
-   float: right;
-   cursor: pointer
-}
-.bgDimGray {
-   background-color: DimGray;
-}
-#identityTable td:nth-child(1), #armorTable td:nth-child(1), #skillsTable td:nth-child(1), #financesTable td:nth-child(1) {
-    padding-right: 15px;
-    font-weight: bold;
-}
-#characteristicsTable col:nth-child(2),col:nth-child(6n+5),col:nth-child(6n+6),col:nth-child(6n+7) {
-   background: LightGray;
-}
-#characteristicsTable td {
-   width: 25px;
-   border: solid black 1px;
-}
-.skill {
-   cursor: pointer;
-}
-.specialty {
-    padding-left: 15px;
-    cursor: default;
-}
-.learnedSkill {
-   background: LightGray;
-}
-.skillValue {
-   cursor: pointer;
-   padding-right: 10px;
-}
-input[type="number"].skillValueInput {
-   width: 35px;
-   padding: 0;
-   margin: 0;
-}
-#financesTable input[type="number"] {
-    width: 100px;
-    padding: 0;
-    margin: 0;
-    text-align: right;
-}
-</style>
-  <!-- TODO: refactor this page to move logic out of the view, and view out of the model -->
-  <ul class="nav nav-tabs">
-    <li ng-repeat="character in characterList" ng-class="{active: isActive(character.id)}" ng-click="selectCharacter(character.id)"><a style="cursor:default">{{character.name}}</a></li>
-    <li><a style="cursor:pointer" ng-click="addCharacter()">Create New Character</a></li>
-  </ul>
+  <script type="text/ng-template" id="characters.view">
+    <style type="text/css">
+      h3 {
+         background:lightsteelblue;
+      }
+      .deleteButton {
+         padding: 3px;
+         border: solid 3px black;
+         background: red;
+         color: white;
+         float: right;
+         cursor: pointer
+      }
+      .bgDimGray {
+         background-color: DimGray;
+      }
+      #identityTable td:nth-child(1), #armorTable td:nth-child(1), #skillsTable td:nth-child(1), #financesTable td:nth-child(1) {
+          padding-right: 15px;
+          font-weight: bold;
+      }
+      #characteristicsTable col:nth-child(2),col:nth-child(6n+5),col:nth-child(6n+6),col:nth-child(6n+7) {
+         background: LightGray;
+      }
+      #characteristicsTable td {
+         width: 25px;
+         border: solid black 1px;
+      }
+      .skill {
+         cursor: pointer;
+      }
+      .specialty {
+          padding-left: 15px;
+          cursor: default;
+      }
+      .learnedSkill {
+         background: LightGray;
+      }
+      .skillValue {
+         cursor: pointer;
+         padding-right: 10px;
+      }
+      input[type="number"].skillValueInput {
+         width: 35px;
+         padding: 0;
+         margin: 0;
+      }
+      #financesTable input[type="number"] {
+          width: 100px;
+          padding: 0;
+          margin: 0;
+          text-align: right;
+      }
+    </style>
 
-  <span ng-if="characterList.length > 0"> <!-- Hide the character display if no characters exist -->
+    <!-- TODO: refactor this page to move logic out of the view, and view out of the model -->
+    <div class="btn-group" uib-dropdown style="float:right">
+      <button id="charMgmtButton" type="button" class="btn btn-primary" uib-dropdown-toggle>Character Management<span class="caret"></span></button>
+      <ul class="uib-dropdown-menu" role="menu" aria-labelledby="charMgmtButton">
+        <li><a style="cursor:default" ng-click="addCharacter()">Create New</a></li>
+        <li><a style="cursor:default" ng-click="exportAll()">Export All</a></li>
+      </ul>
+    </div>
 
-  
-    <form>
-      <h3>Identity</h3>
-      <span class="deleteButton" ng-click="deleteCharacter(selectedCharacter.id)" style="font-weight:bold">DELETE</span>
-      <table id="identityTable">
-        <tr><td>Name</td><td><input ng-model="selectedCharacter.name"></td></tr>
-        <tr><td>Age</td><td><input ng-model="selectedCharacter.age"></td></tr>
-        <tr><td>Homeworld</td><td><input ng-model="selectedCharacter.homeworld"></td></tr>
-        <tr><td>Race</td><td><input ng-model="selectedCharacter.race"></td></tr>
-        <tr><td>Racial Traits</td><td><input ng-model="selectedCharacter.racialTraits"></td></tr>
-      </table>
-    </form>
+    <br><br>
+    
+    <!-- TODO: Make sure the active tab lines up with the displayed character - deleting throws them off -->
+    <uib-tabset>
+      <uib-tab ng-repeat="character in characterList" heading="{{character.name}}" active="character.active" ng-click="selectCharacter(character.id)"></uib-tab>
+    </uib-tabset>
 
-    <h3>Characteristics</h3>
-    Click on a box to set the characteristic score
-    <table id="characteristicsTable">
-        <colgroup>
-            <col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col>
-        </colgroup>
-        <tr align=center>
-            <td align=right>Modifier</td>
-            <td>-3</td><td colspan=2>-2</td><td colspan=3>-1</td><td colspan=3>+0</td><td colspan=3>+1</td><td colspan=3>+2</td>
-            <td>+3</td>
-        </tr>
-        <tr align=center>
-            <td align=right>Score</td>
-            <td ng-repeat='val in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]'>{{val}}</td>
-        </tr>
-        <tr align=center ng-repeat='stat in ["Str","Dex","End","Int","Edu","Soc"]'>
-            <td align=right>{{stat}}</td>
-            <td ng-repeat='val in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]' style="cursor:pointer" ng-click="selectedCharacter[stat]=val" ng-class="{bgDimGray: selectedCharacter[stat]>=val}"></td>
-        </tr>
-    </table>
-  
-    <br>
-    <form>
-      <h3>Armour</h3>
-      <table id="armorTable">
-        <tr><td>Type</td><td><input ng-model="selectedCharacter.armourType"></td></tr>
-        <tr><td>Rating</td><td><input ng-model="selectedCharacter.armourRating"></td></tr>
-        <tr><td>Special Notes</td><td><input ng-model="selectedCharacter.armourSpecialNotes"></td></tr>
-      </table>
-    </form>
+    <span ng-if="characterList.length > 0"> <!-- Hide the character display if no characters exist -->
 
-  <!-- TODO: make sure skills are always sorted properly (browsers aren't required to follow the order in the array) -->
-    <form>
-      <h3>Skills</h3>
-      Click on a skill to learn/forget it. Click on the skill level to change it.
-      <table id="skillsTable">
-        <tr ng-repeat="skill in skillList" ng-if="skill.displayMe()" ng-class="{learnedSkill: skill.hasBeenLearned}">
-          <td><span ng-class="{specialty:skill.isSpecialty,skill:!skill.isSpecialty}" ng-click="skill.toggleMe()">{{skill.name}}</span></td>
-          <td ng-if="skill.showValue()">
-            <input ng-if="skill.editingInProgress()" traveller-autofocus class="skillValueInput" id="{{skill.name}}" type="number" min="0" max="20" value="{{skill.value}}" ng-model="skill.value" ng-blur="skill.stopEditing()">
-            <span ng-if="!skill.editingInProgress()" class="skillValue" ng-click="skill.startEditing()" style="font-weight:bold">{{skill.value}}</span>
-          </td>
-          <td ng-if="!skill.showValue()"></td> <!-- else case for previous ng-if so we still have enough cells on unlearned or parent rows -->
-        </tr>
-      </table>
-    </form>
-
-    <form>
-        <h3>Finances</h3>
-        <table id="financesTable">
-            <col><col>
-            <tr><td>Pension</td><td>Cr. <input type="number" class="moneyInput" step="2000" min="10000" ng-model="selectedCharacter.pension"></td></tr>
-            <tr><td>Debt</td><td>Cr. <input type="number" class="moneyInput" min="0" ng-model="selectedCharacter.debt"></td></tr>
-            <tr><td>Cash on Hand</td><td>Cr. <input type="number" class="moneyInput" min="0" ng-model="selectedCharacter.cashOnHand"></td></tr>
-            <tr><td>Monthly Ship Payment</td><td>Cr. <input type="number" class="moneyInput" min="0" ng-model="selectedCharacter.monthlyShipPayment"></td></tr>
+      <form>
+        <h3>Identity</h3>
+        <span class="deleteButton" ng-click="deleteCharacter(selectedCharacter.id)" style="font-weight:bold">DELETE</span>
+        <table id="identityTable">
+          <tr><td>Name</td><td><input ng-model="selectedCharacter.name"></td></tr>
+          <tr><td>Age</td><td><input ng-model="selectedCharacter.age"></td></tr>
+          <tr><td>Homeworld</td><td><input ng-model="selectedCharacter.homeworld"></td></tr>
+          <tr><td>Race</td><td><input ng-model="selectedCharacter.race"></td></tr>
+          <tr><td>Racial Traits</td><td><input ng-model="selectedCharacter.racialTraits"></td></tr>
         </table>
-    </form>
+      </form>
 
-  </span>
+      <h3>Characteristics</h3>
+      Click on a box to set the characteristic score
+      <table id="characteristicsTable">
+          <colgroup>
+              <col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col>
+          </colgroup>
+          <tr align=center>
+              <td align=right>Modifier</td>
+              <td>-3</td><td colspan=2>-2</td><td colspan=3>-1</td><td colspan=3>+0</td><td colspan=3>+1</td><td colspan=3>+2</td>
+              <td>+3</td>
+          </tr>
+          <tr align=center>
+              <td align=right>Score</td>
+              <td ng-repeat='val in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]'>{{val}}</td>
+          </tr>
+          <tr align=center ng-repeat='stat in ["Str","Dex","End","Int","Edu","Soc"]'>
+              <td align=right>{{stat}}</td>
+              <td ng-repeat='val in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]' style="cursor:pointer" ng-click="selectedCharacter[stat]=val" ng-class="{bgDimGray: selectedCharacter[stat]>=val}"></td>
+          </tr>
+      </table>
 
-</script>
+      <br>
+      <form>
+        <h3>Armour</h3>
+        <table id="armorTable">
+          <tr><td>Type</td><td><input ng-model="selectedCharacter.armourType"></td></tr>
+          <tr><td>Rating</td><td><input ng-model="selectedCharacter.armourRating"></td></tr>
+          <tr><td>Special Notes</td><td><input ng-model="selectedCharacter.armourSpecialNotes"></td></tr>
+        </table>
+      </form>
+
+    <!-- TODO: make sure skills are always sorted properly (browsers aren't required to follow the order in the array) -->
+      <form>
+        <h3>Skills</h3>
+        Click on a skill to learn/forget it. Click on the skill level to change it.
+        <table id="skillsTable">
+          <tr ng-repeat="skill in skillList" ng-if="skill.displayMe()" ng-class="{learnedSkill: skill.hasBeenLearned}">
+            <td><span ng-class="{specialty:skill.isSpecialty,skill:!skill.isSpecialty}" ng-click="skill.toggleMe()">{{skill.name}}</span></td>
+            <td ng-if="skill.showValue()">
+              <input ng-if="skill.editingInProgress()" traveller-autofocus class="skillValueInput" id="{{skill.name}}" type="number" min="0" max="20" value="{{skill.value}}" ng-model="skill.value" ng-blur="skill.stopEditing()">
+              <span ng-if="!skill.editingInProgress()" class="skillValue" ng-click="skill.startEditing()" style="font-weight:bold">{{skill.value}}</span>
+            </td>
+            <td ng-if="!skill.showValue()"></td> <!-- else case for previous ng-if so we still have enough cells on unlearned or parent rows -->
+          </tr>
+        </table>
+      </form>
+
+      <form>
+          <h3>Finances</h3>
+          <table id="financesTable">
+              <col><col>
+              <tr><td>Pension</td><td>Cr. <input type="number" class="moneyInput" step="2000" min="10000" ng-model="selectedCharacter.pension"></td></tr>
+              <tr><td>Debt</td><td>Cr. <input type="number" class="moneyInput" min="0" ng-model="selectedCharacter.debt"></td></tr>
+              <tr><td>Cash on Hand</td><td>Cr. <input type="number" class="moneyInput" min="0" ng-model="selectedCharacter.cashOnHand"></td></tr>
+              <tr><td>Monthly Ship Payment</td><td>Cr. <input type="number" class="moneyInput" min="0" ng-model="selectedCharacter.monthlyShipPayment"></td></tr>
+          </table>
+      </form>
+
+      <form>
+        <h3>Equipment<h3>
+        <table id="equipmentTable">
+        </table>
+      </form>
+
+    </span>
+
+  </script>
 
 
 <!----------------------------------Roller View-------------------------->
 
 <script type="text/ng-template" id="roll.view">
+  <br><br>
   <h2>Roll</h2>
         <div>
-        	
-        	<form ng-submit="roller.roll()" class="form-inline">
-            	<input type="text"  class="form-control" ng-model="roller.numdice" size="1" placeholder="Count">
-            	d<input type="text" class="form-control" ng-model="roller.sides" size="1" placeholder="Sides">
-            	<input class="btn btn-default btn-primary" type="submit" value="Roll">
-          	</form>
-          	
-          	<form ng-submit="roller.d66()">
-          	<input class="btn btn-default btn-primary" type="submit" value="d66">
-          	</form>
-          	
-          	<span>Total: {{roller.result.total}}</span>
-          	<br>
-        
-        <span>Individual Rolls:</span>  	
+
+         <form ng-submit="roller.roll()" class="form-inline">
+               <input type="text"  class="form-control" ng-model="roller.numdice" size="1" placeholder="Count">
+               d<input type="text" class="form-control" ng-model="roller.sides" size="1" placeholder="Sides">
+               <input class="btn btn-default btn-primary" type="submit" value="Roll">
+            </form>
+
+            <form ng-submit="roller.d66()">
+            <input class="btn btn-default btn-primary" type="submit" value="d66">
+            </form>
+
+            <span>Total: {{roller.result.total}}</span>
+            <br>
+
+        <span>Individual Rolls:</span>
         <ul class="list-group">
-        	<li class="list-group-item" ng-repeat="roll in roller.result.rolls track by $index">
-        	<span> {{roll}} </span>
-        	</li>
-        </ul> 
-        
+         <li class="list-group-item" ng-repeat="roll in roller.result.rolls track by $index">
+         <span> {{roll}} </span>
+         </li>
+        </ul>
+
         <h2>Throw/Check</h2>
         <Table class="table table-condensed">
             <tr ng-repeat="dm in roller.dms" {{dm.include?'':'disabled'}}>
@@ -222,32 +232,32 @@ input[type="number"].skillValueInput {
                    placeholder="0">
             <input class="btn btn-default btn-primary" type="submit" value="add">
           </form>
-         	
+
 
          <form ng-submit="roller.dicethrow()" class="form-inline">
-         
-         <!--	<select ng-model="roller.currentdifficulty">
-        		<option ng-repeat="option in roller.difficulties" value="{{option.value}}">{{option.name}}</option>
+
+         <!--  <select ng-model="roller.currentdifficulty">
+            <option ng-repeat="option in roller.difficulties" value="{{option.value}}">{{option.name}}</option>
          -->
-        	<select name="mySelect" id="mySelect" 
-     			 ng-options="option.name for option in roller.difficulties track by option.value"
-      			ng-model="roller.currentdifficulty"></select>
-        	<input class="btn btn-default btn-primary" type="submit" value="Throw">
+         <select name="mySelect" id="mySelect"
+             ng-options="option.name for option in roller.difficulties track by option.value"
+               ng-model="roller.currentdifficulty"></select>
+         <input class="btn btn-default btn-primary" type="submit" value="Throw">
          </form>
          <form ng-submit="roller.clearThrows()" class="form-inline">
-          	<input class="btn btn-default btn-primary" type="submit" value="Clear Throws">
-          	</form>
-         Throw Result: 
+            <input class="btn btn-default btn-primary" type="submit" value="Clear Throws">
+            </form>
+         Throw Result:
          <ol class="list-group">
-         	<li class="list-group-item" ng-repeat="throwresult in roller.throwresults">
-         	<button type="button" class="btn btn-{{throwresult.color}}" data-placement="top-right" title="{{throwresult.desc}}" 
-         	data-content="{{throwresult.effect}}" data-trigger="focus" bs-popover>{{throwresult.desc}}<br>
+            <li class="list-group-item" ng-repeat="throwresult in roller.throwresults">
+            <button type="button" class="btn btn-{{throwresult.color}}" data-placement="top-right" title="{{throwresult.desc}}"
+            data-content="{{throwresult.effect}}" data-trigger="focus" bs-popover>{{throwresult.desc}}<br>
   <small>Timing:{{throwresult.timing}}</small>
 </button>
-         	</li>
+            </li>
          </ol>
         </div>
-</script>        
+</script>
 
 </html>
 
