@@ -46,7 +46,7 @@ charModule.controller('charactersController', ['$scope', 'charactersService', fu
    $scope.importCharacter = function(inputElementList)
    {
       var inputElement = inputElementList[0];
-      $scope.selectCharacter(charactersService.importCharacter(inputElement.files[0], $scope.selectCharacter));
+      charactersService.importCharacter(inputElement.files[0], $scope.selectCharacter);
       inputElement.value = '';
    }
    
@@ -108,16 +108,19 @@ charModule.service('charactersService', ['$rootScope', 'character', function($ro
    this.importCharacter = function(fileToRead, selectCharacter) {
       var reader = new FileReader();
       var charList = this.characters;
-      //TODO: Put in some error handling here
       reader.onload = function(e) {
          $rootScope.$apply(function() {
-            var newChar = angular.fromJson(e.target.result);
-            //TODO: Skills aren't being restored properly. Might need to build a new skills() based on what we read from the file
-            angular.extend(newChar, new character());
+            var newChar = new character();
+            //TODO: Put in some error handling here
+            var charFromJson = angular.fromJson(e.target.result);
+            //If the order of skills is changed, this won't work. All new skills
+            //must be appended to the end of the skills list.
+            angular.merge(newChar, charFromJson);
             charList.push(newChar);
             _recalcIds(charList);
             selectCharacter(charList.length - 1);
       })};
+      //TODO: Put in some error handling here
       reader.readAsText(fileToRead);
    }
    

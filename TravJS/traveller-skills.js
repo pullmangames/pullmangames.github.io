@@ -57,6 +57,10 @@ skillsModule.factory('skills', [function() {
          return this.hasBeenLearned;
       };
       
+      //If the order of skills is changed, importing a character from a JSON
+      //file will fail. Any new skills must be appended to the end of this list.
+      //If it messes up the order, add a filter to the ng-repeat and sort it all
+      //alphabetically (two tier - parent then the parent's specialties)
       this.fullList = [
          { name:"Admin",                                                       specialties:[] },
          { name:"Advocate",                                                    specialties:[] },
