@@ -84,19 +84,46 @@
          margin: 0;
       }
       #financesTable input[type="number"] {
-          width: 100px;
-          padding: 0;
-          margin: 0;
-          text-align: right;
+         width: 100px;
+         padding: 0;
+         margin: 0;
+         text-align: right;
+      }
+      #charMgmtMenu span {
+         display: block;
+         padding-bottom: 3px;
+         padding-left: 20px;
+         padding-right: 20px;
+         padding-top: 3px;
+         cursor: default;
+      }
+      #charMgmtMenu span:hover {
+         background-color: WhiteSmoke;
+      }
+      .charImporter {
+         position: relative;
+         overflow: hidden;
+      }
+      .charImporter input[type=file] {
+         position: absolute;
+         top: 0;
+         right: 0;
+         min-width: 100%;
+         min-height: 100%;
+         text-align: right;
+         filter: alpha(opacity=0);
+         opacity: 0;
+         outline: none;
       }
     </style>
 
     <!-- TODO: refactor this page to move logic out of the view, and view out of the model -->
     <div class="btn-group" uib-dropdown style="float:right">
       <button id="charMgmtButton" type="button" class="btn btn-primary" uib-dropdown-toggle>Character Management<span class="caret"></span></button>
-      <ul class="uib-dropdown-menu" role="menu" aria-labelledby="charMgmtButton">
-        <li><a style="cursor:default" ng-click="addCharacter()">Create New</a></li>
-        <li><a style="cursor:default" ng-click="exportAll()">Export All</a></li>
+      <ul class="uib-dropdown-menu" role="menu" aria-labelledby="charMgmtButton" id="charMgmtMenu">
+        <li><span ng-click="addCharacter()">Create New</span></li>
+        <li><span class="charImporter">Import<input type="file" onchange="angular.element(this).scope().importCharacter(angular.element(this))"></span></li>
+        <li><span ng-click="exportAll()">Export All</span></li>
       </ul>
     </div>
 
