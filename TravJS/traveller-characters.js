@@ -5,6 +5,13 @@ charModule.controller('charactersController', ['$scope', 'charactersService', fu
 
    $scope.selectCharacter = function(id)
    {
+      if ($scope.characterList.length === 0)
+      {
+         $scope.selectedCharacter = null;
+         $scope.skillList = null;
+         return;
+      }
+
       $scope.selectedCharacter = $scope.characterList[id];
       $scope.skillList = $scope.selectedCharacter.skills.fullList;
       var len = $scope.characterList.length;
@@ -34,6 +41,13 @@ charModule.controller('charactersController', ['$scope', 'charactersService', fu
    $scope.addCharacter = function()
    {
       $scope.selectCharacter(charactersService.addCharacter());
+   }
+   
+   $scope.importCharacter = function(inputElementList)
+   {
+      var inputElement = inputElementList[0];
+      $scope.selectCharacter(charactersService.importCharacter(inputElement.files[0], $scope.selectCharacter));
+      inputElement.value = '';
    }
    
    $scope.deleteCharacter = function(id)
@@ -71,11 +85,10 @@ charModule.factory('character', ['skills', function(skills) {
    return character;
 }]);
 
-charModule.service('charactersService', ['character', function(character) {
+charModule.service('charactersService', ['$rootScope', 'character', function($rootScope, character) {
    this.characters = [];
    _newCharsCreated = 0;
-   _recalcIds = function(arrayToRecalc)
-   {
+   _recalcIds = function(arrayToRecalc) {
       len = arrayToRecalc.length
       for (var i = 0; i < len; i++)
       {
@@ -83,8 +96,7 @@ charModule.service('charactersService', ['character', function(character) {
       }
    };
 
-   this.addCharacter = function()
-   {
+   this.addCharacter = function() {
       var newChar = new character();
       _newCharsCreated++;
       newChar.name = "New Character #" + _newCharsCreated;
@@ -93,8 +105,23 @@ charModule.service('charactersService', ['character', function(character) {
       return id;
    };
    
-   this.deleteCharacter = function(id)
-   {
+   this.importCharacter = function(fileToRead, selectCharacter) {
+      var reader = new FileReader();
+      var charList = this.characters;
+      //TODO: Put in some error handling here
+      reader.onload = function(e) {
+         $rootScope.$apply(function() {
+            var newChar = angular.fromJson(e.target.result);
+            //TODO: Skills aren't being restored properly. Might need to build a new skills() based on what we read from the file
+            angular.extend(newChar, new character());
+            charList.push(newChar);
+            _recalcIds(charList);
+            selectCharacter(charList.length - 1);
+      })};
+      reader.readAsText(fileToRead);
+   }
+   
+   this.deleteCharacter = function(id) {
       this.characters.splice(id, 1);
       _recalcIds(this.characters);
    };
