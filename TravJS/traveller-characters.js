@@ -1,5 +1,5 @@
 charModule = angular.module('travellerCharacters', []); //declare the module for handling chracters
-      
+
 charModule.controller('charactersController', ['$scope', 'charactersService', function($scope, charactersService) {
    $scope.characterList = charactersService.characters;
 
@@ -8,12 +8,12 @@ charModule.controller('charactersController', ['$scope', 'charactersService', fu
       if ($scope.characterList.length === 0)
       {
          $scope.selectedCharacter = null;
-         $scope.skillList = null;
+         $scope.skills = null;
          return;
       }
 
       $scope.selectedCharacter = $scope.characterList[id];
-      $scope.skillList = $scope.selectedCharacter.skills.fullList;
+      $scope.skills = $scope.selectedCharacter.skills;
       var len = $scope.characterList.length;
       for (var i = 0; i < len; i++)
       {
@@ -26,9 +26,8 @@ charModule.controller('charactersController', ['$scope', 'charactersService', fu
             $scope.characterList[i].active = false;
          }
       }
-      
    }
-   
+
    $scope.exportAll = function()
    {
       var len = $scope.characterList.length;
@@ -37,30 +36,30 @@ charModule.controller('charactersController', ['$scope', 'charactersService', fu
          $scope.characterList[i].exportToJson();
       }
    }
-   
+
    $scope.addCharacter = function()
    {
       $scope.selectCharacter(charactersService.addCharacter());
    }
-   
+
    $scope.importCharacter = function(inputElementList)
    {
       var inputElement = inputElementList[0];
       charactersService.importCharacter(inputElement.files[0], $scope.selectCharacter);
       inputElement.value = '';
    }
-   
+
    $scope.deleteCharacter = function(id)
    {
       charactersService.deleteCharacter(id);
       $scope.selectCharacter(0);
    }
-   
+
    $scope.isActive = function(id)
    {
       return (id === $scope.selectedCharacter.id);
    }
-   
+
    if ($scope.characterList.length)
    {
       $scope.selectCharacter(0);
@@ -85,7 +84,7 @@ charModule.factory('character', ['skills', function(skills) {
    return character;
 }]);
 
-charModule.service('charactersService', ['$rootScope', 'character', function($rootScope, character) {
+charModule.service('charactersService', ['$rootScope', 'character', 'skill', function($rootScope, character, skill) {
    this.characters = [];
    _newCharsCreated = 0;
    _recalcIds = function(arrayToRecalc) {
@@ -104,7 +103,7 @@ charModule.service('charactersService', ['$rootScope', 'character', function($ro
       newChar.id = id;
       return id;
    };
-   
+
    this.importCharacter = function(fileToRead, selectCharacter) {
       var reader = new FileReader();
       var charList = this.characters;
@@ -113,8 +112,16 @@ charModule.service('charactersService', ['$rootScope', 'character', function($ro
             var newChar = new character();
             //TODO: Put in some error handling here
             var charFromJson = angular.fromJson(e.target.result);
-            //If the order of skills is changed, this won't work. All new skills
-            //must be appended to the end of the skills list.
+
+            //Skills on a saved character may not match the skills from a new
+            //character, so build a skill list that matches
+            var jsonSkillList = charFromJson.skills.skillList;
+            newChar.skills.skillList = [];
+            for (var i = 0; i < jsonSkillList.length; i++)
+            {
+               newChar.skills.addSkill(new skill(jsonSkillList[i].name));
+            }
+
             angular.merge(newChar, charFromJson);
             charList.push(newChar);
             _recalcIds(charList);
@@ -123,7 +130,7 @@ charModule.service('charactersService', ['$rootScope', 'character', function($ro
       //TODO: Put in some error handling here
       reader.readAsText(fileToRead);
    }
-   
+
    this.deleteCharacter = function(id) {
       this.characters.splice(id, 1);
       _recalcIds(this.characters);
