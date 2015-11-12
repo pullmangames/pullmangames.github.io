@@ -10,6 +10,7 @@
     <link href="lib/bootstrap.css" rel="stylesheet">
     <!--Stuff we wrote-->
     <script src="travmain.js"></script>
+    <script src="traveller-alerts.js"></script>
     <script src="traveller-characters.js"></script>
     <script src="traveller-skills.js"></script>
     <script src="diceRoller.js"></script>
@@ -18,6 +19,9 @@
   </head>
   <body style="margin-left:8px">
     <section>
+      <span ng-controller="alertsController as alerts">
+        <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="clearAlert($index)">{{alert.msg}}</uib-alert>
+      </span>
       <div class="container"> <!-- Main bootstrap container-->
         <ul class="nav nav-pills">
           <li> <a href="#/roll">Roll Test</a> </li>
@@ -28,6 +32,13 @@
     </section>
     <div ng-view></div>
   </body>
+
+<!------------------------------ Alert Template ------------------------------->
+  <script type="text/ng-template" id="alert.view">
+    <span class="alert" role="alert">
+      <span ng-transclude></span>
+    </span>
+  </script
 
 <!----------------------------------Ship Manager View-------------------------->
   <script type="text/ng-template" id="shipMan.view">
@@ -129,7 +140,6 @@
 
     <br><br>
     
-    <!-- TODO: Make sure the active tab lines up with the displayed character - deleting throws them off -->
     <uib-tabset>
       <uib-tab ng-repeat="character in characterList" heading="{{character.name}}" active="character.active" ng-click="selectCharacter(character.id)"></uib-tab>
     </uib-tabset>
@@ -179,7 +189,7 @@
         </table>
       </form>
 
-    <!-- TODO: make sure skills are always sorted properly (browsers aren't required to follow the order in the array) -->
+<!-- TODO: make sure skills are always sorted properly (browsers aren't required to follow the order in the array) -->
       <form>
         <h3>Skills</h3>
         Click on a skill to learn/forget it. Click on the skill level to change it.

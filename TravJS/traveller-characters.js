@@ -69,6 +69,7 @@ charModule.controller('charactersController', ['$scope', 'charactersService', fu
 charModule.factory('character', ['skills', function(skills) {
    var character = function() {
       this.skills = new skills();
+      this.formatVersion = 1;
       this.exportToJson = function()
       {
          var jsonified = angular.toJson(this, 3);
@@ -84,7 +85,7 @@ charModule.factory('character', ['skills', function(skills) {
    return character;
 }]);
 
-charModule.service('charactersService', ['$rootScope', 'character', 'skill', function($rootScope, character, skill) {
+charModule.service('charactersService', ['$rootScope', 'character', 'skill', 'alertsService', function($rootScope, character, skill, alertsService) {
    this.characters = [];
    _newCharsCreated = 0;
    _recalcIds = function(arrayToRecalc) {
@@ -110,8 +111,19 @@ charModule.service('charactersService', ['$rootScope', 'character', 'skill', fun
       reader.onload = function(e) {
          $rootScope.$apply(function() {
             var newChar = new character();
-            //TODO: Put in some error handling here
-            var charFromJson = angular.fromJson(e.target.result);
+
+            try {
+               var charFromJson = angular.fromJson(e.target.result);
+            } catch (err) {
+               alertsService.addAlert("warning", "The file you tried to load does not appear to be a character sheet");
+            }
+            
+            if (   !charFromJson.formatVersion
+                || charFromJson.formatVersion != 1)
+            {
+               alertsService.addAlert("warning", "The character sheet you loaded has in invalid version number");
+               return;
+            }
 
             //Skills on a saved character may not match the skills from a new
             //character, so build a skill list that matches
@@ -127,8 +139,12 @@ charModule.service('charactersService', ['$rootScope', 'character', 'skill', fun
             _recalcIds(charList);
             selectCharacter(charList.length - 1);
       })};
-      //TODO: Put in some error handling here
-      reader.readAsText(fileToRead);
+
+      try {
+         reader.readAsText(fileToRead);
+      } catch (err) {
+         alertsService.addAlert("warning", "Unable to read " + fileToRead.name)
+      }
    }
 
    this.deleteCharacter = function(id) {

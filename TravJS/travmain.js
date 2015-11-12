@@ -1,5 +1,5 @@
 
-app = angular.module('TravApp', ['ngRoute', 'ui.bootstrap', 'travellerCharacters', 'travellerSkills', 'diceRoller', 'shipManagement']) //declare the main module
+app = angular.module('TravApp', ['ngRoute', 'ui.bootstrap', 'travellerAlerts', 'travellerCharacters', 'travellerSkills', 'diceRoller', 'shipManagement']) //declare the main module
       
 app.config(function ($routeProvider) {
    $routeProvider
