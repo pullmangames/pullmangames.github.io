@@ -2,8 +2,12 @@ charModule = angular.module('travellerCharacters', []); //declare the module for
 
 charModule.controller('charactersController', ['$scope', 'charactersService', function($scope, charactersService) {
    $scope.characterList = charactersService.characters;
-   
-   $scope.selectCharacter = function(id)
+
+   $scope.charTabActive = {};
+
+   $scope.indexOfSelectedChar = null;
+
+   $scope.selectCharacter = function(index)
    {
       if ($scope.characterList.length === 0)
       {
@@ -12,20 +16,11 @@ charModule.controller('charactersController', ['$scope', 'charactersService', fu
          return;
       }
 
-      $scope.selectedCharacter = $scope.characterList[id];
+      $scope.selectedCharacter = $scope.characterList[index];
       $scope.skills = $scope.selectedCharacter.skills;
-      var len = $scope.characterList.length;
-      for (var i = 0; i < len; i++)
-      {
-         if (i === id)
-         {
-            $scope.characterList[i].active = true;
-         }
-         else
-         {
-            $scope.characterList[i].active = false;
-         }
-      }
+      $scope.charTabActive = {};
+      $scope.charTabActive[index] = true;
+      $scope.indexOfSelectedChar = index;
    }
 
    $scope.exportAll = function()
@@ -49,20 +44,15 @@ charModule.controller('charactersController', ['$scope', 'charactersService', fu
       inputElement.value = '';
    }
 
-   $scope.deleteCharacter = function(id)
+   $scope.deleteCharacter = function(index)
    {
-      charactersService.deleteCharacter(id);
+      charactersService.deleteCharacter(index);
       $scope.selectCharacter(0);
-   }
-
-   $scope.isActive = function(id)
-   {
-      return (id === $scope.selectedCharacter.id);
    }
 
    var _skillBeingEdited = "";
    var _backupValue = 0;
-   
+
    $scope.skillValueBeingEdited = function(skill) {
       return (_skillBeingEdited === skill.name);
    }
@@ -74,7 +64,7 @@ charModule.controller('charactersController', ['$scope', 'charactersService', fu
       }
       _skillBeingEdited = skill.name;
    }
-   
+
    $scope.skillValueEditingComplete = function(skill) {
       if (skill.value === undefined || skill.value === null)
       {
@@ -86,6 +76,58 @@ charModule.controller('charactersController', ['$scope', 'charactersService', fu
    if ($scope.characterList.length)
    {
       $scope.selectCharacter(0);
+   }
+}]);
+
+/* Sort the skills.
+ * Skills that are not specialties should appear in standard alphabetical order.
+ * Skills that are specialties should come immediately after their parent skill.
+ * A skill's specialties should be sorted alphabetically. */
+charModule.filter('skillSorter', ['skillsService', function(skillsService) {
+   return function(items, field) {
+      var sorted = [];
+      angular.forEach(items, function(item) {
+         sorted.push(item);
+      });
+      sorted.sort(function(a, b) {
+         var skillDataA = skillsService.lookupDefaultSkill(a.name);
+         var skillDataB = skillsService.lookupDefaultSkill(b.name);
+         if (skillDataA && skillDataA.parent) //a is a specialty
+         {
+            if (skillDataB && skillDataB.parent) //both are specialties
+            {
+               if (skillDataA.parent.localeCompare(skillDataB.parent) === 0) //specialties with same parent
+               {
+                  return a.name.localeCompare(b.name);
+               }
+               return skillDataA.parent.localeCompare(skillDataB.parent); //specialties with different parents
+            }
+            else //a is a specialty, b is not
+            {
+               if (skillDataA.parent.localeCompare(b.name) === 0) //b is a's parent
+               {
+                  return 1;
+               }
+               return skillDataA.parent.localeCompare(b.name); //b is not a's parent
+            }
+         }
+         else //a is not a specialty
+         {
+            if (skillDataB && skillDataB.parent) //a is not a specialty, b is
+            {
+               if (a.name.localeCompare(skillDataB.parent) === 0) //a is b's parent
+               {
+                  return -1;
+               }
+               return a.name.localeCompare(skillDataB.parent) //a is not b's parent
+            }
+            else //neither a nor b is a specialty
+            {
+               return a.name.localeCompare(b.name);
+            }
+         }
+      });
+      return sorted;
    }
 }]);
 
@@ -111,21 +153,12 @@ charModule.factory('character', ['skills', function(skills) {
 charModule.service('charactersService', ['$rootScope', 'character', 'skill', 'alertsService', function($rootScope, character, skill, alertsService) {
    this.characters = [];
    _newCharsCreated = 0;
-   _recalcIds = function(arrayToRecalc) {
-      len = arrayToRecalc.length
-      for (var i = 0; i < len; i++)
-      {
-         arrayToRecalc[i].id = i;
-      }
-   };
 
    this.addCharacter = function() {
       var newChar = new character();
       _newCharsCreated++;
       newChar.name = "New Character #" + _newCharsCreated;
-      var id = this.characters.push(newChar) - 1;
-      newChar.id = id;
-      return id;
+      return this.characters.push(newChar) - 1;
    };
 
    this.importCharacter = function(fileToRead, selectCharacter) {
@@ -140,7 +173,7 @@ charModule.service('charactersService', ['$rootScope', 'character', 'skill', 'al
             } catch (err) {
                alertsService.addAlert("warning", "The file you tried to load does not appear to be a character sheet");
             }
-            
+
             if (   !charFromJson.formatVersion
                 || charFromJson.formatVersion != 1)
             {
@@ -159,7 +192,6 @@ charModule.service('charactersService', ['$rootScope', 'character', 'skill', 'al
 
             angular.merge(newChar, charFromJson);
             charList.push(newChar);
-            _recalcIds(charList);
             selectCharacter(charList.length - 1);
       })};
 
@@ -170,8 +202,7 @@ charModule.service('charactersService', ['$rootScope', 'character', 'skill', 'al
       }
    }
 
-   this.deleteCharacter = function(id) {
-      this.characters.splice(id, 1);
-      _recalcIds(this.characters);
+   this.deleteCharacter = function(index) {
+      this.characters.splice(index, 1);
    };
 }]);
