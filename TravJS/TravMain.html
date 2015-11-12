@@ -15,9 +15,13 @@
     <script src="traveller-skills.js"></script>
     <script src="diceRoller.js"></script>
     <script src="ship-management.js"></script>
+    <script src="random-tables.js"></script>
+    <script src="datatables.js"></script>
     <link rel="stylesheet" href="travmain.css">
   </head>
   <body style="margin-left:8px">
+  
+
     <section>
       <span ng-controller="alertsController as alerts">
         <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="clearAlert($index)">{{alert.msg}}</uib-alert>
@@ -27,6 +31,7 @@
           <li> <a href="#/roll">Roll Test</a> </li>
           <li> <a href="#/characters">Character Test</a></li>
           <li> <a href="#/shipManagement">Ship Management</a></li>
+          <li> <a href="#/random">Random Generators</a></li>
         </ul>
       </div>
     </section>
@@ -49,84 +54,7 @@
 
 <!------------------------------ Character view ------------------------------->
   <script type="text/ng-template" id="characters.view">
-    <style type="text/css">
-      h3 {
-         background:lightsteelblue;
-      }
-      .deleteButton {
-         padding: 3px;
-         border: solid 3px black;
-         background: red;
-         color: white;
-         float: right;
-         cursor: pointer
-      }
-      .bgDimGray {
-         background-color: DimGray;
-      }
-      #identityTable td:nth-child(1), #armorTable td:nth-child(1), #skillsTable td:nth-child(1), #financesTable td:nth-child(1) {
-          padding-right: 15px;
-          font-weight: bold;
-      }
-      #characteristicsTable col:nth-child(2),col:nth-child(6n+5),col:nth-child(6n+6),col:nth-child(6n+7) {
-         background: LightGray;
-      }
-      #characteristicsTable td {
-         width: 25px;
-         border: solid black 1px;
-      }
-      .skill {
-         cursor: pointer;
-      }
-      .specialty {
-          padding-left: 15px;
-          cursor: default;
-      }
-      .learnedSkill {
-         background: LightGray;
-      }
-      .skillValue {
-         cursor: pointer;
-         padding-right: 10px;
-      }
-      input[type="number"].skillValueInput {
-         width: 35px;
-         padding: 0;
-         margin: 0;
-      }
-      #financesTable input[type="number"] {
-         width: 100px;
-         padding: 0;
-         margin: 0;
-         text-align: right;
-      }
-      #charMgmtMenu span {
-         display: block;
-         padding-bottom: 3px;
-         padding-left: 20px;
-         padding-right: 20px;
-         padding-top: 3px;
-         cursor: default;
-      }
-      #charMgmtMenu span:hover {
-         background-color: WhiteSmoke;
-      }
-      .charImporter {
-         position: relative;
-         overflow: hidden;
-      }
-      .charImporter input[type=file] {
-         position: absolute;
-         top: 0;
-         right: 0;
-         min-width: 100%;
-         min-height: 100%;
-         text-align: right;
-         filter: alpha(opacity=0);
-         opacity: 0;
-         outline: none;
-      }
-    </style>
+ 
 
     <div class="btn-group" uib-dropdown style="float:right">
       <button id="charMgmtButton" type="button" class="btn btn-primary" uib-dropdown-toggle>Character Management<span class="caret"></span></button>
@@ -225,6 +153,30 @@
   </script>
 
 
+<!----------------------------------Table Roller View-------------------------->
+  <script type="text/ng-template" id="randomtables.view">
+    <br><br>
+    <h2>Random Stuff</h2>
+    <div class="btn-group" uib-dropdown style="float:left">
+      <button id="randomButton" type="button" class="btn btn-primary" uib-dropdown-toggle>Random patron<span class="caret"></span></button>
+      <ul class="uib-dropdown-menu" role="menu" aria-labelledby="randomButton" id="randomPatronMenu">
+        <li><span ng-click="randomPatron(0)">Random Patron</span></li>
+        <li><span ng-click="randomPatron(1)">Criminal Patron</span></li>
+        <li><span ng-click="randomPatron(2)">Criminal Patron</span></li>
+        <li><span ng-click="randomPatron(3)">Criminal Patron</span></li>
+        <li><span ng-click="randomPatron(4)">Criminal Patron</span></li>
+        <li><span ng-click="randomPatron(5)">Criminal Patron</span></li>
+        <li><span ng-click="randomPatron(6)">Criminal Patron</span></li>
+      </ul>
+      <div class="btn-group" uib-dropdown style="float:right">
+
+      <span>Patron: {{randomtables.patronresult}}</span>
+      
+    </div>
+    
+  </script>
+  
+  
 <!----------------------------------Roller View-------------------------->
 
 <script type="text/ng-template" id="roll.view">
