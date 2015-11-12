@@ -3,7 +3,11 @@ charModule = angular.module('travellerCharacters', []); //declare the module for
 charModule.controller('charactersController', ['$scope', 'charactersService', function($scope, charactersService) {
    $scope.characterList = charactersService.characters;
 
-   $scope.selectCharacter = function(id)
+   $scope.charTabActive = {};
+
+   $scope.indexOfSelectedChar = null;
+
+   $scope.selectCharacter = function(index)
    {
       if ($scope.characterList.length === 0)
       {
@@ -12,20 +16,11 @@ charModule.controller('charactersController', ['$scope', 'charactersService', fu
          return;
       }
 
-      $scope.selectedCharacter = $scope.characterList[id];
+      $scope.selectedCharacter = $scope.characterList[index];
       $scope.skills = $scope.selectedCharacter.skills;
-      var len = $scope.characterList.length;
-      for (var i = 0; i < len; i++)
-      {
-         if (i === id)
-         {
-            $scope.characterList[i].active = true;
-         }
-         else
-         {
-            $scope.characterList[i].active = false;
-         }
-      }
+      $scope.charTabActive = {};
+      $scope.charTabActive[index] = true;
+      $scope.indexOfSelectedChar = index;
    }
 
    $scope.exportAll = function()
@@ -49,15 +44,10 @@ charModule.controller('charactersController', ['$scope', 'charactersService', fu
       inputElement.value = '';
    }
 
-   $scope.deleteCharacter = function(id)
+   $scope.deleteCharacter = function(index)
    {
-      charactersService.deleteCharacter(id);
+      charactersService.deleteCharacter(index);
       $scope.selectCharacter(0);
-   }
-
-   $scope.isActive = function(id)
-   {
-      return (id === $scope.selectedCharacter.id);
    }
 
    var _skillBeingEdited = "";
@@ -163,21 +153,12 @@ charModule.factory('character', ['skills', function(skills) {
 charModule.service('charactersService', ['$rootScope', 'character', 'skill', 'alertsService', function($rootScope, character, skill, alertsService) {
    this.characters = [];
    _newCharsCreated = 0;
-   _recalcIds = function(arrayToRecalc) {
-      len = arrayToRecalc.length
-      for (var i = 0; i < len; i++)
-      {
-         arrayToRecalc[i].id = i;
-      }
-   };
 
    this.addCharacter = function() {
       var newChar = new character();
       _newCharsCreated++;
       newChar.name = "New Character #" + _newCharsCreated;
-      var id = this.characters.push(newChar) - 1;
-      newChar.id = id;
-      return id;
+      return this.characters.push(newChar) - 1;
    };
 
    this.importCharacter = function(fileToRead, selectCharacter) {
@@ -211,7 +192,6 @@ charModule.service('charactersService', ['$rootScope', 'character', 'skill', 'al
 
             angular.merge(newChar, charFromJson);
             charList.push(newChar);
-            _recalcIds(charList);
             selectCharacter(charList.length - 1);
       })};
 
@@ -222,8 +202,7 @@ charModule.service('charactersService', ['$rootScope', 'character', 'skill', 'al
       }
    }
 
-   this.deleteCharacter = function(id) {
-      this.characters.splice(id, 1);
-      _recalcIds(this.characters);
+   this.deleteCharacter = function(index) {
+      this.characters.splice(index, 1);
    };
 }]);

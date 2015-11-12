@@ -128,7 +128,6 @@
       }
     </style>
 
-    <!-- TODO: refactor this page to move logic out of the view, and view out of the model -->
     <div class="btn-group" uib-dropdown style="float:right">
       <button id="charMgmtButton" type="button" class="btn btn-primary" uib-dropdown-toggle>Character Management<span class="caret"></span></button>
       <ul class="uib-dropdown-menu" role="menu" aria-labelledby="charMgmtButton" id="charMgmtMenu">
@@ -141,14 +140,14 @@
     <br><br>
 
     <uib-tabset>
-      <uib-tab ng-repeat="character in characterList" heading="{{character.name}}" active="character.active" ng-click="selectCharacter(character.id)"></uib-tab>
+      <uib-tab ng-repeat="character in characterList" heading="{{character.name}}" active="charTabActive[$index]" ng-click="selectCharacter($index)"></uib-tab>
     </uib-tabset>
 
     <span ng-if="characterList.length > 0"> <!-- Hide the character display if no characters exist -->
 
       <form>
         <h3>Identity</h3>
-        <span class="deleteButton" ng-click="deleteCharacter(selectedCharacter.id)" style="font-weight:bold">DELETE</span>
+        <span class="deleteButton" ng-click="deleteCharacter(indexOfSelectedChar)" style="font-weight:bold">DELETE</span>
         <table id="identityTable">
           <tr><td>Name</td><td><input ng-model="selectedCharacter.name"></td></tr>
           <tr><td>Age</td><td><input ng-model="selectedCharacter.age"></td></tr>
@@ -189,7 +188,6 @@
         </table>
       </form>
 
-<!-- TODO: make sure skills are always sorted properly (browsers aren't required to follow the order in the array) -->
       <form>
         <h3>Skills</h3>
         Click on a skill to learn/forget it. Click on the skill level to change it.
