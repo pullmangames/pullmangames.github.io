@@ -1,5 +1,6 @@
 //RANDOM PATRON TABLE
-{"11":"assassin", 	//Criminal Patrons
+var PatronTable={
+ "11":"assassin", 	//Criminal Patrons
  "12":"smuggler",
  "13":"terrorist",
  "14":"embezzler",
@@ -35,10 +36,11 @@
  "64":"family relative",
  "65":"agent of a foreign power",
  "66":"imperial agent"
- }
+ };
 
 //RANDOM PATRON MISSION TABLE
-{"11":"assasinate a target",
+var PatronMissionTable={
+ "11":"assasinate a target",
  "12":"frame a target",
  "13":"destroy a target",
  "14":"steal from a target",
@@ -74,10 +76,11 @@
  "64":"save a target",
  "65":"aid a target",
  "66":"It's a trap! (The patron intends to betray the characters.)"
- }
+ };
 
 //RANDOM MISSION TARGETS TABLE
-{"11":"common trade goods",			//Trade Goods
+var PatronMissionTargetTable={
+ "11":"common trade goods",			//Trade Goods
  "12":"common trade goods",
  "13":"random trade goods",
  "14":"random trade goods",
@@ -113,10 +116,11 @@
  "64":"police cutter",
  "65":"space station",
  "66":"warship"
- }
+ };
 
 //RANDOM OPPOSITION TABLE
-{"11":"animals",							//Low Tech
+var PatronMissionOppositionTable=
+ {"11":"animals",							//Low Tech
  "12":"large animals",
  "13":"bandits and thieves",
  "14":"fearful peasants",
@@ -152,11 +156,12 @@
  "64":"government officials",
  "65":"target is protected by a third party",
  "66":"hostages"
- }
+ };
  
 //RANDOM STARPORT ENCOUNTERS TABLE
-{"11":"maintenance robot at work",
- "12":"trad eship arrives or departs",
+var StarportEncountersTable=
+ {"11":"maintenance robot at work",
+ "12":"trade ship arrives or departs",
  "13":"captain argues about fuel prices",
  "14":"news report about pirate activity on a starport screen draws a crowd",
  "15":"bored clerk makes life difficult for the characters",
@@ -191,10 +196,11 @@
  "64":"random security sweep scans characters & baggage",
  "65":"starport is temporarily shut down for security reasons",
  "66":"damaged ship makes emergency docking"
- }
+ };
  
  
 //RURAL ENCOUNTERS TABLE
+var RuralEncountersTable=
 {"11":"wild animal",
  "12":"agricultural robots",
  "13":"crop sprayer drone flies overhead",
@@ -231,9 +237,10 @@
  "64":"experimental farm",
  "65":"ruined structure",
  "66":"research facility"
- }
+ };
 
 //URBAN ENCOUNTERS TABLE
+var UrbanEncountersTable=
 {"11":"street riot in progress",
  "12":"characters pass a charming restaurant",
  "13":"trader in illegal goods",
@@ -270,9 +277,10 @@
  "64":"public announcement",
  "65":"sports event",
  "66":"imperial dignitary"
- }
+ };
 
 //RANDOM TRAITS TABLE
+var NPCTraitsTable=
 {"11":"loyal",
  "12":"distracted by other worries",
  "13":"in debt to criminals",
@@ -309,9 +317,10 @@
  "64":"attracted to a player character",
  "65":"from offworld",
  "66":"possesses telepathy or other unusual quality"
- }
+ };
 
 //CONTACTS, ALLIES, RIVALS AND ENEMIES TABLE
+var NPCOccupationsTable=
 {"11":"naval officer",
  "12":"imperial diplomat",
  "13":"crooked trader",
@@ -348,9 +357,10 @@
  "64":"elder statesman",
  "65":"planetary warlord",
  "66":"imperial agent"
- }
+ };
 
 //SPACE ENCOUNTERS TABLE
+var SpaceEncountersTable=
 {"01":"alien derelict (possible salvage)",
 "02":"*solar flare (1d6 100 rads)",
 "03":"asteroid (empty rock)",
@@ -411,9 +421,10 @@
 "94":"cargo hauler",
 "95":"system defense boat",
 "96":"grand fleet warship"
-}
+};
 
 //RANDOM PASSENGERS TABLE
+var RandomPassengersTable=
 {"11":"political refugee",
 "12":"economic refugee",
 "13":"starting a new life offworld",
@@ -450,4 +461,4 @@
 "64":"on the run",
 "65":"wants to be on board the PC's ship for some reason",
 "66":"hijacker or pirate agent"
-}
+};
