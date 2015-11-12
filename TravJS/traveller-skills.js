@@ -15,28 +15,6 @@ skillsModule.factory('skill', ['skillsService', function(skillsService) {
          return false;
       };
 
-      this.editing = false;
-
-      this.editingInProgress = function() {
-         return this.editing;
-      };
-
-      this.startEditing = function() {
-         if (!(this.value === undefined || this.value === null))
-         {
-            this.backupValue = this.value;
-         }
-         this.editing = true;
-      };
-
-      this.stopEditing = function() {
-         if (this.value === undefined || this.value === null)
-         {
-            this.value = this.backupValue;
-         }
-         this.editing = false;
-      };
-
       this.isSpecialty = function() {
          var matchingSkill = skillsService.lookupDefaultSkill(this.name);
 

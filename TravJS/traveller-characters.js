@@ -2,7 +2,7 @@ charModule = angular.module('travellerCharacters', []); //declare the module for
 
 charModule.controller('charactersController', ['$scope', 'charactersService', function($scope, charactersService) {
    $scope.characterList = charactersService.characters;
-
+   
    $scope.selectCharacter = function(id)
    {
       if ($scope.characterList.length === 0)
@@ -58,6 +58,29 @@ charModule.controller('charactersController', ['$scope', 'charactersService', fu
    $scope.isActive = function(id)
    {
       return (id === $scope.selectedCharacter.id);
+   }
+
+   var _skillBeingEdited = "";
+   var _backupValue = 0;
+   
+   $scope.skillValueBeingEdited = function(skill) {
+      return (_skillBeingEdited === skill.name);
+   }
+
+   $scope.editSkillValue = function(skill) {
+      if (!(skill.value === undefined || skill.value === null))
+      {
+         _backupValue = skill.value;
+      }
+      _skillBeingEdited = skill.name;
+   }
+   
+   $scope.skillValueEditingComplete = function(skill) {
+      if (skill.value === undefined || skill.value === null)
+      {
+         skill.value = _backupValue;
+      }
+      _skillBeingEdited = "";
    }
 
    if ($scope.characterList.length)
