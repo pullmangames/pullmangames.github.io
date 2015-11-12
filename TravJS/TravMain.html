@@ -10,6 +10,7 @@
     <link href="lib/bootstrap.css" rel="stylesheet">
     <!--Stuff we wrote-->
     <script src="travmain.js"></script>
+    <script src="traveller-alerts.js"></script>
     <script src="traveller-characters.js"></script>
     <script src="traveller-skills.js"></script>
     <script src="diceRoller.js"></script>
@@ -18,6 +19,9 @@
   </head>
   <body style="margin-left:8px">
     <section>
+      <span ng-controller="alertsController as alerts">
+        <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="clearAlert($index)">{{alert.msg}}</uib-alert>
+      </span>
       <div class="container"> <!-- Main bootstrap container-->
         <ul class="nav nav-pills">
           <li> <a href="#/roll">Roll Test</a> </li>
@@ -28,6 +32,13 @@
     </section>
     <div ng-view></div>
   </body>
+
+<!------------------------------ Alert Template ------------------------------->
+  <script type="text/ng-template" id="alert.view">
+    <span class="alert" role="alert">
+      <span ng-transclude></span>
+    </span>
+  </script
 
 <!----------------------------------Ship Manager View-------------------------->
   <script type="text/ng-template" id="shipMan.view">
@@ -129,7 +140,6 @@
 
     <br><br>
     
-    <!-- TODO: Make sure the active tab lines up with the displayed character - deleting throws them off -->
     <uib-tabset>
       <uib-tab ng-repeat="character in characterList" heading="{{character.name}}" active="character.active" ng-click="selectCharacter(character.id)"></uib-tab>
     </uib-tabset>
@@ -179,16 +189,16 @@
         </table>
       </form>
 
-    <!-- TODO: make sure skills are always sorted properly (browsers aren't required to follow the order in the array) -->
+<!-- TODO: make sure skills are always sorted properly (browsers aren't required to follow the order in the array) -->
       <form>
         <h3>Skills</h3>
         Click on a skill to learn/forget it. Click on the skill level to change it.
         <table id="skillsTable">
-          <tr ng-repeat="skill in skillList" ng-if="skill.displayMe()" ng-class="{learnedSkill: skill.hasBeenLearned}">
-            <td><span ng-class="{specialty:skill.isSpecialty,skill:!skill.isSpecialty}" ng-click="skill.toggleMe()">{{skill.name}}</span></td>
+          <tr ng-repeat="skill in skills.skillList" ng-if="skill.displayMe()" ng-class="{learnedSkill: skill.hasBeenLearned}">
+            <td><span ng-class="{specialty:skill.isSpecialty(),skill:!skill.isSpecialty()}" ng-click="skills.toggleSkill(skill.name)">{{skill.name}}</span></td>
             <td ng-if="skill.showValue()">
-              <input ng-if="skill.editingInProgress()" traveller-autofocus class="skillValueInput" id="{{skill.name}}" type="number" min="0" max="20" value="{{skill.value}}" ng-model="skill.value" ng-blur="skill.stopEditing()">
-              <span ng-if="!skill.editingInProgress()" class="skillValue" ng-click="skill.startEditing()" style="font-weight:bold">{{skill.value}}</span>
+              <input ng-if="skillValueBeingEdited(skill)" traveller-autofocus class="skillValueInput" id="{{skill.name}}" type="number" min="0" max="20" value="{{skill.value}}" ng-model="skill.value" ng-blur="skillValueEditingComplete(skill)">
+              <span ng-if="!skillValueBeingEdited(skill)" class="skillValue" ng-click="editSkillValue(skill)" style="font-weight:bold">{{skill.value}}</span>
             </td>
             <td ng-if="!skill.showValue()"></td> <!-- else case for previous ng-if so we still have enough cells on unlearned or parent rows -->
           </tr>
