@@ -2,7 +2,7 @@ charModule = angular.module('travellerCharacters', []); //declare the module for
 
 charModule.controller('charactersController', ['$scope', 'charactersService', function($scope, charactersService) {
    $scope.characterList = charactersService.characters;
-   
+
    $scope.selectCharacter = function(id)
    {
       if ($scope.characterList.length === 0)
@@ -62,7 +62,7 @@ charModule.controller('charactersController', ['$scope', 'charactersService', fu
 
    var _skillBeingEdited = "";
    var _backupValue = 0;
-   
+
    $scope.skillValueBeingEdited = function(skill) {
       return (_skillBeingEdited === skill.name);
    }
@@ -74,7 +74,7 @@ charModule.controller('charactersController', ['$scope', 'charactersService', fu
       }
       _skillBeingEdited = skill.name;
    }
-   
+
    $scope.skillValueEditingComplete = function(skill) {
       if (skill.value === undefined || skill.value === null)
       {
@@ -86,6 +86,58 @@ charModule.controller('charactersController', ['$scope', 'charactersService', fu
    if ($scope.characterList.length)
    {
       $scope.selectCharacter(0);
+   }
+}]);
+
+/* Sort the skills.
+ * Skills that are not specialties should appear in standard alphabetical order.
+ * Skills that are specialties should come immediately after their parent skill.
+ * A skill's specialties should be sorted alphabetically. */
+charModule.filter('skillSorter', ['skillsService', function(skillsService) {
+   return function(items, field) {
+      var sorted = [];
+      angular.forEach(items, function(item) {
+         sorted.push(item);
+      });
+      sorted.sort(function(a, b) {
+         var skillDataA = skillsService.lookupDefaultSkill(a.name);
+         var skillDataB = skillsService.lookupDefaultSkill(b.name);
+         if (skillDataA && skillDataA.parent) //a is a specialty
+         {
+            if (skillDataB && skillDataB.parent) //both are specialties
+            {
+               if (skillDataA.parent.localeCompare(skillDataB.parent) === 0) //specialties with same parent
+               {
+                  return a.name.localeCompare(b.name);
+               }
+               return skillDataA.parent.localeCompare(skillDataB.parent); //specialties with different parents
+            }
+            else //a is a specialty, b is not
+            {
+               if (skillDataA.parent.localeCompare(b.name) === 0) //b is a's parent
+               {
+                  return 1;
+               }
+               return skillDataA.parent.localeCompare(b.name); //b is not a's parent
+            }
+         }
+         else //a is not a specialty
+         {
+            if (skillDataB && skillDataB.parent) //a is not a specialty, b is
+            {
+               if (a.name.localeCompare(skillDataB.parent) === 0) //a is b's parent
+               {
+                  return -1;
+               }
+               return a.name.localeCompare(skillDataB.parent) //a is not b's parent
+            }
+            else //neither a nor b is a specialty
+            {
+               return a.name.localeCompare(b.name);
+            }
+         }
+      });
+      return sorted;
    }
 }]);
 
@@ -140,7 +192,7 @@ charModule.service('charactersService', ['$rootScope', 'character', 'skill', 'al
             } catch (err) {
                alertsService.addAlert("warning", "The file you tried to load does not appear to be a character sheet");
             }
-            
+
             if (   !charFromJson.formatVersion
                 || charFromJson.formatVersion != 1)
             {
