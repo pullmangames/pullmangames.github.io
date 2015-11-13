@@ -66,7 +66,7 @@
       #charMgmtMenu span:hover {
          background-color: WhiteSmoke;
       }
-      #randomPatronMenu span {
+      .randomMenu span {
          display: block;
          padding-bottom: 3px;
          padding-left: 20px;
@@ -74,7 +74,7 @@
          padding-top: 3px;
          cursor: default;
       }
-      #randomPatronMenu span:hover {
+      .randomMenu span:hover {
          background-color: WhiteSmoke;
       }
       .charImporter {

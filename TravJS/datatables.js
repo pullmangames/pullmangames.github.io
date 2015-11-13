@@ -290,6 +290,8 @@ var UrbanEncountersTable=
  "65":"sports event",
  "66":"imperial dignitary"
  };
+ 
+ var encountersTables=[StarportEncountersTable,RuralEncountersTable,UrbanEncountersTable];
 
 //RANDOM TRAITS TABLE
 var NPCTraitsTable=

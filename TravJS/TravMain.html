@@ -157,9 +157,9 @@
   <script type="text/ng-template" id="randomtables.view">
     <br><br>
     <h2>Random Stuff</h2>
-    <div class="btn-group" uib-dropdown style="float:left">
-      <button id="randomButton" type="button" class="btn btn-primary" uib-dropdown-toggle>Random patron<span class="caret"></span></button>
-      <ul class="uib-dropdown-menu" role="menu" aria-labelledby="randomButton" id="randomPatronMenu">
+    <div class="btn-group" uib-dropdown style="float:top">
+      <button id="randomPatronButton" type="button" class="btn btn-primary" uib-dropdown-toggle>Random patron<span class="caret"></span></button>
+      <ul class="uib-dropdown-menu randomMenu" role="menu" aria-labelledby="randomButton" id="randomPatronMenu">
         <li><span ng-click="tables.randomPatron(0)">Random Patron</span></li>
         <li><span ng-click="tables.randomPatron(1)">Criminals</span></li>
         <li><span ng-click="tables.randomPatron(2)">Leaders</span></li>
@@ -168,7 +168,7 @@
         <li><span ng-click="tables.randomPatron(5)">Spacer</span></li>
         <li><span ng-click="tables.randomPatron(6)">Unusual</span></li>
       </ul>
-      <div class="btn-group" uib-dropdown style="float:right">
+
 		<br>
 		<br>
       <div>Patron: {{tables.patrontype}}, {{tables.patronoccupation}}, {{tables.patrontraits}}</div>
@@ -177,6 +177,21 @@
       <div>Opposition: {{tables.patronopposition}}</div>    
       
     </div>
+    
+    <div class="btn-group" uib-dropdown style="float:top">
+      <button id="randomEncounterButton" type="button" class="btn btn-primary" uib-dropdown-toggle>Random Encounter<span class="caret"></span></button>
+      <ul class="uib-dropdown-menu randomMenu" role="menu" aria-labelledby="randomButton" id="randomEncounterMenu">
+        <li><span ng-click="tables.randomEncounter(0)">StarportEncountersTable</span></li>
+        <li><span ng-click="tables.randomEncounter(1)">RuralEncountersTable</span></li>
+        <li><span ng-click="tables.randomEncounter(2)">UrbanEncountersTable</span></li>
+      </ul>
+
+		<br>
+
+      <div>Encounter: {{tables.encountertext}}</div>
+    
+    </div>
+    
     
   </script>
   

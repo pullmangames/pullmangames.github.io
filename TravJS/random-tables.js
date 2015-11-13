@@ -6,6 +6,10 @@ rndModule.controller('randomController', ['charactersService', function(characte
 		
 		rnd.patrontext="";
 		
+		
+		
+		//generate a random patron mission
+		//subtable param is what type of patron, 0 for random
 		rnd.randomPatron=function(subtable){
 			var missiond66;
 			var tens=subtable===0?rawroll(1,6).total:subtable;
@@ -52,15 +56,11 @@ rndModule.controller('randomController', ['charactersService', function(characte
 			rnd.patronopposition=PatronMissionOppositionTable[""+rolld66().total];
 		};
 		
+		rnd.randomEncounter=function(thetable){ 
+			rnd.encountertext=encountersTables[thetable][""+rolld66().total];
+			//TODO: Add more supporting rolls as necessary?
 
-		
-		
-		
-		
-		
-		
-		
-		
+		}
 		
 }]);
 //console.log("Loaded");
