@@ -1,7 +1,7 @@
-page 80-83
+[DONE] page 80-83
 
-page 76
+[DONE] page 76
 
-page 139 "space encounters"
+[DONE] page 139 "space encounters"
 
-page 143 "random passengers"
+[DONE] page 143 "random passengers"

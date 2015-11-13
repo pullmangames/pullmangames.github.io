@@ -5,3 +5,90 @@
       color: grey;
     }
 
+      h3 {
+         background:lightsteelblue;
+      }
+      .deleteButton {
+         padding: 3px;
+         border: solid 3px black;
+         background: red;
+         color: white;
+         float: right;
+         cursor: pointer
+      }
+      .bgDimGray {
+         background-color: DimGray;
+      }
+      #identityTable td:nth-child(1), #armorTable td:nth-child(1), #skillsTable td:nth-child(1), #financesTable td:nth-child(1) {
+          padding-right: 15px;
+          font-weight: bold;
+      }
+      #characteristicsTable col:nth-child(2),col:nth-child(6n+5),col:nth-child(6n+6),col:nth-child(6n+7) {
+         background: LightGray;
+      }
+      #characteristicsTable td {
+         width: 25px;
+         border: solid black 1px;
+      }
+      .skill {
+         cursor: pointer;
+      }
+      .specialty {
+          padding-left: 15px;
+          cursor: default;
+      }
+      .learnedSkill {
+         background: LightGray;
+      }
+      .skillValue {
+         cursor: pointer;
+         padding-right: 10px;
+      }
+      input[type="number"].skillValueInput {
+         width: 35px;
+         padding: 0;
+         margin: 0;
+      }
+      #financesTable input[type="number"] {
+         width: 100px;
+         padding: 0;
+         margin: 0;
+         text-align: right;
+      }
+      #charMgmtMenu span {
+         display: block;
+         padding-bottom: 3px;
+         padding-left: 20px;
+         padding-right: 20px;
+         padding-top: 3px;
+         cursor: default;
+      }
+      #charMgmtMenu span:hover {
+         background-color: WhiteSmoke;
+      }
+      .randomMenu span {
+         display: block;
+         padding-bottom: 3px;
+         padding-left: 20px;
+         padding-right: 20px;
+         padding-top: 3px;
+         cursor: default;
+      }
+      .randomMenu span:hover {
+         background-color: WhiteSmoke;
+      }
+      .charImporter {
+         position: relative;
+         overflow: hidden;
+      }
+      .charImporter input[type=file] {
+         position: absolute;
+         top: 0;
+         right: 0;
+         min-width: 100%;
+         min-height: 100%;
+         text-align: right;
+         filter: alpha(opacity=0);
+         opacity: 0;
+         outline: none;
+      }

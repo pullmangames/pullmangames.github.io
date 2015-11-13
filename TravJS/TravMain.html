@@ -10,24 +10,40 @@
     <link href="lib/bootstrap.css" rel="stylesheet">
     <!--Stuff we wrote-->
     <script src="travmain.js"></script>
+    <script src="traveller-alerts.js"></script>
     <script src="traveller-characters.js"></script>
     <script src="traveller-skills.js"></script>
     <script src="diceRoller.js"></script>
     <script src="ship-management.js"></script>
+    <script src="random-tables.js"></script>
+    <script src="datatables.js"></script>
     <link rel="stylesheet" href="travmain.css">
   </head>
   <body style="margin-left:8px">
+  
+
     <section>
+      <span ng-controller="alertsController as alerts">
+        <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="clearAlert($index)">{{alert.msg}}</uib-alert>
+      </span>
       <div class="container"> <!-- Main bootstrap container-->
         <ul class="nav nav-pills">
           <li> <a href="#/roll">Roll Test</a> </li>
           <li> <a href="#/characters">Character Test</a></li>
           <li> <a href="#/shipManagement">Ship Management</a></li>
+          <li> <a href="#/random">Random Generators</a></li>
         </ul>
       </div>
     </section>
     <div ng-view></div>
   </body>
+
+<!------------------------------ Alert Template ------------------------------->
+  <script type="text/ng-template" id="alert.view">
+    <span class="alert" role="alert">
+      <span ng-transclude></span>
+    </span>
+  </script>
 
 <!----------------------------------Ship Manager View-------------------------->
   <script type="text/ng-template" id="shipMan.view">
@@ -38,80 +54,28 @@
 
 <!------------------------------ Character view ------------------------------->
   <script type="text/ng-template" id="characters.view">
-    <style type="text/css">
-      h3 {
-         background:lightsteelblue;
-      }
-      .deleteButton {
-         padding: 3px;
-         border: solid 3px black;
-         background: red;
-         color: white;
-         float: right;
-         cursor: pointer
-      }
-      .bgDimGray {
-         background-color: DimGray;
-      }
-      #identityTable td:nth-child(1), #armorTable td:nth-child(1), #skillsTable td:nth-child(1), #financesTable td:nth-child(1) {
-          padding-right: 15px;
-          font-weight: bold;
-      }
-      #characteristicsTable col:nth-child(2),col:nth-child(6n+5),col:nth-child(6n+6),col:nth-child(6n+7) {
-         background: LightGray;
-      }
-      #characteristicsTable td {
-         width: 25px;
-         border: solid black 1px;
-      }
-      .skill {
-         cursor: pointer;
-      }
-      .specialty {
-          padding-left: 15px;
-          cursor: default;
-      }
-      .learnedSkill {
-         background: LightGray;
-      }
-      .skillValue {
-         cursor: pointer;
-         padding-right: 10px;
-      }
-      input[type="number"].skillValueInput {
-         width: 35px;
-         padding: 0;
-         margin: 0;
-      }
-      #financesTable input[type="number"] {
-          width: 100px;
-          padding: 0;
-          margin: 0;
-          text-align: right;
-      }
-    </style>
+ 
 
-    <!-- TODO: refactor this page to move logic out of the view, and view out of the model -->
     <div class="btn-group" uib-dropdown style="float:right">
       <button id="charMgmtButton" type="button" class="btn btn-primary" uib-dropdown-toggle>Character Management<span class="caret"></span></button>
-      <ul class="uib-dropdown-menu" role="menu" aria-labelledby="charMgmtButton">
-        <li><a style="cursor:default" ng-click="addCharacter()">Create New</a></li>
-        <li><a style="cursor:default" ng-click="exportAll()">Export All</a></li>
+      <ul class="uib-dropdown-menu" role="menu" aria-labelledby="charMgmtButton" id="charMgmtMenu">
+        <li><span ng-click="addCharacter()">Create New</span></li>
+        <li><span class="charImporter">Import<input type="file" onchange="angular.element(this).scope().importCharacter(angular.element(this))"></span></li>
+        <li><span ng-click="exportAll()">Export All</span></li>
       </ul>
     </div>
 
     <br><br>
-    
-    <!-- TODO: Make sure the active tab lines up with the displayed character - deleting throws them off -->
+
     <uib-tabset>
-      <uib-tab ng-repeat="character in characterList" heading="{{character.name}}" active="character.active" ng-click="selectCharacter(character.id)"></uib-tab>
+      <uib-tab ng-repeat="character in characterList" heading="{{character.name}}" active="charTabActive[$index]" ng-click="selectCharacter($index)"></uib-tab>
     </uib-tabset>
 
     <span ng-if="characterList.length > 0"> <!-- Hide the character display if no characters exist -->
 
       <form>
         <h3>Identity</h3>
-        <span class="deleteButton" ng-click="deleteCharacter(selectedCharacter.id)" style="font-weight:bold">DELETE</span>
+        <span class="deleteButton" ng-click="deleteCharacter(indexOfSelectedChar)" style="font-weight:bold">DELETE</span>
         <table id="identityTable">
           <tr><td>Name</td><td><input ng-model="selectedCharacter.name"></td></tr>
           <tr><td>Age</td><td><input ng-model="selectedCharacter.age"></td></tr>
@@ -152,16 +116,15 @@
         </table>
       </form>
 
-    <!-- TODO: make sure skills are always sorted properly (browsers aren't required to follow the order in the array) -->
       <form>
         <h3>Skills</h3>
         Click on a skill to learn/forget it. Click on the skill level to change it.
         <table id="skillsTable">
-          <tr ng-repeat="skill in skillList" ng-if="skill.displayMe()" ng-class="{learnedSkill: skill.hasBeenLearned}">
-            <td><span ng-class="{specialty:skill.isSpecialty,skill:!skill.isSpecialty}" ng-click="skill.toggleMe()">{{skill.name}}</span></td>
+          <tr ng-repeat="skill in skills.skillList | skillSorter" ng-if="skill.displayMe()" ng-class="{learnedSkill: skill.hasBeenLearned}">
+            <td><span ng-class="{specialty:skill.isSpecialty(),skill:!skill.isSpecialty()}" ng-click="skills.toggleSkill(skill.name)">{{skill.name}}</span></td>
             <td ng-if="skill.showValue()">
-              <input ng-if="skill.editingInProgress()" traveller-autofocus class="skillValueInput" id="{{skill.name}}" type="number" min="0" max="20" value="{{skill.value}}" ng-model="skill.value" ng-blur="skill.stopEditing()">
-              <span ng-if="!skill.editingInProgress()" class="skillValue" ng-click="skill.startEditing()" style="font-weight:bold">{{skill.value}}</span>
+              <input ng-if="skillValueBeingEdited(skill)" traveller-autofocus class="skillValueInput" id="{{skill.name}}" type="number" min="0" max="20" value="{{skill.value}}" ng-model="skill.value" ng-blur="skillValueEditingComplete(skill)">
+              <span ng-if="!skillValueBeingEdited(skill)" class="skillValue" ng-click="editSkillValue(skill)" style="font-weight:bold">{{skill.value}}</span>
             </td>
             <td ng-if="!skill.showValue()"></td> <!-- else case for previous ng-if so we still have enough cells on unlearned or parent rows -->
           </tr>
@@ -190,6 +153,49 @@
   </script>
 
 
+<!----------------------------------Table Roller View-------------------------->
+  <script type="text/ng-template" id="randomtables.view">
+    <br><br>
+    <h2>Random Stuff</h2>
+    <div class="btn-group" uib-dropdown style="float:top">
+      <button id="randomPatronButton" type="button" class="btn btn-primary" uib-dropdown-toggle>Random patron<span class="caret"></span></button>
+      <ul class="uib-dropdown-menu randomMenu" role="menu" aria-labelledby="randomButton" id="randomPatronMenu">
+        <li><span ng-click="tables.randomPatron(0)">Random Patron</span></li>
+        <li><span ng-click="tables.randomPatron(1)">Criminals</span></li>
+        <li><span ng-click="tables.randomPatron(2)">Leaders</span></li>
+        <li><span ng-click="tables.randomPatron(3)">High Society</span></li>
+        <li><span ng-click="tables.randomPatron(4)">Commercial</span></li>
+        <li><span ng-click="tables.randomPatron(5)">Spacer</span></li>
+        <li><span ng-click="tables.randomPatron(6)">Unusual</span></li>
+      </ul>
+
+		<br>
+		<br>
+      <div>Patron: {{tables.patrontype}}, {{tables.patronoccupation}}, {{tables.patrontraits}}</div>
+      <div>Mission: {{tables.patronmissiontext}}</div>
+      <div>Target: {{tables.patrontargettext}}</div>
+      <div>Opposition: {{tables.patronopposition}}</div>    
+      
+    </div>
+    
+    <div class="btn-group" uib-dropdown style="float:top">
+      <button id="randomEncounterButton" type="button" class="btn btn-primary" uib-dropdown-toggle>Random Encounter<span class="caret"></span></button>
+      <ul class="uib-dropdown-menu randomMenu" role="menu" aria-labelledby="randomButton" id="randomEncounterMenu">
+        <li><span ng-click="tables.randomEncounter(0)">StarportEncountersTable</span></li>
+        <li><span ng-click="tables.randomEncounter(1)">RuralEncountersTable</span></li>
+        <li><span ng-click="tables.randomEncounter(2)">UrbanEncountersTable</span></li>
+      </ul>
+
+		<br>
+
+      <div>Encounter: {{tables.encountertext}}</div>
+    
+    </div>
+    
+    
+  </script>
+  
+  
 <!----------------------------------Roller View-------------------------->
 
 <script type="text/ng-template" id="roll.view">
