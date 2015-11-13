@@ -38,44 +38,56 @@ var PatronTable={
  "66":"imperial agent"
  };
 
+var MISSIONTARGETTYPES={};
+	MISSIONTARGETTYPES.goods=1;
+	MISSIONTARGETTYPES.object=2;
+	MISSIONTARGETTYPES.place=3;
+	MISSIONTARGETTYPES.person=4;
+	MISSIONTARGETTYPES.org=5;
+	MISSIONTARGETTYPES.ship=6;
+	MISSIONTARGETTYPES.special=-1;
+	MISSIONTARGETTYPES.starsystem=-2
+	
+	
+
 //RANDOM PATRON MISSION TABLE
 var PatronMissionTable={
- "11":"assasinate a target",
- "12":"frame a target",
- "13":"destroy a target",
- "14":"steal from a target",
- "15":"aid in a burglary",
- "16":"stop a burglary",
- "21":"retrieve data or an object from a secure facility",
- "22":"discredit a target",
- "23":"find a lost cargo",
- "24":"find a lost person",
- "25":"deceive a target",
- "26":"sabotage a target",
- "31":"transport goods",
- "32":"transport a person",
- "33":"transport data",
- "34":"transport goods secretly",
- "35":"transport goods quickly",
- "36":"transport dangerous goods",
- "41":"investigate a crime",
- "42":"investigate a theft",
- "43":"investigate a murder",
- "44":"investigate a mystery",
- "45":"investigate a target",
- "46":"investigate an event",
- "51":"join an expedition",
- "52":"survey a planet",
- "53":"explore a new system",
- "54":"explore a ruin",
- "55":"salvage a ship",
- "56":"capture a creature",
- "61":"hijack a ship",
- "62":"entertain a noble",
- "63":"protect a target",
- "64":"save a target",
- "65":"aid a target",
- "66":"It's a trap! (The patron intends to betray the characters.)"
+ "11":{"mission":"assasinate a target", "targettypes":[4]},
+ "12":{"mission":"frame a target", "targettypes":[4,5]},
+ "13":{"mission":"destroy a target", "targettypes":[1,2,3,5,6]},
+ "14":{"mission":"steal from a target", "targettypes":[3,4,5,6]},
+ "15":{"mission":"aid in a burglary", "targettypes":[1,2,3,4,5,6]},
+ "16":{"mission":"stop a burglary", "targettypes":[1,2,3,4,5,6]},
+ "21":{"mission":"retrieve data or an object from a secure facility", "targettypes":[3,6]},
+ "22":{"mission":"discredit a target", "targettypes":[4,5]},
+ "23":{"mission":"find a lost cargo", "targettypes":[1,2]},
+ "24":{"mission":"find a lost person", "targettypes":[4]},
+ "25":{"mission":"deceive a target", "targettypes":[4,5]},
+ "26":{"mission":"sabotage a target", "targettypes":[2,3,5,6]},
+ "31":{"mission":"transport goods", "targettypes":[1,2]},
+ "32":{"mission":"transport a person", "targettypes":[4]},
+ "33":{"mission":"transport data", "targettypes":[1,2,3,4,5,6]},
+ "34":{"mission":"transport goods secretly", "targettypes":[1,2]},
+ "35":{"mission":"transport goods quickly", "targettypes":[1,2]},
+ "36":{"mission":"transport dangerous goods", "targettypes":[1,2]},
+ "41":{"mission":"investigate a crime", "targettypes":[1,2,3,4,5,6]},
+ "42":{"mission":"investigate a theft", "targettypes":[1,2,3,4,5,6]},
+ "43":{"mission":"investigate a murder", "targettypes":[4]},
+ "44":{"mission":"investigate a mystery", "targettypes":[1,2,3,4,5,6]},
+ "45":{"mission":"investigate a target", "targettypes":[1,2,3,4,5,6]},
+ "46":{"mission":"investigate an event", "targettypes":[1,2,3,4,5,6]},
+ "51":{"mission":"join an expedition", "targettypes":[1,2,3,6]},
+ "52":{"mission":"survey a planet", "targettypes":[-2]}, // What do to with these?
+ "53":{"mission":"explore a new system", "targettypes":[-2]}, //
+ "54":{"mission":"explore a ruin", "targettypes":[-1]},//
+ "55":{"mission":"salvage a ship", "targettypes":[6, -2]},
+ "56":{"mission":"capture a creature", "targettypes":[-1]}, //
+ "61":{"mission":"hijack a ship", "targettypes":[6]},
+ "62":{"mission":"entertain a noble", "targettypes":[4]},
+ "63":{"mission":"protect a target", "targettypes":[1,2,3,4,5,6]},
+ "64":{"mission":"save a target", "targettypes":[1,2,3,4,5,6]},
+ "65":{"mission":"aid a target", "targettypes":[3,4,5,6]},
+ "66":{"mission":"It's a trap! (The patron intends to betray the characters.)","targettypes":[-1]}//
  };
 
 //RANDOM MISSION TARGETS TABLE
