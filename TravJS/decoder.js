@@ -4,25 +4,21 @@ decoderModule = angular.module('decoder', []); //declare the module for decoder
 decoderModule.controller('decoderController', ['charactersService', function(charactersService) {
 		var dec = this;
 		
-		dec.input="Drink your Ovaltine";
-		dec.key="SoSecret";
+		dec.input="";
+		dec.key="";
 		dec.result="";
 		
 
 		dec.whydecode = function() {
-			console.log("decoding");
-			
 			dec.result=vernam(window.atob(dec.input),dec.key);
-			console.log("DECODED");
+			dec.input="";
+			dec.key="";
 		};	
 		
-		
-		
 		dec.whyencode = function() {
-			console.log("encoding");
-			
 			dec.result=window.btoa(vernam(dec.input,dec.key));
-			console.log("ENCODED");
+			dec.input="";
+			dec.key="";
 		};	
 
 
