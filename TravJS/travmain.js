@@ -1,5 +1,5 @@
 
-app = angular.module('TravApp', ['ngRoute', 'ui.bootstrap', 'travellerAlerts', 'travellerCharacters', 'travellerSkills', 'diceRoller', 'shipManagement', 'randomModule']) //declare the main module
+app = angular.module('TravApp', ['ngRoute', 'ui.bootstrap', 'travellerAlerts', 'travellerCharacters', 'travellerSkills', 'diceRoller', 'shipManagement', 'randomModule', 'decoder']) //declare the main module
       
 app.config(function ($routeProvider) {
    $routeProvider
@@ -7,6 +7,7 @@ app.config(function ($routeProvider) {
       .when("/characters",     {controller: "charactersController as characters",  templateUrl: "characters.view"})
       .when("/shipManagement", {controller: "shipManagementController as shipMan", templateUrl: "shipMan.view"})
       .when("/random",         {controller: "randomController as tables",          templateUrl: "randomtables.view"})
+      .when("/decoder",         {controller: "decoderController as decoder",          templateUrl: "decoder.view"})
       .otherwise({redirectTo: "/roll"});
 });
 
