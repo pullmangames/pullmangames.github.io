@@ -54,19 +54,35 @@
 
 <!------------------------------ Character view ------------------------------->
 
+  <!------------------ Add Trade Skill Modal ------------------>
   <script type="text/ng-template" id="addTradeSkillModal.view">
     <div class="modal-header">
       <h4 class="modal-title">Add a trade skill</h4>
     </div>
     <div class="modal-body">
-      <input traveller-autofocus ng-model="newTradeSkillName"></input>
+      <input ng-model="newTradeSkillName" autoFocus></input>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-primary" type="button" ng-click="addTradeSkillModalOk()">OK</button>
-      <button class="btn btn-warning" type="button" ng-click="addTradeSkillModalCancel()">Cancel</button>
+      <button class="btn btn-success" type="button" ng-click="addTradeSkillModalOk()">Add</button>
+      <button class="btn btn-default" type="button" ng-click="addTradeSkillModalCancel()">Cancel</button>
     </div>
   </script>
 
+  <!---------------- Delete Trade Skill Modal ----------------->
+  <script type="text/ng-template" id="deleteTradeSkillModal.view">
+    <div class="modal-header">
+      <h4 class="modal-title">Delete a trade skill</h4>
+    </div>
+    <div class="modal-body">
+      <select ng-model="selectedSkill" ng-options="tradeSkill.skill.name for tradeSkill in tradeSkills"></select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger" type="button" ng-click="deleteTradeSkillModalOk()">Delete</button>
+      <button class="btn btn-default" type="button" ng-click="deleteTradeSkillModalCancel()">Cancel</button>
+    </div>
+  </script>
+
+  <!------------------- Main Character View ------------------->
   <script type="text/ng-template" id="characters.view">
 
     <div class="btn-group" uib-dropdown style="float:right">
@@ -131,17 +147,18 @@
 
       <form>
         <h3>Skills</h3>
-        Click on a skill to learn/forget it. Click on the skill level to change it.
-        <div class="btn-group" uib-dropdown style="float:right">
+        Click on a skill to learn/forget it. Click on the skill level to change it. Trade skills can be added or removed using the Skill Management button.
+        <div class="btn-group" uib-dropdown style="float:right;padding-right:20px">
           <button id="skillMgmtButton" type="button" class="btn btn-primary" uib-dropdown-toggle>Skill Management<span class="caret"></span></button>
           <ul class="uib-dropdown-menu dropDownMenu" role="menu" aria-labelledby="skillMgmtButton" id="skillMgmtMenu">
             <li><span ng-click="openAddTradeSkillModal()">New Trade Skill</span></li>
-            <li><span ng-click="openDeleteTradeSkillModal()">Delete Trade Skill</span></li>
+            <li ng-if="selectedCharacter.skills.numTradeSkills"><span ng-click="openDeleteTradeSkillModal()">Delete Trade Skill</span></li>
+            <li ng-if="!selectedCharacter.skills.numTradeSkills"><span class="dropDownMenuDisabled">Delete Trade Skill</span></li>
           </ul>
         </div>
         <table id="skillsTable">
           <tr ng-repeat="skill in skills.skillList | skillSorter" ng-if="skill.displayMe()" ng-class="{learnedSkill: skill.hasBeenLearned}">
-            <td><span ng-class="{specialty:skill.isSpecialty(),skill:!skill.isSpecialty()}" ng-click="skills.toggleSkill(skill)">{{skill.name}}</span></td>
+            <td><span ng-class="getSkillClass(skill)" ng-click="skills.toggleSkill(skill)">{{skill.name}}</span></td>
             <td ng-if="skill.showValue()">
               <input ng-if="skillValueBeingEdited(skill)" traveller-autofocus class="skillValueInput" id="{{skill.name}}" type="number" min="0" max="20" value="{{skill.value}}" ng-model="skill.value" ng-blur="skillValueEditingComplete(skill)">
               <span ng-if="!skillValueBeingEdited(skill)" class="skillValue" ng-click="editSkillValue(skill)" style="font-weight:bold">{{skill.value}}</span>
@@ -179,7 +196,7 @@
     <h2>Random Stuff</h2>
     <div class="btn-group" uib-dropdown style="float:top">
       <button id="randomPatronButton" type="button" class="btn btn-primary" uib-dropdown-toggle>Random patron<span class="caret"></span></button>
-      <ul class="uib-dropdown-menu randomMenu" role="menu" aria-labelledby="randomButton" id="randomPatronMenu">
+      <ul class="uib-dropdown-menu dropDownMenu" role="menu" aria-labelledby="randomButton" id="randomPatronMenu">
         <li><span ng-click="tables.randomPatron(0)">Random Patron</span></li>
         <li><span ng-click="tables.randomPatron(1)">Criminals</span></li>
         <li><span ng-click="tables.randomPatron(2)">Leaders</span></li>
@@ -200,7 +217,7 @@
     
     <div class="btn-group" uib-dropdown style="float:top">
       <button id="randomEncounterButton" type="button" class="btn btn-primary" uib-dropdown-toggle>Random Encounter<span class="caret"></span></button>
-      <ul class="uib-dropdown-menu randomMenu" role="menu" aria-labelledby="randomButton" id="randomEncounterMenu">
+      <ul class="uib-dropdown-menu dropDownMenu" role="menu" aria-labelledby="randomButton" id="randomEncounterMenu">
         <li><span ng-click="tables.randomEncounter(0)">StarportEncountersTable</span></li>
         <li><span ng-click="tables.randomEncounter(1)">RuralEncountersTable</span></li>
         <li><span ng-click="tables.randomEncounter(2)">UrbanEncountersTable</span></li>

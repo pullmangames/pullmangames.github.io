@@ -132,6 +132,25 @@ skillsModule.factory('skills', ['skillsService', 'skill', function(skillsService
          _skillDict[skillToAdd.name] = skillToAdd;
       }
 
+      this.deleteSkill = function(index)
+      {
+         var skillToDelete = this.skillList[index];
+         if (skillToDelete.isTradeSkill)
+         {
+            this.numTradeSkills--;
+            if (!this.numTradeSkills)
+            {
+               _skillDict["Trade"].hasBeenLearned = false;
+            }
+         }
+         this.skillList.splice(index, 1);
+         delete _skillDict[skillToDelete.name];
+      }
+      
+      this.findSkill = function(skillName) {
+         return _skillDict[skillName];
+      }
+
       for (var i = 0, len = skillsService.defaultSkillList.length; i < len; i++)
       {
          this.addSkill(new skill(skillsService.defaultSkillList[i].name));

@@ -1,6 +1,6 @@
 charModule = angular.module('travellerCharacters', []); //declare the module for handling chracters
 
-charModule.controller('charactersController', ['$scope', '$uibModal', 'charactersService', 'skill', function($scope, $uibModal, charactersService, skill) {
+charModule.controller('charactersController', ['$scope', '$uibModal', 'charactersService', 'skillsService', 'skill', 'alertsService', function($scope, $uibModal, charactersService, skillsService, skill, alertsService) {
    $scope.characterList = charactersService.characters;
 
    $scope.charTabActive = {};
@@ -75,7 +75,6 @@ charModule.controller('charactersController', ['$scope', '$uibModal', 'character
 
    $scope.openAddTradeSkillModal = function() {
       var modalInstance = $uibModal.open({
-         animation: $scope.animationsEnabled,
          templateUrl: 'addTradeSkillModal.view',
          controller: 'addTradeSkillModalController',
          size: 'sm'
@@ -83,15 +82,68 @@ charModule.controller('charactersController', ['$scope', '$uibModal', 'character
 
       modalInstance.result.then(
          function(newTradeSkillName) {
+            if (!newTradeSkillName)
+            {
+               alertsService.addAlert("danger", "Cannot add trade skill: invalid name");
+               return;
+            }
+            else if ($scope.selectedCharacter.skills.findSkill(newTradeSkillName))
+            {
+               alertsService.addAlert("danger", "Cannot add trade skill \"" + newTradeSkillName + "\": a skill with that name already exists");
+               return;
+            }
+            
             var newSkill = new skill(newTradeSkillName, true);
             newSkill.hasBeenLearned = true;
             newSkill.value = 0;
             $scope.selectedCharacter.skills.addSkill(newSkill);
-         },
-         function() {
          }
       );
    };
+   
+   $scope.openDeleteTradeSkillModal = function() {
+      var modalInstance = $uibModal.open({
+         templateUrl: 'deleteTradeSkillModal.view',
+         controller: 'deleteTradeSkillModalController',
+         size: 'sm',
+         resolve: {
+            tradeSkills: function() {
+               var tradeSkills = [];
+               var skillList = $scope.selectedCharacter.skills.skillList;
+               var len = skillList.length;
+               for (var i = 0; i < len; i++)
+               {
+                  if (skillList[i].isTradeSkill)
+                  {
+                     tradeSkills.push({index: i, skill: skillList[i]});
+                  }
+               }
+               tradeSkills.sort(function(a,b) {return a.skill.name.localeCompare(b.skill.name);});
+               return tradeSkills;
+            }
+         }
+      });
+
+      modalInstance.result.then(
+         function(index) {
+            $scope.selectedCharacter.skills.deleteSkill(index);
+         }
+      );
+   };
+   
+   $scope.getSkillClass = function(skill) {
+      if (skill.name === "Trade")
+      {
+         return "skillIsTrade";
+      }
+      var skillData = skillsService.lookupDefaultSkill(skill.name);
+      if (   (skillData && skillData.parent)
+          || skill.isTradeSkill)
+      {
+         return "specialtySkill";
+      }
+      return "nonSpecialtySkill";
+   }
    
    if ($scope.characterList.length)
    {
@@ -105,6 +157,19 @@ charModule.controller('addTradeSkillModalController', ['$scope', '$uibModalInsta
    };
 
    $scope.addTradeSkillModalCancel = function() {
+      $uibModalInstance.dismiss('cancel');
+   };
+}]);
+
+charModule.controller('deleteTradeSkillModalController', ['$scope', '$uibModalInstance', 'tradeSkills', function ($scope, $uibModalInstance, tradeSkills) {
+   $scope.tradeSkills = tradeSkills;
+   $scope.selectedSkill = tradeSkills[0];
+
+   $scope.deleteTradeSkillModalOk = function() {
+      $uibModalInstance.close($scope.selectedSkill.index);
+   };
+
+   $scope.deleteTradeSkillModalCancel = function() {
       $uibModalInstance.dismiss('cancel');
    };
 }]);
@@ -235,13 +300,13 @@ charModule.service('charactersService', ['$rootScope', 'character', 'skill', 'al
             try {
                var charFromJson = angular.fromJson(e.target.result);
             } catch (err) {
-               alertsService.addAlert("warning", "The file you tried to load does not appear to be a character sheet");
+               alertsService.addAlert("danger", "The file you tried to load does not appear to be a character sheet");
             }
 
             if (   !charFromJson.formatVersion
                 || charFromJson.formatVersion != 1)
             {
-               alertsService.addAlert("warning", "The character sheet you loaded has in invalid version number");
+               alertsService.addAlert("danger", "The character sheet you loaded has in invalid version number");
                return;
             }
 
@@ -262,7 +327,7 @@ charModule.service('charactersService', ['$rootScope', 'character', 'skill', 'al
       try {
          reader.readAsText(fileToRead);
       } catch (err) {
-         alertsService.addAlert("warning", "Unable to read " + fileToRead.name)
+         alertsService.addAlert("danger", "Unable to read " + fileToRead.name)
       }
    }
 
