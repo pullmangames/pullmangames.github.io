@@ -53,12 +53,25 @@
   </script>
 
 <!------------------------------ Character view ------------------------------->
+
+  <script type="text/ng-template" id="addTradeSkillModal.view">
+    <div class="modal-header">
+      <h4 class="modal-title">Add a trade skill</h4>
+    </div>
+    <div class="modal-body">
+      <input traveller-autofocus ng-model="newTradeSkillName"></input>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" type="button" ng-click="addTradeSkillModalOk()">OK</button>
+      <button class="btn btn-warning" type="button" ng-click="addTradeSkillModalCancel()">Cancel</button>
+    </div>
+  </script>
+
   <script type="text/ng-template" id="characters.view">
- 
 
     <div class="btn-group" uib-dropdown style="float:right">
       <button id="charMgmtButton" type="button" class="btn btn-primary" uib-dropdown-toggle>Character Management<span class="caret"></span></button>
-      <ul class="uib-dropdown-menu" role="menu" aria-labelledby="charMgmtButton" id="charMgmtMenu">
+      <ul class="uib-dropdown-menu dropDownMenu" role="menu" aria-labelledby="charMgmtButton" id="charMgmtMenu">
         <li><span ng-click="addCharacter()">Create New</span></li>
         <li><span class="charImporter">Import<input type="file" onchange="angular.element(this).scope().importCharacter(angular.element(this))"></span></li>
         <li><span ng-click="exportAll()">Export All</span></li>
@@ -119,9 +132,16 @@
       <form>
         <h3>Skills</h3>
         Click on a skill to learn/forget it. Click on the skill level to change it.
+        <div class="btn-group" uib-dropdown style="float:right">
+          <button id="skillMgmtButton" type="button" class="btn btn-primary" uib-dropdown-toggle>Skill Management<span class="caret"></span></button>
+          <ul class="uib-dropdown-menu dropDownMenu" role="menu" aria-labelledby="skillMgmtButton" id="skillMgmtMenu">
+            <li><span ng-click="openAddTradeSkillModal()">New Trade Skill</span></li>
+            <li><span ng-click="openDeleteTradeSkillModal()">Delete Trade Skill</span></li>
+          </ul>
+        </div>
         <table id="skillsTable">
           <tr ng-repeat="skill in skills.skillList | skillSorter" ng-if="skill.displayMe()" ng-class="{learnedSkill: skill.hasBeenLearned}">
-            <td><span ng-class="{specialty:skill.isSpecialty(),skill:!skill.isSpecialty()}" ng-click="skills.toggleSkill(skill.name)">{{skill.name}}</span></td>
+            <td><span ng-class="{specialty:skill.isSpecialty(),skill:!skill.isSpecialty()"}" ng-click="skills.toggleSkill(skill)">{{skill.name}}</span></td>
             <td ng-if="skill.showValue()">
               <input ng-if="skillValueBeingEdited(skill)" traveller-autofocus class="skillValueInput" id="{{skill.name}}" type="number" min="0" max="20" value="{{skill.value}}" ng-model="skill.value" ng-blur="skillValueEditingComplete(skill)">
               <span ng-if="!skillValueBeingEdited(skill)" class="skillValue" ng-click="editSkillValue(skill)" style="font-weight:bold">{{skill.value}}</span>

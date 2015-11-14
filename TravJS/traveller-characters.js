@@ -1,6 +1,6 @@
 charModule = angular.module('travellerCharacters', []); //declare the module for handling chracters
 
-charModule.controller('charactersController', ['$scope', 'charactersService', function($scope, charactersService) {
+charModule.controller('charactersController', ['$scope', '$uibModal', 'charactersService', 'skill', function($scope, $uibModal, charactersService, skill) {
    $scope.characterList = charactersService.characters;
 
    $scope.charTabActive = {};
@@ -73,10 +73,40 @@ charModule.controller('charactersController', ['$scope', 'charactersService', fu
       _skillBeingEdited = "";
    }
 
+   $scope.openAddTradeSkillModal = function() {
+      var modalInstance = $uibModal.open({
+         animation: $scope.animationsEnabled,
+         templateUrl: 'addTradeSkillModal.view',
+         controller: 'addTradeSkillModalController',
+         size: 'sm'
+      });
+
+      modalInstance.result.then(
+         function(newTradeSkillName) {
+            var newSkill = new skill(newTradeSkillName, true);
+            newSkill.hasBeenLearned = true;
+            newSkill.value = 0;
+            $scope.selectedCharacter.skills.addSkill(newSkill);
+         },
+         function() {
+         }
+      );
+   };
+   
    if ($scope.characterList.length)
    {
       $scope.selectCharacter(0);
    }
+}]);
+
+charModule.controller('addTradeSkillModalController', ['$scope', '$uibModalInstance', function ($scope, $uibModalInstance) {
+   $scope.addTradeSkillModalOk = function() {
+      $uibModalInstance.close($scope.newTradeSkillName);
+   };
+
+   $scope.addTradeSkillModalCancel = function() {
+      $uibModalInstance.dismiss('cancel');
+   };
 }]);
 
 /* Sort the skills.
@@ -92,7 +122,41 @@ charModule.filter('skillSorter', ['skillsService', function(skillsService) {
       sorted.sort(function(a, b) {
          var skillDataA = skillsService.lookupDefaultSkill(a.name);
          var skillDataB = skillsService.lookupDefaultSkill(b.name);
-         if (skillDataA && skillDataA.parent) //a is a specialty
+         if (a.isTradeSkill) //a is a trade skill
+         {
+            if (b.isTradeSkill) //both are trade skills (specialties with same parent)
+            {
+               return a.name.localeCompare(b.name);
+            }
+            else if (skillDataB && skillDataB.parent) //a is a trade skill, b is a specialty (specialties with different parents)
+            {
+               return "Trade".localeCompare(skillDataB.parent);
+            }
+            else if (b.name === "Trade") //a is a trade skill, b is "Trade"
+            {
+               return 1; //b is a's parent
+            }
+            else //a is a trade skill, b is not a specialty
+            {
+               return "Trade".localeCompare(b.name); //b is not a's parent
+            }
+         }
+         else if (b.isTradeSkill)
+         {
+            if (skillDataA && skillDataA.parent) //a is a specialty, b is a trade skill (specialties with different parents)
+            {
+               return skillDataA.parent.localeCompare("Trade");
+            }
+            else if (a.name === "Trade") //a is "Trade", b is a trade skill
+            {
+               return -1; //a is b's parent
+            }
+            else //a is not a specialty, b is a trade skill
+            {
+               return a.name.localeCompare("Trade"); //a is not b's parent
+            }
+         }
+         else if (skillDataA && skillDataA.parent) //a is a specialty
          {
             if (skillDataB && skillDataB.parent) //both are specialties
             {

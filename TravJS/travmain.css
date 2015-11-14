@@ -37,6 +37,9 @@
           padding-left: 15px;
           cursor: default;
       }
+      .skillTrade {
+         cursor: default;
+      }
       .learnedSkill {
          background: LightGray;
       }
@@ -55,7 +58,7 @@
          margin: 0;
          text-align: right;
       }
-      #charMgmtMenu span {
+      .dropDownMenu span {
          display: block;
          padding-bottom: 3px;
          padding-left: 20px;
@@ -63,7 +66,7 @@
          padding-top: 3px;
          cursor: default;
       }
-      #charMgmtMenu span:hover {
+      .dropDownMenu span:hover {
          background-color: WhiteSmoke;
       }
       .randomMenu span {
