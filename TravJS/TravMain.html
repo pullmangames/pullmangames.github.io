@@ -141,7 +141,7 @@
         </div>
         <table id="skillsTable">
           <tr ng-repeat="skill in skills.skillList | skillSorter" ng-if="skill.displayMe()" ng-class="{learnedSkill: skill.hasBeenLearned}">
-            <td><span ng-class="{specialty:skill.isSpecialty(),skill:!skill.isSpecialty()"}" ng-click="skills.toggleSkill(skill)">{{skill.name}}</span></td>
+            <td><span ng-class="{specialty:skill.isSpecialty(),skill:!skill.isSpecialty()}" ng-click="skills.toggleSkill(skill)">{{skill.name}}</span></td>
             <td ng-if="skill.showValue()">
               <input ng-if="skillValueBeingEdited(skill)" traveller-autofocus class="skillValueInput" id="{{skill.name}}" type="number" min="0" max="20" value="{{skill.value}}" ng-model="skill.value" ng-blur="skillValueEditingComplete(skill)">
               <span ng-if="!skillValueBeingEdited(skill)" class="skillValue" ng-click="editSkillValue(skill)" style="font-weight:bold">{{skill.value}}</span>
