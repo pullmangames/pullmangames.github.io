@@ -17,6 +17,7 @@
     <script src="ship-management.js"></script>
     <script src="random-tables.js"></script>
     <script src="datatables.js"></script>
+    <script src="decoder.js"></script>
     <link rel="stylesheet" href="travmain.css">
   </head>
   <body style="margin-left:8px">
@@ -32,6 +33,7 @@
           <li> <a href="#/characters">Character Test</a></li>
           <li> <a href="#/shipManagement">Ship Management</a></li>
           <li> <a href="#/random">Random Generators</a></li>
+          <li> <a href="#/decoder">Decoder</a></li>
         </ul>
       </div>
     </section>
@@ -301,6 +303,126 @@
          </ol>
         </div>
 </script>
+
+
+<!----------------------------------Ref View-------------------------->
+  <script type="text/ng-template" id="Ref.view">
+    <br><br>
+    <h2>Referee Section</h2>
+    
+  </script>
+  
+<!----------------------------------Player Secrets View-------------------------->
+  <script type="text/ng-template" id="decoder.view">
+    <br><br>
+    <h2>Hidden stuff and decoder ring</h2>
+	 <form ng-submit="decoder.whydecode()" class="form-inline">
+               <input type="textarea"  class="form-control" ng-model="decoder.input" size="100" placeholder="Encoded data goes here">
+               <input type="text" class="form-control" ng-model="decoder.key" size="20" placeholder="Secret Key">
+               <input class="btn btn-default btn-primary" type="submit" value="Decode">
+            </form>
+    <button ng-click="decoder.whyencode()">ENCODE</button>
+            
+    <h3> Output: </h3>
+    <div><pre>{{decoder.result}}</pre></div>
+    
+    <h2> Secrets </h2>
+    <h3> Book </h3>
+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
+    <h3> Epic </h3>
+    <pre>
+The task force left Vanejen with a cargo of pharmaceuticals for Regina.
+It consisted of four ships: three scouts and a transport.
+The transport Gyro Cadiz was a remade subsidized merchant, fitted with long range tanks. One scout, the Blatant Lie, was a mobilized half-pay courier with a crew of three. Another, the Carlisle, was a sleek new ship with a freshly trained crew.
+The last, Black Gold, was a ringer; a courier with a crew of malice and mold.
+The route we took was circuitous, intended to avoid Zhodani patrols.
+A few times, the group even jumped to deep space and then again to a world beyond.
+I fell sick at Rhylanor, and laid in bunk through weeks of suffering.
+When I recovered, we were stepping out of jump space to refuel at a world below.
+It was safer to refuel from an ocean; fewer Zhodani would be there, if they were anywhere. And there we still met disaster. An ion storm from the star flared as we came in.
+The Gyro Cadiz was forced to land, and it landed badly.
+The other ships scattered across many kilometers, with only the traitors near.
+Carlisle crashed, and Blatant Lie went to its aid. In that time, the blackguards made their move. When Blatant Lie reappeared with Carlisle's crew aboard, Gyro was under fire from Black Gold. The battle ensued, for hours.
+Ultimately, the battle was too intense, and Blatant Lie landed behind a hill, damaged.
+Black Gold had further crippled Gyro Cadiz, and was killing her,
+However, the hero crew had a plan.
+While Gyro drew the traitors' fire (already doing so admirably),
+the crew of Carlisle dragged four missiles to the hilltop,
+and the crew of Blatant Lie maneuvered around the crags.
+In coordinated action, they blasted the traitors and saved their comrades. One traitor survived, and recounted their story.
+They were impostors, with a hijacked scout and false identities.
+They had sabotaged the transport, and were in it for the black-market money. He died as he spoke, painfully and slowly.
+Surveying the results, the crews found that nothing would now fly,
+Not Gyro, not Blatant Lie, not Black Gold.
+Certainly not Carlisle, lying 600 kilometers distant.
+They were marooned.
+
+
+A ray of hope emerged.
+Salvage of parts form some ships could make at least one work.
+Parts from Black Gold, from Gyro Cadiz, even from Carlisle could make Blatant Lie fly again. They mounted an expedition to Carlisle, overland, covering 600 kilometers.
+They first installed a crew in Gyro Cadiz to guard it; the rest trekked overland, 600 kilometers. One died along the way.
+Another died on the way back.
+But they carried some parts back. Not enough.
+The Gyro crew computer-predicted a long, bad, winter season.
+Not enough time to make another trip. They had to hole up.
+Together they had glimpsed a structure momentarily along the way.
+On a high peak, viewed in twilight, it promised shelter.
+Trekking to it, they found a tall octagon built of fine-hewn stones.
+High on a crag in a valley.
+Moving the fusion heater and crates of rations to it, they settled in for winter.
+Snow and ice hemmed them in.
+Water was easy to get, melted from snow.
+Wolves growled at the doors, and even at the windows from atop the snow drifts.
+But they survived. They even killed wolves and ate them for food.
+Almost, they went crazy. Tempers flared.
+And the wolves beat at the doors and windows.
+Once, snow on the roof threatened to collapse it.
+But they shovelled it away to save their lives, and patched the holes.
+Late in the winter, the wolves attacked again,
+And the group retreated, leaving the second floor to wolves streaming in through the windows. They blocked the shaft of the fireplace, and held them off for a while.
+They moved the fusion heater to hold them back, and discovered the passage leading down. Two floors stood below; large octagonal rooms with buttresses at the eight corners.
+They hid there at night, trusting to stone to protect them from wolves.
+On t h e lowest floor, they found mystic writing, to a base number eight.
+And a central altar with human bones.
+
+
+Magically, a passage down appeared, with stairs leading to the bowels of the world.
+They followed the stairs down.
+Down countless flights of stairs, past rooms of mystery, finally to a well of running water.
+Past that well to a long corridor, to another level, to a huge vault door.
+As they stood, a quake shook the chamber; as they cowered, the door swung open.
+To reveal a magic bridge of light across a vast underground river cavern.
+Beyond stood a warren of rooms of silver and gold, each different, each with fantastic artifacts. Leaning against the wall, a hidden switch was apparently tripped,
+And suddenly, the floor glowed orange.
+One person lost a finger-tip when he touched it.
+Another hidden switch was tripped— and holographic visions of food appeared as mirages to Tantalize the famished crews.
+One gave in to temptation, and clawed his way into the vision.
+Whereupon it materialized, as real meat, real fruit, and real drink.
+Other rooms held null-G sleeping berths, areas with mystic columns for no apparent purpose, Or fabulous crystal eggs larger than six people.
+In the farthest back room, a huge globe of the world stood and revolved in real-time.
+It responded to their touch, and (by looking close) they could see where they had landed.
+The stayed in the rooms, warm and away from the wolves and cold of the surface, for days. But nowhere was there anything to carry away, nor to help in their plight.
+They turned back, only to find the magic bridge of light gone and the vault door closed.
+They rigged ropes and slings and swung four of their six across before the bridge clicked on. To allow the remaining two to just walk across the chasm.
+As they did, the bridge turned red, and turned off again just as the last stepped off it.
+As they sighed relief, the vault door swung open, and they left hurriedly.
+Many times they came back, but never again did the door open.
+
+
+In spring, they mounted another expedition to the crashed Carlisle, and salvaged parts. They fixed Blatant Lie enough to jump, and three were chosen to make the voyage.
+It jumped and stuttered through the system and finally made a single hop.
+And came out in the wrong place.
+A battle raged in the system, and as the ships fought,
+The Blatant Lie hid, hoping its side would win.
+One torpedo from the fighting never hit a target, and streamed on alone, until it caught Blatant Lie in its sensors and moved closer, exploding to blank the scout's screens.
+And disable its drives.
+Without drives, the ship could not maneuver, and no one heard its calls for help.
+The belligerents left, first one side retreating, then the other pursuing.
+Left alone, the scout and its heroic crew settled into the vacuous night and died.
+</pre>
+  </script>
+  
 
 </html>
 
