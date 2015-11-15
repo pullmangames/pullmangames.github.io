@@ -39,6 +39,11 @@ charModule.controller('charactersController', ['$scope', '$uibModal', 'character
       $scope.selectCharacter(charactersService.addCharacter());
    }
 
+   $scope.saveToLocalStorage = function()
+   {
+      localStorage.setItem("characterList", angular.toJson($scope.characterList));
+   }
+
    $scope.importCharacter = function(inputElementList)
    {
       var inputElement = inputElementList[0];
@@ -180,7 +185,7 @@ charModule.controller('deleteTradeSkillModalController', ['$scope', '$uibModalIn
 //The selected character will be stored in the object passed to the directive via ng-model
 //Example: <traveller-skill-dm ng-model="dmResult"></traveller-skill-dm>
 //In the example, the chosen character will be saved in a scope variable named dmResult
-//The bound object will be given the following properties:
+//The bound object will have the following properties:
 //  character: the selected character
 //  dm:        selected character's dice modifier
 charModule.directive('travellerSkillDm', [function() {
@@ -392,7 +397,55 @@ charModule.factory('character', ['skills', function(skills) {
 
 charModule.service('charactersService', ['$rootScope', 'character', 'skill', 'alertsService', function($rootScope, character, skill, alertsService) {
    this.characters = [];
-   _newCharsCreated = 0;
+
+   var _newCharsCreated = 0;
+   var _storedChars;
+
+   var _buildCharFromJsonChar = function(jsonChar, errorMsg)
+   {
+      var newChar = new character();
+
+      if (   !jsonChar.formatVersion
+          || jsonChar.formatVersion != 1)
+      {
+         if (errorMsg)
+         {
+            alertsService.addAlert("danger", errorMsg);
+         }
+         return null;
+      }
+
+      //Skills on a saved character may not match the skills from a new
+      //character, so build a skill list that matches
+      var jsonSkillList = jsonChar.skills.skillList;
+      newChar.skills.skillList = [];
+      for (var j = 0; j < jsonSkillList.length; j++)
+      {
+         newChar.skills.addSkill(new skill(jsonSkillList[j].name));
+      }
+
+      angular.merge(newChar, jsonChar);
+      return newChar;
+   };
+
+   try
+   {
+      _storedChars = angular.fromJson(localStorage.getItem("characterList"));
+   }
+   catch (err) { }
+
+   if (_storedChars)
+   {
+      var storedCount = _storedChars.length;
+      for (var i = 0; i < storedCount; i++)
+      {
+         var newChar = _buildCharFromJsonChar(_storedChars[i], "Saved character sheet has in invalid version number");
+         if (newChar)
+         {
+            this.characters.push(newChar);
+         }
+      }
+   }
 
    this.addCharacter = function() {
       var newChar = new character();
@@ -406,31 +459,15 @@ charModule.service('charactersService', ['$rootScope', 'character', 'skill', 'al
       var charList = this.characters;
       reader.onload = function(e) {
          $rootScope.$apply(function() {
-            var newChar = new character();
-
             try {
                var charFromJson = angular.fromJson(e.target.result);
             } catch (err) {
-               alertsService.addAlert("danger", "The file you tried to load does not appear to be a character sheet");
-            }
-
-            if (   !charFromJson.formatVersion
-                || charFromJson.formatVersion != 1)
-            {
-               alertsService.addAlert("danger", "The character sheet you loaded has in invalid version number");
+               alertsService.addAlert("danger", "The file you tried to import does not appear to be a character sheet");
                return;
             }
 
-            //Skills on a saved character may not match the skills from a new
-            //character, so build a skill list that matches
-            var jsonSkillList = charFromJson.skills.skillList;
-            newChar.skills.skillList = [];
-            for (var i = 0; i < jsonSkillList.length; i++)
-            {
-               newChar.skills.addSkill(new skill(jsonSkillList[i].name));
-            }
+            var newChar = _buildCharFromJsonChar(charFromJson, "The character sheet you imported has in invalid version number");
 
-            angular.merge(newChar, charFromJson);
             charList.push(newChar);
             selectCharacter(charList.length - 1);
       })};
