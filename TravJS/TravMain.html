@@ -4,15 +4,20 @@
     <!--angular-->
     <script src="lib/angular.js"></script>
     <script src="lib/angular-route.js"></script>
+    <script src="lib/angular-sanitize.js"></script>
     <!--ui bootstrap-->
     <script src="lib/ui-bootstrap-tpls-0.14.3.js"></script>
     <!--Bootstrap-->
     <link href="lib/bootstrap.css" rel="stylesheet">
+    <!--ui-select-->
+    <script src="lib/ui-select/select.js"></script>
+    <link href="lib/ui-select/select.css" rel="stylesheet">
     <!--Stuff we wrote-->
     <script src="travmain.js"></script>
     <script src="traveller-alerts.js"></script>
     <script src="traveller-characters.js"></script>
     <script src="traveller-skills.js"></script>
+    <script src="traveller-dm-selector-test.js"></script>
     <script src="diceRoller.js"></script>
     <script src="ship-management.js"></script>
     <script src="random-tables.js"></script>
@@ -30,7 +35,8 @@
       <div class="container"> <!-- Main bootstrap container-->
         <ul class="nav nav-pills">
           <li> <a href="#/roll">Roll Test</a> </li>
-          <li> <a href="#/characters">Character Test</a></li>
+          <li> <a href="#/characters">Characters</a></li>
+          <li> <a href="#/dmSelectorTest">DM Selector Test</a></li>
           <li> <a href="#/shipManagement">Ship Management</a></li>
           <li> <a href="#/random">Random Generators</a></li>
           <li> <a href="#/decoder">Decoder</a></li>
@@ -87,7 +93,7 @@
   <!------------------- Main Character View ------------------->
   <script type="text/ng-template" id="characters.view">
 
-    <div class="btn-group" uib-dropdown style="float:right">
+    <div class="btn-group" uib-dropdown style="float:right;margin-right:20px">
       <button id="charMgmtButton" type="button" class="btn btn-primary" uib-dropdown-toggle>Character Management<span class="caret"></span></button>
       <ul class="uib-dropdown-menu dropDownMenu" role="menu" aria-labelledby="charMgmtButton" id="charMgmtMenu">
         <li><span ng-click="addCharacter()">Create New</span></li>
@@ -131,9 +137,9 @@
               <td align=right>Score</td>
               <td ng-repeat='val in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]'>{{val}}</td>
           </tr>
-          <tr align=center ng-repeat='stat in ["Str","Dex","End","Int","Edu","Soc"]'>
-              <td align=right>{{stat}}</td>
-              <td ng-repeat='val in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]' style="cursor:pointer" ng-click="selectedCharacter[stat]=val" ng-class="{bgDimGray: selectedCharacter[stat]>=val}"></td>
+          <tr align=center ng-repeat="characteristic in characteristics | orderBy: 'order'">
+              <td align=right>{{characteristic.name}}</td>
+              <td ng-repeat='val in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]' style="cursor:pointer" ng-click="selectedCharacter[characteristic.name]=val" ng-class="{bgDimGray: selectedCharacter[characteristic.name]>=val}"></td>
           </tr>
       </table>
 
@@ -150,7 +156,7 @@
       <form>
         <h3>Skills</h3>
         Click on a skill to learn/forget it. Click on the skill level to change it. Trade skills can be added or removed using the Skill Management button.
-        <div class="btn-group" uib-dropdown style="float:right;padding-right:20px">
+        <div class="btn-group" uib-dropdown style="float:right;margin-right:20px">
           <button id="skillMgmtButton" type="button" class="btn btn-primary" uib-dropdown-toggle>Skill Management<span class="caret"></span></button>
           <ul class="uib-dropdown-menu dropDownMenu" role="menu" aria-labelledby="skillMgmtButton" id="skillMgmtMenu">
             <li><span ng-click="openAddTradeSkillModal()">New Trade Skill</span></li>
@@ -191,6 +197,55 @@
 
   </script>
 
+<!-------------------------- Skill Selector Template -------------------------->
+  <script type="text/ng-template" id="travellerSkillDm.view">
+    <div style="padding:10px;border:1px solid black;width:425px">
+      <ui-select on-select="updateCharList()" on-remove="updateCharList()" theme="bootstrap" ng-model="selected.skill" style="width:400px;margin-right:5px;margin-bottom:10px">
+        <ui-select-match placeholder="Select skill...">{{$select.selected.nameIncludingParent}}</ui-select-match>
+        <ui-select-choices repeat="skill in skills | filter: {nameIncludingParent: $select.search}">
+          <span ng-bind-html="skill.nameIncludingParent | highlight: $select.search"></span>
+        </ui-select-choices>
+      </ui-select>
+      <table style="margin-bottom:10px">
+        <tr>
+          <td style="padding-right:5px">
+            <ui-select multiple on-select="updateCharList()" on-remove="updateCharList()" theme="bootstrap" ng-model="selected.characteristics" style="width:250px;margin-right:5px">
+              <ui-select-match placeholder="Select characteristics...">{{$item.name}}</ui-select-match>
+              <ui-select-choices repeat="characteristic in characteristics | filter: {name: $select.search}">
+                <span ng-bind-html="characteristic.name | highlight: $select.search"></span>
+              </ui-select-choices>
+            </ui-select>
+          </td>
+          <td>
+            <button type="button" class="btn btn-danger" ng-click="clearSelections()">Clear Selections</button>
+          </td>
+        </tr>
+      </table>
+      <style>
+        table.resultsTable tr td {
+           cursor:pointer;
+        }
+        table.resultsTable tr:hover td {
+           background-color:WhiteSmoke;
+        }
+      </style>
+      <table class="resultsTable">
+        <tr ng-repeat="result in results | orderBy:'-dm'" ng-click="selectResult($index)" >
+          <td style="padding-right:10px">{{result.character.name}}:</td>
+          <td style="padding-right:10px">{{result.dm}}</td>
+          <td><span ng-if="$index === selectedResultIndex" class="glyphicon glyphicon-arrow-left" aria-hidden="true" style="color:green"></span></td>
+        </tr>
+      </table>
+    </div>
+  </script>
+
+<!---------------------------- Skill Selector Test ---------------------------->
+  <script type="text/ng-template" id="dmSelectorTest.view">
+    <br><br>
+    <traveller-skill-dm ng-model="dmResult"></traveller-skill-dm>
+    <br>
+    <span ng-if="dmResult.character">You selected {{dmResult.character.name}}, who has a dice modifier of {{dmResult.dm}}.</span>
+  </script>
 
 <!----------------------------------Table Roller View-------------------------->
   <script type="text/ng-template" id="randomtables.view">
