@@ -1,8 +1,12 @@
 skillsModule = angular.module('travellerSkills', []); //declare the module for handling skills
 
 skillsModule.factory('skill', ['skillsService', function(skillsService) {
-   var skill = function(name) {
-      this.name = name
+   var skill = function(name, isTradeSkill) {
+      this.name = name;
+      if (isTradeSkill)
+      {
+         this.isTradeSkill = true;
+      }
 
       this.displayMe = function() {
          var matchingSkill = skillsService.lookupDefaultSkill(this.name);
@@ -18,7 +22,8 @@ skillsModule.factory('skill', ['skillsService', function(skillsService) {
       this.isSpecialty = function() {
          var matchingSkill = skillsService.lookupDefaultSkill(this.name);
 
-         if (matchingSkill && matchingSkill.parent) //child skill (specialty)
+         if (   (matchingSkill && matchingSkill.parent) //child skill (specialty)
+             || this.isTradeSkill) //trade skills act like children
          {
             return true;
          }
@@ -28,9 +33,10 @@ skillsModule.factory('skill', ['skillsService', function(skillsService) {
       this.showValue = function() {
          var matchingSkill = skillsService.lookupDefaultSkill(this.name);
 
-         if (   matchingSkill
-             && matchingSkill.specialties
-             && matchingSkill.specialties.length > 0) //parent skill - never show value
+         if (   (   matchingSkill
+                 && matchingSkill.specialties
+                 && matchingSkill.specialties.length > 0) //parent skill - never show value
+             || this.name === "Trade") //Trade acts like a parent skill
          {
             return false;
          }
@@ -48,9 +54,15 @@ skillsModule.factory('skills', ['skillsService', 'skill', function(skillsService
    var skills = function() {
       var _skillDict = {};
 
-      this.toggleSkill = function(skillName) {
-         var skill = _skillDict[skillName];
-         var skillData = skillsService.lookupDefaultSkill(skillName);
+      this.toggleSkill = function(skill) {
+         //Trade is a special case. We don't want it to be toggle-able
+         if (skill.name === "Trade" || skill.isTradeSkill)
+         {
+            return;
+         }
+
+         var skill = _skillDict[skill.name];
+         var skillData = skillsService.lookupDefaultSkill(skill.name);
 
          if (skillData)
          {
@@ -107,11 +119,36 @@ skillsModule.factory('skills', ['skillsService', 'skill', function(skillsService
          }
       };
 
+      this.numTradeSkills = 0;
       this.skillList = [];
       this.addSkill = function(skillToAdd)
       {
+         if (skillToAdd.isTradeSkill)
+         {
+            this.numTradeSkills++;
+            _skillDict["Trade"].hasBeenLearned = true;
+         }
          this.skillList.push(skillToAdd);
          _skillDict[skillToAdd.name] = skillToAdd;
+      }
+
+      this.deleteSkill = function(index)
+      {
+         var skillToDelete = this.skillList[index];
+         if (skillToDelete.isTradeSkill)
+         {
+            this.numTradeSkills--;
+            if (!this.numTradeSkills)
+            {
+               _skillDict["Trade"].hasBeenLearned = false;
+            }
+         }
+         this.skillList.splice(index, 1);
+         delete _skillDict[skillToDelete.name];
+      }
+      
+      this.findSkill = function(skillName) {
+         return _skillDict[skillName];
       }
 
       for (var i = 0, len = skillsService.defaultSkillList.length; i < len; i++)
@@ -244,7 +281,7 @@ skillsModule.service('skillsService', [function() {
       { name:"Vacc Suit",                                                   specialties:[] },
       { name:"Zero-G",                                                      specialties:[] }
    ];
-
+   
    var _defaultSkillDict = {};
    var len = this.defaultSkillList.length;
    for (var i = 0; i < len; i++)

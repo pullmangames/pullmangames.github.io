@@ -1,6 +1,6 @@
 charModule = angular.module('travellerCharacters', []); //declare the module for handling chracters
 
-charModule.controller('charactersController', ['$scope', 'charactersService', function($scope, charactersService) {
+charModule.controller('charactersController', ['$scope', '$uibModal', 'charactersService', 'skillsService', 'skill', 'alertsService', function($scope, $uibModal, charactersService, skillsService, skill, alertsService) {
    $scope.characterList = charactersService.characters;
 
    $scope.charTabActive = {};
@@ -73,10 +73,105 @@ charModule.controller('charactersController', ['$scope', 'charactersService', fu
       _skillBeingEdited = "";
    }
 
+   $scope.openAddTradeSkillModal = function() {
+      var modalInstance = $uibModal.open({
+         templateUrl: 'addTradeSkillModal.view',
+         controller: 'addTradeSkillModalController',
+         size: 'sm'
+      });
+
+      modalInstance.result.then(
+         function(newTradeSkillName) {
+            if (!newTradeSkillName)
+            {
+               alertsService.addAlert("danger", "Cannot add trade skill: invalid name");
+               return;
+            }
+            else if ($scope.selectedCharacter.skills.findSkill(newTradeSkillName))
+            {
+               alertsService.addAlert("danger", "Cannot add trade skill \"" + newTradeSkillName + "\": a skill with that name already exists");
+               return;
+            }
+            
+            var newSkill = new skill(newTradeSkillName, true);
+            newSkill.hasBeenLearned = true;
+            newSkill.value = 0;
+            $scope.selectedCharacter.skills.addSkill(newSkill);
+         }
+      );
+   };
+   
+   $scope.openDeleteTradeSkillModal = function() {
+      var modalInstance = $uibModal.open({
+         templateUrl: 'deleteTradeSkillModal.view',
+         controller: 'deleteTradeSkillModalController',
+         size: 'sm',
+         resolve: {
+            tradeSkills: function() {
+               var tradeSkills = [];
+               var skillList = $scope.selectedCharacter.skills.skillList;
+               var len = skillList.length;
+               for (var i = 0; i < len; i++)
+               {
+                  if (skillList[i].isTradeSkill)
+                  {
+                     tradeSkills.push({index: i, skill: skillList[i]});
+                  }
+               }
+               tradeSkills.sort(function(a,b) {return a.skill.name.localeCompare(b.skill.name);});
+               return tradeSkills;
+            }
+         }
+      });
+
+      modalInstance.result.then(
+         function(index) {
+            $scope.selectedCharacter.skills.deleteSkill(index);
+         }
+      );
+   };
+   
+   $scope.getSkillClass = function(skill) {
+      if (skill.name === "Trade")
+      {
+         return "skillIsTrade";
+      }
+      var skillData = skillsService.lookupDefaultSkill(skill.name);
+      if (   (skillData && skillData.parent)
+          || skill.isTradeSkill)
+      {
+         return "specialtySkill";
+      }
+      return "nonSpecialtySkill";
+   }
+   
    if ($scope.characterList.length)
    {
       $scope.selectCharacter(0);
    }
+}]);
+
+charModule.controller('addTradeSkillModalController', ['$scope', '$uibModalInstance', function ($scope, $uibModalInstance) {
+   $scope.addTradeSkillModalOk = function() {
+      $uibModalInstance.close($scope.newTradeSkillName);
+   };
+
+   $scope.addTradeSkillModalCancel = function() {
+      $uibModalInstance.dismiss('cancel');
+   };
+}]);
+
+charModule.controller('deleteTradeSkillModalController', ['$scope', '$uibModalInstance', 'tradeSkills', function ($scope, $uibModalInstance, tradeSkills) {
+   $scope.tradeSkills = tradeSkills;
+   $scope.selectedSkill = tradeSkills[0];
+
+   $scope.deleteTradeSkillModalOk = function() {
+      $uibModalInstance.close($scope.selectedSkill.index);
+   };
+
+   $scope.deleteTradeSkillModalCancel = function() {
+      $uibModalInstance.dismiss('cancel');
+   };
 }]);
 
 /* Sort the skills.
@@ -92,7 +187,41 @@ charModule.filter('skillSorter', ['skillsService', function(skillsService) {
       sorted.sort(function(a, b) {
          var skillDataA = skillsService.lookupDefaultSkill(a.name);
          var skillDataB = skillsService.lookupDefaultSkill(b.name);
-         if (skillDataA && skillDataA.parent) //a is a specialty
+         if (a.isTradeSkill) //a is a trade skill
+         {
+            if (b.isTradeSkill) //both are trade skills (specialties with same parent)
+            {
+               return a.name.localeCompare(b.name);
+            }
+            else if (skillDataB && skillDataB.parent) //a is a trade skill, b is a specialty (specialties with different parents)
+            {
+               return "Trade".localeCompare(skillDataB.parent);
+            }
+            else if (b.name === "Trade") //a is a trade skill, b is "Trade"
+            {
+               return 1; //b is a's parent
+            }
+            else //a is a trade skill, b is not a specialty
+            {
+               return "Trade".localeCompare(b.name); //b is not a's parent
+            }
+         }
+         else if (b.isTradeSkill)
+         {
+            if (skillDataA && skillDataA.parent) //a is a specialty, b is a trade skill (specialties with different parents)
+            {
+               return skillDataA.parent.localeCompare("Trade");
+            }
+            else if (a.name === "Trade") //a is "Trade", b is a trade skill
+            {
+               return -1; //a is b's parent
+            }
+            else //a is not a specialty, b is a trade skill
+            {
+               return a.name.localeCompare("Trade"); //a is not b's parent
+            }
+         }
+         else if (skillDataA && skillDataA.parent) //a is a specialty
          {
             if (skillDataB && skillDataB.parent) //both are specialties
             {
@@ -171,13 +300,13 @@ charModule.service('charactersService', ['$rootScope', 'character', 'skill', 'al
             try {
                var charFromJson = angular.fromJson(e.target.result);
             } catch (err) {
-               alertsService.addAlert("warning", "The file you tried to load does not appear to be a character sheet");
+               alertsService.addAlert("danger", "The file you tried to load does not appear to be a character sheet");
             }
 
             if (   !charFromJson.formatVersion
                 || charFromJson.formatVersion != 1)
             {
-               alertsService.addAlert("warning", "The character sheet you loaded has in invalid version number");
+               alertsService.addAlert("danger", "The character sheet you loaded has in invalid version number");
                return;
             }
 
@@ -198,7 +327,7 @@ charModule.service('charactersService', ['$rootScope', 'character', 'skill', 'al
       try {
          reader.readAsText(fileToRead);
       } catch (err) {
-         alertsService.addAlert("warning", "Unable to read " + fileToRead.name)
+         alertsService.addAlert("danger", "Unable to read " + fileToRead.name)
       }
    }
 
