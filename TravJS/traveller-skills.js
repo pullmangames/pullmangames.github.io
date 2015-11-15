@@ -281,13 +281,30 @@ skillsModule.service('skillsService', [function() {
       { name:"Vacc Suit",                                                   specialties:[] },
       { name:"Zero-G",                                                      specialties:[] }
    ];
-   
+
    var _defaultSkillDict = {};
+   this.usableSkills = [];
    var len = this.defaultSkillList.length;
    for (var i = 0; i < len; i++)
    {
-      _defaultSkillDict[this.defaultSkillList[i].name] = this.defaultSkillList[i];
+      var skill = this.defaultSkillList[i];
+      if (skill.parent)
+      {
+         skill.nameIncludingParent = skill.parent + ": " + skill.name;
+      }
+      else
+      {
+         skill.nameIncludingParent = skill.name;
+      }
+      _defaultSkillDict[skill.name] = skill;
+      if (   (!skill.specialties || skill.specialties.length === 0)
+          && !(   skill.name === "Trade"
+               || skill.name === "Jack of all Trades"))
+      {
+         this.usableSkills.push(skill);
+      }
    }
+   this.usableSkills.sort(function(a,b){return a.nameIncludingParent.localeCompare(b.nameIncludingParent);});
 
    this.lookupDefaultSkill = function(name) {
       return _defaultSkillDict[name];
