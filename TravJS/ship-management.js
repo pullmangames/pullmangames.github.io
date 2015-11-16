@@ -11,6 +11,48 @@ shipManModule.controller('shipManagementController', ['$http',function($http) {
   	*/
 }]);
 
+/* overall sequence
+
+	0. Determine jobs/patrons/rumors/etc
+	1. Determine Possible Destiniations
+		for each:
+		2. Determine Freight
+		3. Determine Mail
+		4. Determine Passengers
+	5. Determine Trade goods/sellers/etc.
+		a. buy if wanted
+	6. Finalize ship loadout
+	7. Buy life support, fuel, pay berthing costs
+	8. Depart: Pilot check?
+	9. Encounter check: near port
+	10. Skim?
+		a. pilot check
+		b. encounter check
+	11. Encounter check: near jump point?
+	12. Jump checks
+		a. Astrogation check
+		b. Engine power check
+		c. jump check
+	13. Determine jump time
+	14. Arrival: encounter check
+	15. Skim?
+		a. pilot check
+		b. encounter check
+	16. Approach port: encounter check?
+	17. Land/Dock - Pilot check
+	18. Unload
+		a. Collect Freight pay
+		b. collect mail pay
+		c. collect passenger pay
+	19. Sell trade goods (find buyer, etc)
+	20. Pay Tax
+		
+		
+Ongoing: Encounters for time spent at port
+			encounters for time spent in space
+		For each activity, determine participants, track time.
+	
+	
 //--------------------------------------------------------------------
 // Freight Section
 
