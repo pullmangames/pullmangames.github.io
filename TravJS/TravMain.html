@@ -334,7 +334,12 @@
             </ui-select>
           </td>
           <td>
-            <button type="button" class="btn btn-danger" ng-click="clearSelections()">Clear Selections</button>
+            <ui-select on-select="updateCharList()" on-remove="updateCharList()" theme="bootstrap" ng-model="selected.difficulty" style="width:139px;margin-right:5px">
+              <ui-select-match placeholder="Select difficulty...">{{$select.selected.name}}</ui-select-match>
+              <ui-select-choices repeat="difficulty in difficulties | filter: {name: $select.search}">
+                <span ng-bind-html="difficulty.name | highlight: $select.search"></span>
+              </ui-select-choices>
+            </ui-select>
           </td>
         </tr>
       </table>
@@ -347,12 +352,19 @@
            background-color:WhiteSmoke;
         }
       </style>
-      <table ng-if="results && results.length" class="resultsTable" style="margin-top:10px">
-        <tr><th colspan="3" style="padding-bottom:2px">Select a character:</th></tr>
-        <tr ng-repeat="result in results" ng-click="selectResult($index)" >
-          <td style="padding-left:20px;padding-right:10px">{{result.character.name}}</td>
-          <td style="padding-right:10px;text-align:right">{{result.dm}}</td>
-          <td><span ng-if="$index === selectedResultIndex" class="glyphicon glyphicon-arrow-left" aria-hidden="true" style="color:green"></span></td>
+      <table style="margin-top:10px"">
+        <tr>
+          <td width=100%>
+            <table ng-if="results && results.length" class="resultsTable">
+              <tr><th colspan="3" style="padding-bottom:2px">Select a character:</th></tr>
+              <tr ng-repeat="result in results" ng-click="selectResult($index)" >
+                <td style="padding-left:20px;padding-right:10px">{{result.character.name}}</td>
+                <td style="padding-right:10px;text-align:right">{{result.dm}}</td>
+                <td><span ng-if="$index === selectedResultIndex" class="glyphicon glyphicon-arrow-left" aria-hidden="true" style="color:green"></span></td>
+              </tr>
+            </table>
+          </td>
+          <td style="vertical-align:top"><button type="button" class="btn btn-danger" ng-click="clearSelections()">Clear Selections</button></td>
         </tr>
       </table>
     </div>

@@ -1,7 +1,7 @@
 rollModule = angular.module('diceRoller', []); //declare the module for dice rolls
 
 
-rollModule.controller('RollController', ['$scope', 'charactersService', function($scope, charactersService) {
+rollModule.controller('RollController', ['$scope', 'travRollService', 'charactersService', function($scope, travRollService, charactersService) {
 		var roller = this;
 		roller.sides=6;
 		roller.numdice=1;
@@ -11,15 +11,7 @@ rollModule.controller('RollController', ['$scope', 'charactersService', function
 		roller.dmtext="Poor lighting";
 		roller.dmvalue=-2;
 		roller.currentdifficulty={name: "average" ,value: 0};
-		roller.difficulties=[
-							{name: "simple" ,value: 6},
-							{name: "easy" ,value: 4},
-							{name: "routine" ,value: 2},
-							{name: "average" ,value: 0},
-							{name: "difficult" ,value: -2},
-							{name: "very difficult" ,value: -4},
-							{name: "formidable" ,value:  -6}
-							]
+		roller.difficulties = travRollService.difficulties;
 		roller.throwresults=[]//holds previous dice rolls
 		
 		
@@ -58,6 +50,7 @@ rollModule.controller('RollController', ['$scope', 'charactersService', function
 			roller.throwresults=[];
 			};
 
+      //ng-model object for the travSkillCheckDm test
       $scope.dmResult = {};
 }]);
 
@@ -69,10 +62,11 @@ rollModule.controller('RollController', ['$scope', 'charactersService', function
 //  character: the selected character
 //  dm:        selected character's dice modifier
 rollModule.directive('travSkillCheckDm', [function() {
-   var controller = ['$scope', 'charactersService', 'skillsService', function($scope, charactersService, skillsService) {
+   var controller = ['$scope', 'charactersService', 'skillsService', 'travRollService', function($scope, charactersService, skillsService, travRollService) {
 
       $scope.skills = skillsService.usableSkills;
       $scope.characteristics = charactersService.characteristics;
+      $scope.difficulties = travRollService.difficulties;
       $scope.selected = {};
       $scope.results = [];
       $scope.selectedResultIndex = -1;
@@ -97,6 +91,7 @@ rollModule.directive('travSkillCheckDm', [function() {
          var characters = charactersService.characters;
          var selectedSkill = $scope.selected.skill;
          var selectedStats = $scope.selected.characteristics;
+         var selectedDifficulty = $scope.selected.difficulty;
 
          if (!selectedSkill && (!selectedStats || selectedStats.length === 0))
          {
@@ -152,6 +147,11 @@ rollModule.directive('travSkillCheckDm', [function() {
                   dm += charactersService.dmFromCharacteristic(bestStat);
                }
             }
+            if (selectedDifficulty)
+            {
+               dm += selectedDifficulty.value;
+            }
+
             $scope.results.push({
                character: character,
                dm:        dm
@@ -171,6 +171,18 @@ rollModule.directive('travSkillCheckDm', [function() {
       controller: controller
    };
 }])
+
+rollModule.service('travRollService', [function() {
+   this.difficulties = [
+      {name: "Simple",         value: 6 },
+      {name: "Easy",           value: 4 },
+      {name: "Routine",        value: 2 },
+      {name: "Average",        value: 0 },
+      {name: "Difficult",      value: -2},
+      {name: "Very Difficult", value: -4},
+      {name: "Formidable",     value: -6}
+   ];
+}]);
 
 //------------------Raw JS (no Angular junk) below this line ----------------
 function rawroll(numdice, sides){	
