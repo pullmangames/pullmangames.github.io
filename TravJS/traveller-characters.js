@@ -277,6 +277,7 @@ charModule.directive('travellerSkillDm', [function() {
                dm:        dm
             });
          }
+         $scope.results.sort(function(a,b){return b.dm-a.dm});
       };
    }];
 

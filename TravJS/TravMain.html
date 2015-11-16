@@ -231,7 +231,7 @@
         }
       </style>
       <table class="resultsTable">
-        <tr ng-repeat="result in results | orderBy:'-dm'" ng-click="selectResult($index)" >
+        <tr ng-repeat="result in results" ng-click="selectResult($index)" >
           <td style="padding-right:10px">{{result.character.name}}:</td>
           <td style="padding-right:10px">{{result.dm}}</td>
           <td><span ng-if="$index === selectedResultIndex" class="glyphicon glyphicon-arrow-left" aria-hidden="true" style="color:green"></span></td>
