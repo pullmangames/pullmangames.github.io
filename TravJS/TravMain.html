@@ -51,11 +51,291 @@
     </span>
   </script>
 
+
 <!----------------------------------Ship Manager View-------------------------->
   <script type="text/ng-template" id="shipMan.view">
     <br><br>
     <h2>Ship Management</h2>
-    Not implemented yet
+   
+<!--
+  <p>
+    <button type="button" class="btn btn-default btn-sm" ng-click="status.open = !status.open">Toggle last panel</button>
+    <button type="button" class="btn btn-default btn-sm" ng-click="status.isFirstDisabled = ! status.isFirstDisabled">Enable / Disable first panel</button>
+  </p>
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" ng-model="oneAtATime">
+      Open only one at a time
+    </label>
+  </div>
+  
+	
+  -->
+  
+  <!----------------------------------Example Custom Accordion Template-------------------------
+ <script type="text/ng-template" id="group-template.html">
+    <div class="panel {{panelClass || 'panel-default'}}">
+      <div class="panel-heading">
+        <h4 class="panel-title" style="color:#fa39c3">
+          <a href tabindex="0" class="accordion-toggle" ng-click="toggleOpen()" uib-accordion-transclude="heading"><span
+            ng-class="{'text-muted': isDisabled}">{{heading}}</span></a>
+        </h4>
+      </div>
+      <div class="panel-collapse collapse" uib-collapse="!isOpen">
+        <div class="panel-body" style="text-align: right" ng-transclude></div>
+      </div>
+    </div>
+  </script>-->
+  
+  <uib-accordion close-others="false">
+  
+  <!--
+    <uib-accordion-group heading="Custom template" template-url="group-template.html">
+      Hello
+    </uib-accordion-group>
+ 
+  
+    <uib-accordion-group heading="Static Header, initially expanded" >
+      This content is straight in the template.
+    </uib-accordion-group>
+       -->
+
+    <uib-accordion-group>
+      <uib-accordion-heading>
+       Hunt for jobs/patrons/rumors/etc. <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+      </uib-accordion-heading>
+      Actual controls go here
+    </uib-accordion-group>
+
+
+    <uib-accordion-group>
+      <uib-accordion-heading>
+       Enter Destination(s)<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+      </uib-accordion-heading>
+     <!-- Freight, mail, etc for each -->
+		  <uib-accordion close-others="false">
+				 <uib-accordion-group>
+					  <uib-accordion-heading>
+					   Freight for Destination 1 <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+					  </uib-accordion-heading>
+					  Actual controls go here
+					</uib-accordion-group>
+
+
+				 <uib-accordion-group>
+					  <uib-accordion-heading>
+					   Mail for Destination 1 <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+					  </uib-accordion-heading>
+					  Actual controls go here
+					</uib-accordion-group>
+
+
+				 <uib-accordion-group>
+					  <uib-accordion-heading>
+					   Passengers for Destination 1 <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+					  </uib-accordion-heading>
+					  Actual controls go here
+					</uib-accordion-group>
+
+
+				 <uib-accordion-group>
+					  <uib-accordion-heading>
+					   Other for Destination 1 <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+					  </uib-accordion-heading>
+					  Actual controls go here
+					</uib-accordion-group>
+		 </uib-accordion>
+		
+    </uib-accordion-group>
+ 
+     <uib-accordion-group>
+      <uib-accordion-heading>
+      Find a Trade Goods Seller <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+      </uib-accordion-heading>
+      Actual controls go here
+    </uib-accordion-group>
+
+    <uib-accordion-group>
+      <uib-accordion-heading>
+       Finalize ship loadout <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+      </uib-accordion-heading>
+      Actual controls go here
+      Calculate risk vs. reward score, roll shipping hazards
+    </uib-accordion-group>
+
+    <uib-accordion-group>
+      <uib-accordion-heading>
+       Buy life support, fuel, pay berthing costs <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+      </uib-accordion-heading>
+      Actual controls go here
+    </uib-accordion-group>
+
+    <uib-accordion-group>
+      <uib-accordion-heading>
+       Depart Port <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+      </uib-accordion-heading>
+      Pilot Check
+    </uib-accordion-group>
+
+    <uib-accordion-group>
+      <uib-accordion-heading>
+       Port Encounter <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+      </uib-accordion-heading>
+      Actual controls go here
+    </uib-accordion-group>
+
+    <uib-accordion-group>
+      <uib-accordion-heading>
+       Visit Gas Giant <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+      </uib-accordion-heading>
+       
+       <uib-accordion close-others="false">
+        		 <uib-accordion-group>
+					  <uib-accordion-heading>
+					   Gas Giant Encounter<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+					  </uib-accordion-heading>
+					  Actual controls go here
+					</uib-accordion-group>
+				 <uib-accordion-group>
+					  <uib-accordion-heading>
+					  Skimming<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+					  </uib-accordion-heading>
+					  Actual controls go here
+					</uib-accordion-group>
+
+       </uib-accordion>
+    </uib-accordion-group>
+
+     <uib-accordion-group>
+      <uib-accordion-heading>
+       Jump Point Encounter <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+      </uib-accordion-heading>
+      Actual controls go here
+    </uib-accordion-group>
+ 
+     <uib-accordion-group>
+      <uib-accordion-heading>
+      Jump <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+      </uib-accordion-heading>
+       
+       <uib-accordion close-others="false">
+        		 <uib-accordion-group>
+					  <uib-accordion-heading>
+					   Astrogation check<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+					  </uib-accordion-heading>
+					  Actual controls go here
+					</uib-accordion-group>
+				 <uib-accordion-group>
+					  <uib-accordion-heading>
+					   Engine power check<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+					  </uib-accordion-heading>
+					  Actual controls go here
+					</uib-accordion-group>
+				<uib-accordion-group>
+					  <uib-accordion-heading>
+					   Jump check<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+					  </uib-accordion-heading>
+					  Actual controls go here
+					</uib-accordion-group>
+
+       </uib-accordion>
+    </uib-accordion-group>
+ 
+ 	<uib-accordion-group>
+      <uib-accordion-heading>
+       JumpSpace <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+      </uib-accordion-heading>
+      Time taken in jump?
+    </uib-accordion-group>
+ 
+      <uib-accordion-group>
+      <uib-accordion-heading>
+       Exit Jump - Encounter <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+      </uib-accordion-heading>
+      Actual controls go here
+    </uib-accordion-group>
+ 
+    <uib-accordion-group>
+      <uib-accordion-heading>
+       Visit Gas Giant <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+      </uib-accordion-heading>
+       
+       <uib-accordion close-others="false">
+        		 <uib-accordion-group>
+					  <uib-accordion-heading>
+					   Gas Giant Encounter<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+					  </uib-accordion-heading>
+					  Actual controls go here
+					</uib-accordion-group>
+				 <uib-accordion-group>
+					  <uib-accordion-heading>
+					  Skimming<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+					  </uib-accordion-heading>
+					  Actual controls go here
+					</uib-accordion-group>
+
+       </uib-accordion>
+    </uib-accordion-group>
+ 
+    <uib-accordion-group>
+      <uib-accordion-heading>
+       Port Arrival - Encounter <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+      </uib-accordion-heading>
+      Actual controls go here
+    </uib-accordion-group>
+ 
+  
+    <uib-accordion-group>
+      <uib-accordion-heading>
+      Land/Dock <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+      </uib-accordion-heading>
+      Actual controls go here
+    </uib-accordion-group>
+ 
+     <uib-accordion-group>
+      <uib-accordion-heading>
+      Unload<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+      </uib-accordion-heading>
+       
+       <uib-accordion close-others="false">
+        		 <uib-accordion-group>
+					  <uib-accordion-heading>
+					   Freight<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+					  </uib-accordion-heading>
+					  Actual controls go here
+					</uib-accordion-group>
+				 <uib-accordion-group>
+					  <uib-accordion-heading>
+					  Mail<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+					  </uib-accordion-heading>
+					  Actual controls go here
+					</uib-accordion-group>
+				 <uib-accordion-group>
+					  <uib-accordion-heading>
+					  Passengers<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+					  </uib-accordion-heading>
+					  Actual controls go here
+					</uib-accordion-group>
+
+       </uib-accordion>
+    </uib-accordion-group>
+    
+    <uib-accordion-group>
+      <uib-accordion-heading>
+      Find a trade goods buyer <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+      </uib-accordion-heading>
+      Actual controls go here
+    </uib-accordion-group>
+ 
+     <uib-accordion-group>
+      <uib-accordion-heading>
+      Tax <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+      </uib-accordion-heading>
+      Actual controls go here
+    </uib-accordion-group>
+ 
+  </uib-accordion>
+
   </script>
 
 <!------------------------------ Character view ------------------------------->
@@ -381,21 +661,20 @@
   <script type="text/ng-template" id="decoder.view">
     <br><br>
     <h2>Hidden stuff and decoder ring</h2>
-	 <form ng-submit="decoder.whydecode()" class="form-inline">
+  <uib-accordion close-others="True">
+    <uib-accordion-group heading="Decoder" is-open="status.isFirstOpen">
+            <form ng-submit="decoder.whydecode()" class="form-inline">
                <input type="textarea"  class="form-control" ng-model="decoder.input" size="100" placeholder="Encoded data goes here">
                <input type="text" class="form-control" ng-model="decoder.key" size="20" placeholder="Secret Key">
                <input class="btn btn-default btn-primary" type="submit" value="Decode">
             </form>
-    <button ng-click="decoder.whyencode()">ENCODE</button>
+    		<button ng-click="decoder.whyencode()">ENCODE</button>
             
-    <h3> Output: </h3>
-    <div><pre>{{decoder.result}}</pre></div>
-    
-    <h2> Secrets </h2>
-    <h3> Book </h3>
-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
-    <h3> Epic </h3>
-    <pre>
+			<h3> Output: </h3>
+			<div><pre>{{decoder.result}}</pre></div>
+    </uib-accordion-group>
+    <uib-accordion-group heading="Epic" >
+        <pre>
 The task force left Vanejen with a cargo of pharmaceuticals for Regina.
 It consisted of four ships: three scouts and a transport.
 The transport Gyro Cadiz was a remade subsidized merchant, fitted with long range tanks. One scout, the Blatant Lie, was a mobilized half-pay courier with a crew of three. Another, the Carlisle, was a sleek new ship with a freshly trained crew.
@@ -486,6 +765,15 @@ Without drives, the ship could not maneuver, and no one heard its calls for help
 The belligerents left, first one side retreating, then the other pursuing.
 Left alone, the scout and its heroic crew settled into the vacuous night and died.
 </pre>
+    </uib-accordion-group>
+    <uib-accordion-group heading="Book" >
+     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
+
+    </uib-accordion-group>
+   
+  </uib-accordion>
+
+
   </script>
   
 

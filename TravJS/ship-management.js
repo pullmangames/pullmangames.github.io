@@ -1,15 +1,11 @@
 shipManModule = angular.module('shipManagement', []); //declare the module for handling chracters
       
-shipManModule.controller('shipManagementController', ['$http',function($http) {
-  /*var shipMan=this;
-  
-  shipMan.tradetables=[]
-  
-  $http.get("/tradetables.json").success(function(data){
-  	shipMan.tradetables = data;
-  	}) ;
-  	*/
-}]);
+shipManModule.controller('shipManagementController', function ($scope) {
+
+
+});
+
+
 
 /* overall sequence
 
@@ -47,10 +43,12 @@ shipManModule.controller('shipManagementController', ['$http',function($http) {
 	19. Sell trade goods (find buyer, etc)
 	20. Pay Tax
 		
-		
+Above is main sequence, but should be organized flexibly ( ship could go out to skim at any time, for example)
+
 Ongoing: Encounters for time spent at port
 			encounters for time spent in space
 		For each activity, determine participants, track time.
+		
 	*/
 	
 //--------------------------------------------------------------------
