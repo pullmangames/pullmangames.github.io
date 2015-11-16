@@ -51,7 +51,7 @@ shipManModule.controller('shipManagementController', ['$http',function($http) {
 Ongoing: Encounters for time spent at port
 			encounters for time spent in space
 		For each activity, determine participants, track time.
-	
+	*/
 	
 //--------------------------------------------------------------------
 // Freight Section
