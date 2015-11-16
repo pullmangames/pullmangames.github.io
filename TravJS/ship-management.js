@@ -1,6 +1,23 @@
 shipManModule = angular.module('shipManagement', []); //declare the module for handling chracters
       
 shipManModule.controller('shipManagementController', function ($scope) {
+	var smm=this;
+	
+	smm.manualLog=function(){
+		var newentry={};
+		newentry.text=smm.input;
+		newentry.start=smm.inputDate;
+		newentry.elapsed=smm.inputTimeElapsed;
+		smm.logEntry(newentry);
+		
+	};
+	
+	
+	smm.logEntry=function(newEntry) {
+		
+		alert("ENTERED"+newEntry);
+		
+	};
 
 
 });

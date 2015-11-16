@@ -23,6 +23,10 @@
     <script src="datatables.js"></script>
     <script src="decoder.js"></script>
     <link rel="stylesheet" href="travmain.css">
+    
+    <!-- bootstrap layout thing -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
   </head>
   <body style="margin-left:8px">
   
@@ -56,285 +60,284 @@
   <script type="text/ng-template" id="shipMan.view">
     <br><br>
     <h2>Ship Management</h2>
-   
-<!--
-  <p>
-    <button type="button" class="btn btn-default btn-sm" ng-click="status.open = !status.open">Toggle last panel</button>
-    <button type="button" class="btn btn-default btn-sm" ng-click="status.isFirstDisabled = ! status.isFirstDisabled">Enable / Disable first panel</button>
-  </p>
-  <div class="checkbox">
-    <label>
-      <input type="checkbox" ng-model="oneAtATime">
-      Open only one at a time
-    </label>
+
+  <div class="row">
+  
+  
+  <div class="col-md-2">Current Status
+  
+  Stuff goes here like
+  Eventually things like your cargo space 
+  and your total cash
+  
   </div>
-  
-	
-  -->
-  
-  <!----------------------------------Example Custom Accordion Template-------------------------
- <script type="text/ng-template" id="group-template.html">
-    <div class="panel {{panelClass || 'panel-default'}}">
-      <div class="panel-heading">
-        <h4 class="panel-title" style="color:#fa39c3">
-          <a href tabindex="0" class="accordion-toggle" ng-click="toggleOpen()" uib-accordion-transclude="heading"><span
-            ng-class="{'text-muted': isDisabled}">{{heading}}</span></a>
-        </h4>
-      </div>
-      <div class="panel-collapse collapse" uib-collapse="!isOpen">
-        <div class="panel-body" style="text-align: right" ng-transclude></div>
-      </div>
-    </div>
-  </script>-->
-  
+  <div class="col-md-6">Activities
   <uib-accordion close-others="false">
-  
-  <!--
-    <uib-accordion-group heading="Custom template" template-url="group-template.html">
-      Hello
-    </uib-accordion-group>
- 
-  
-    <uib-accordion-group heading="Static Header, initially expanded" >
-      This content is straight in the template.
-    </uib-accordion-group>
-       -->
-
-    <uib-accordion-group>
-      <uib-accordion-heading>
-       Hunt for jobs/patrons/rumors/etc. <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-      </uib-accordion-heading>
-      Actual controls go here
-    </uib-accordion-group>
-
-
-    <uib-accordion-group>
-      <uib-accordion-heading>
-       Enter Destination(s)<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-      </uib-accordion-heading>
-     <!-- Freight, mail, etc for each -->
-		  <uib-accordion close-others="false">
-				 <uib-accordion-group>
-					  <uib-accordion-heading>
-					   Freight for Destination 1 <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-					  </uib-accordion-heading>
-					  Actual controls go here
-					</uib-accordion-group>
-
-
-				 <uib-accordion-group>
-					  <uib-accordion-heading>
-					   Mail for Destination 1 <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-					  </uib-accordion-heading>
-					  Actual controls go here
-					</uib-accordion-group>
-
-
-				 <uib-accordion-group>
-					  <uib-accordion-heading>
-					   Passengers for Destination 1 <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-					  </uib-accordion-heading>
-					  Actual controls go here
-					</uib-accordion-group>
-
-
-				 <uib-accordion-group>
-					  <uib-accordion-heading>
-					   Other for Destination 1 <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-					  </uib-accordion-heading>
-					  Actual controls go here
-					</uib-accordion-group>
-		 </uib-accordion>
 		
-    </uib-accordion-group>
+		<uib-accordion-group>
+		  <uib-accordion-heading>
+		   	Manual Log Entry/Adjustment<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+		  </uib-accordion-heading>
+		  		 <form ng-submit="shipMan.manualLog()" class="form-inline">
+              	 	<input type="textarea"  class="form-control" ng-model="shipMan.input" size="40" placeholder="New log entry">
+              	 	<br>
+               		<input type="text" class="form-control" ng-model="shipMan.inputDate" size="10" placeholder="Date">
+               		<input type="text" class="form-control" ng-model="shipMan.inputTimeElapsed" size="10" placeholder="Elapsed time">
+               		<input class="btn btn-default btn-primary" type="submit" value="Log">
+           		</form>
+           		<br><br>
+           		<form ng-submit="shipMan.manualAdjust()" class="form-inline">
+              	 	<input type="textarea"  class="form-control" ng-model="shipMan.addCargoType" size="30" placeholder="Cargo Text">
+               		<input type="text" class="form-control" ng-model="shipMan.addCargoTons" size="10" placeholder="Tons">
+               		<br>
+               		<input type="text" class="form-control" ng-model="shipMan.addMoney" size="10" placeholder="Cr">
+               		<input type="text" class="form-control" ng-model="shipMan.addTime" size "10" placeholder="days">
+               		<input class="btn btn-default btn-primary" type="submit" value="Adjust">
+           		</form>
+           		
+		</uib-accordion-group>
+		
+		<uib-accordion-group>
+		  <uib-accordion-heading>
+		   Hunt for jobs/patrons/rumors/etc. <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+		  </uib-accordion-heading>
+		  Actual controls go here
+		</uib-accordion-group>
+
+
+		<uib-accordion-group>
+		  <uib-accordion-heading>
+		   Enter Destination(s)<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+		  </uib-accordion-heading>
+		 <!-- Freight, mail, etc for each -->
+			  <uib-accordion close-others="false">
+					 <uib-accordion-group>
+						  <uib-accordion-heading>
+						   Freight for Destination 1 <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+						  </uib-accordion-heading>
+						  Actual controls go here
+						</uib-accordion-group>
+
+
+					 <uib-accordion-group>
+						  <uib-accordion-heading>
+						   Mail for Destination 1 <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+						  </uib-accordion-heading>
+						  Actual controls go here
+						</uib-accordion-group>
+
+
+					 <uib-accordion-group>
+						  <uib-accordion-heading>
+						   Passengers for Destination 1 <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+						  </uib-accordion-heading>
+						  Actual controls go here
+						</uib-accordion-group>
+
+
+					 <uib-accordion-group>
+						  <uib-accordion-heading>
+						   Other for Destination 1 <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+						  </uib-accordion-heading>
+						  Actual controls go here
+						</uib-accordion-group>
+			 </uib-accordion>
+		
+		</uib-accordion-group>
  
-     <uib-accordion-group>
-      <uib-accordion-heading>
-      Find a Trade Goods Seller <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-      </uib-accordion-heading>
-      Actual controls go here
-    </uib-accordion-group>
+		 <uib-accordion-group>
+		  <uib-accordion-heading>
+		  Find a Trade Goods Seller <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+		  </uib-accordion-heading>
+		  Actual controls go here
+		</uib-accordion-group>
 
-    <uib-accordion-group>
-      <uib-accordion-heading>
-       Finalize ship loadout <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-      </uib-accordion-heading>
-      Actual controls go here
-      Calculate risk vs. reward score, roll shipping hazards
-    </uib-accordion-group>
+		<uib-accordion-group>
+		  <uib-accordion-heading>
+		   Finalize ship loadout <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+		  </uib-accordion-heading>
+		  Actual controls go here
+		  Calculate risk vs. reward score, roll shipping hazards
+		</uib-accordion-group>
 
-    <uib-accordion-group>
-      <uib-accordion-heading>
-       Buy life support, fuel, pay berthing costs <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-      </uib-accordion-heading>
-      Actual controls go here
-    </uib-accordion-group>
+		<uib-accordion-group>
+		  <uib-accordion-heading>
+		   Buy life support, fuel, pay berthing costs <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+		  </uib-accordion-heading>
+		  Actual controls go here
+		</uib-accordion-group>
 
-    <uib-accordion-group>
-      <uib-accordion-heading>
-       Depart Port <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-      </uib-accordion-heading>
-      Pilot Check
-    </uib-accordion-group>
+		<uib-accordion-group>
+		  <uib-accordion-heading>
+		   Depart Port <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+		  </uib-accordion-heading>
+		  Pilot Check
+		</uib-accordion-group>
 
-    <uib-accordion-group>
-      <uib-accordion-heading>
-       Port Encounter <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-      </uib-accordion-heading>
-      Actual controls go here
-    </uib-accordion-group>
+		<uib-accordion-group>
+		  <uib-accordion-heading>
+		   Port Encounter <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+		  </uib-accordion-heading>
+		  Actual controls go here
+		</uib-accordion-group>
 
-    <uib-accordion-group>
-      <uib-accordion-heading>
-       Visit Gas Giant <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-      </uib-accordion-heading>
-       
-       <uib-accordion close-others="false">
-        		 <uib-accordion-group>
-					  <uib-accordion-heading>
-					   Gas Giant Encounter<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-					  </uib-accordion-heading>
-					  Actual controls go here
-					</uib-accordion-group>
-				 <uib-accordion-group>
-					  <uib-accordion-heading>
-					  Skimming<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-					  </uib-accordion-heading>
-					  Actual controls go here
-					</uib-accordion-group>
+		<uib-accordion-group>
+		  <uib-accordion-heading>
+		   Visit Gas Giant <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+		  </uib-accordion-heading>
+	   
+		   <uib-accordion close-others="false">
+					 <uib-accordion-group>
+						  <uib-accordion-heading>
+						   Gas Giant Encounter<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+						  </uib-accordion-heading>
+						  Actual controls go here
+						</uib-accordion-group>
+					 <uib-accordion-group>
+						  <uib-accordion-heading>
+						  Skimming<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+						  </uib-accordion-heading>
+						  Actual controls go here
+						</uib-accordion-group>
 
-       </uib-accordion>
-    </uib-accordion-group>
+		   </uib-accordion>
+		</uib-accordion-group>
 
-     <uib-accordion-group>
-      <uib-accordion-heading>
-       Jump Point Encounter <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-      </uib-accordion-heading>
-      Actual controls go here
-    </uib-accordion-group>
+		 <uib-accordion-group>
+		  <uib-accordion-heading>
+		   Jump Point Encounter <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+		  </uib-accordion-heading>
+		  Actual controls go here
+		</uib-accordion-group>
  
-     <uib-accordion-group>
-      <uib-accordion-heading>
-      Jump <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-      </uib-accordion-heading>
-       
-       <uib-accordion close-others="false">
-        		 <uib-accordion-group>
-					  <uib-accordion-heading>
-					   Astrogation check<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-					  </uib-accordion-heading>
-					  Actual controls go here
-					</uib-accordion-group>
-				 <uib-accordion-group>
-					  <uib-accordion-heading>
-					   Engine power check<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-					  </uib-accordion-heading>
-					  Actual controls go here
-					</uib-accordion-group>
-				<uib-accordion-group>
-					  <uib-accordion-heading>
-					   Jump check<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-					  </uib-accordion-heading>
-					  Actual controls go here
-					</uib-accordion-group>
+		 <uib-accordion-group>
+		  <uib-accordion-heading>
+		  Jump <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+		  </uib-accordion-heading>
+	   
+		   <uib-accordion close-others="false">
+					 <uib-accordion-group>
+						  <uib-accordion-heading>
+						   Astrogation check<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+						  </uib-accordion-heading>
+						  Actual controls go here
+						</uib-accordion-group>
+					 <uib-accordion-group>
+						  <uib-accordion-heading>
+						   Engine power check<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+						  </uib-accordion-heading>
+						  Actual controls go here
+						</uib-accordion-group>
+					<uib-accordion-group>
+						  <uib-accordion-heading>
+						   Jump check<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+						  </uib-accordion-heading>
+						  Actual controls go here
+						</uib-accordion-group>
 
-       </uib-accordion>
-    </uib-accordion-group>
+		   </uib-accordion>
+		</uib-accordion-group>
  
- 	<uib-accordion-group>
-      <uib-accordion-heading>
-       JumpSpace <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-      </uib-accordion-heading>
-      Time taken in jump?
-    </uib-accordion-group>
+		<uib-accordion-group>
+		  <uib-accordion-heading>
+		   JumpSpace <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+		  </uib-accordion-heading>
+		  Time taken in jump?
+		</uib-accordion-group>
  
-      <uib-accordion-group>
-      <uib-accordion-heading>
-       Exit Jump - Encounter <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-      </uib-accordion-heading>
-      Actual controls go here
-    </uib-accordion-group>
+		  <uib-accordion-group>
+		  <uib-accordion-heading>
+		   Exit Jump - Encounter <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+		  </uib-accordion-heading>
+		  Actual controls go here
+		</uib-accordion-group>
  
-    <uib-accordion-group>
-      <uib-accordion-heading>
-       Visit Gas Giant <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-      </uib-accordion-heading>
-       
-       <uib-accordion close-others="false">
-        		 <uib-accordion-group>
-					  <uib-accordion-heading>
-					   Gas Giant Encounter<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-					  </uib-accordion-heading>
-					  Actual controls go here
-					</uib-accordion-group>
-				 <uib-accordion-group>
-					  <uib-accordion-heading>
-					  Skimming<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-					  </uib-accordion-heading>
-					  Actual controls go here
-					</uib-accordion-group>
+		<uib-accordion-group>
+		  <uib-accordion-heading>
+		   Visit Gas Giant <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+		  </uib-accordion-heading>
+	   
+		   <uib-accordion close-others="false">
+					 <uib-accordion-group>
+						  <uib-accordion-heading>
+						   Gas Giant Encounter<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+						  </uib-accordion-heading>
+						  Actual controls go here
+						</uib-accordion-group>
+					 <uib-accordion-group>
+						  <uib-accordion-heading>
+						  Skimming<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+						  </uib-accordion-heading>
+						  Actual controls go here
+						</uib-accordion-group>
 
-       </uib-accordion>
-    </uib-accordion-group>
+		   </uib-accordion>
+		</uib-accordion-group>
  
-    <uib-accordion-group>
-      <uib-accordion-heading>
-       Port Arrival - Encounter <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-      </uib-accordion-heading>
-      Actual controls go here
-    </uib-accordion-group>
+		<uib-accordion-group>
+		  <uib-accordion-heading>
+		   Port Arrival - Encounter <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+		  </uib-accordion-heading>
+		  Actual controls go here
+		</uib-accordion-group>
  
   
-    <uib-accordion-group>
-      <uib-accordion-heading>
-      Land/Dock <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-      </uib-accordion-heading>
-      Actual controls go here
-    </uib-accordion-group>
+		<uib-accordion-group>
+		  <uib-accordion-heading>
+		  Land/Dock <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+		  </uib-accordion-heading>
+		  Actual controls go here
+		</uib-accordion-group>
  
-     <uib-accordion-group>
-      <uib-accordion-heading>
-      Unload<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-      </uib-accordion-heading>
-       
-       <uib-accordion close-others="false">
-        		 <uib-accordion-group>
-					  <uib-accordion-heading>
-					   Freight<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-					  </uib-accordion-heading>
-					  Actual controls go here
-					</uib-accordion-group>
-				 <uib-accordion-group>
-					  <uib-accordion-heading>
-					  Mail<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-					  </uib-accordion-heading>
-					  Actual controls go here
-					</uib-accordion-group>
-				 <uib-accordion-group>
-					  <uib-accordion-heading>
-					  Passengers<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-					  </uib-accordion-heading>
-					  Actual controls go here
-					</uib-accordion-group>
+		 <uib-accordion-group>
+		  <uib-accordion-heading>
+		  Unload<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+		  </uib-accordion-heading>
+	   
+		   <uib-accordion close-others="false">
+					 <uib-accordion-group>
+						  <uib-accordion-heading>
+						   Freight<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+						  </uib-accordion-heading>
+						  Actual controls go here
+						</uib-accordion-group>
+					 <uib-accordion-group>
+						  <uib-accordion-heading>
+						  Mail<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+						  </uib-accordion-heading>
+						  Actual controls go here
+						</uib-accordion-group>
+					 <uib-accordion-group>
+						  <uib-accordion-heading>
+						  Passengers<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+						  </uib-accordion-heading>
+						  Actual controls go here
+						</uib-accordion-group>
 
-       </uib-accordion>
-    </uib-accordion-group>
-    
-    <uib-accordion-group>
-      <uib-accordion-heading>
-      Find a trade goods buyer <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-      </uib-accordion-heading>
-      Actual controls go here
-    </uib-accordion-group>
+		   </uib-accordion>
+		</uib-accordion-group>
+	
+		<uib-accordion-group>
+		  <uib-accordion-heading>
+		  Find a trade goods buyer <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+		  </uib-accordion-heading>
+		  Actual controls go here
+		</uib-accordion-group>
  
-     <uib-accordion-group>
-      <uib-accordion-heading>
-      Tax <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-      </uib-accordion-heading>
-      Actual controls go here
-    </uib-accordion-group>
+		 <uib-accordion-group>
+		  <uib-accordion-heading>
+		  Tax <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+		  </uib-accordion-heading>
+		  Actual controls go here
+		</uib-accordion-group>
  
-  </uib-accordion>
+	  </uib-accordion>
+  </div>
+  	<div class="col-md-2">
+	  			Ship's log
+	  			
+	</div>
+  </div>
 
   </script>
 
@@ -370,7 +373,6 @@
 
   <!------------------- Main Character View ------------------->
   <script type="text/ng-template" id="characters.view">
-
     <div class="btn-group" uib-dropdown style="float:right;margin-right:20px">
       <button id="charMgmtButton" type="button" class="btn btn-primary" uib-dropdown-toggle>Character Management<span class="caret"></span></button>
       <ul class="uib-dropdown-menu dropDownMenu" role="menu" aria-labelledby="charMgmtButton" id="charMgmtMenu">
