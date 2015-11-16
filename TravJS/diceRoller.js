@@ -1,7 +1,7 @@
 rollModule = angular.module('diceRoller', []); //declare the module for dice rolls
 
 
-rollModule.controller('RollController', ['charactersService', function(charactersService) {
+rollModule.controller('RollController', ['$scope', 'charactersService', function($scope, charactersService) {
 		var roller = this;
 		roller.sides=6;
 		roller.numdice=1;
@@ -57,8 +57,120 @@ rollModule.controller('RollController', ['charactersService', function(character
 		roller.clearThrows = function() {
 			roller.throwresults=[];
 			};
+
+      $scope.dmResult = {};
 }]);
 
+//Determine all characters' DM for a chosen skill and set of characteristics. One character may then be selected to perform the roll.
+//The selected character will be stored in the object passed to the directive via ng-model
+//Example: <traveller-skill-dm ng-model="dmResult"></traveller-skill-dm>
+//In the example, the chosen character will be saved in a scope variable named dmResult
+//The bound object will have the following properties:
+//  character: the selected character
+//  dm:        selected character's dice modifier
+rollModule.directive('travSkillCheckDm', [function() {
+   var controller = ['$scope', 'charactersService', 'skillsService', function($scope, charactersService, skillsService) {
+
+      $scope.skills = skillsService.usableSkills;
+      $scope.characteristics = charactersService.characteristics;
+      $scope.selected = {};
+      $scope.results = [];
+      $scope.selectedResultIndex = -1;
+
+      $scope.selectResult = function(index)
+      {
+         $scope.selectedResultIndex = index;
+         $scope.ngModel = $scope.results[index];
+      };
+      
+      $scope.clearSelections = function()
+      {
+         $scope.selected.skill = undefined;
+         $scope.selected.characteristics = undefined;
+         $scope.updateCharList();
+      }
+
+      $scope.updateCharList = function() {
+         $scope.results = [];
+         $scope.selectedResultIndex = -1;
+         $scope.ngModel = {};
+         var characters = charactersService.characters;
+         var selectedSkill = $scope.selected.skill;
+         var selectedStats = $scope.selected.characteristics;
+
+         if (!selectedSkill && (!selectedStats || selectedStats.length === 0))
+         {
+            return;
+         }
+
+         var len = characters.length;
+         for (var i = 0; i < len; i++)
+         {
+            var character = characters[i];
+            var dm = 0;
+            
+            if (selectedSkill)
+            {
+               var skill = character.skills.findSkill(selectedSkill.name);
+               if (skill.hasOwnProperty('value')) //User has the skill
+               {
+                  dm += skill.value;
+               }
+               else
+               {
+                  //If the user doesn't have the skill, see if there's a bonus from Jack of all Trades
+                  var jackOfAllTrades = character.skills.findSkill("Jack of all Trades");
+                  if (jackOfAllTrades.hasOwnProperty('value'))
+                  {
+                     dm += (jackOfAllTrades.value - 3);
+                  }
+                  else //No bonus - default DM of -3
+                  {
+                     dm -= 3;
+                  }
+               }
+            }
+            if (selectedStats)
+            {
+               var bestStat = Number.NEGATIVE_INFINITY;
+               var len2 = selectedStats.length;
+               for (var j = 0; j < len2; j++)
+               {
+                  var statName = selectedStats[j].name;
+                  var statVal = 0; //If use hasn't filled out the characteristic, default to a score of 0
+                  if (character.hasOwnProperty(statName))
+                  {
+                     statVal = character[statName];
+                  }
+                  if (statVal > bestStat)
+                  {
+                     bestStat = statVal;
+                  }
+               }
+               if (!(bestStat === Number.NEGATIVE_INFINITY))
+               {
+                  dm += charactersService.dmFromCharacteristic(bestStat);
+               }
+            }
+            $scope.results.push({
+               character: character,
+               dm:        dm
+            });
+         }
+         //Sort by DM, highest to lowest
+         $scope.results.sort(function(a,b){return b.dm-a.dm});
+      };
+   }];
+
+   return {
+      restrict: 'E',
+      scope: {
+         ngModel: "="
+      },
+      templateUrl: 'travellerSkillDm.view',
+      controller: controller
+   };
+}])
 
 //------------------Raw JS (no Angular junk) below this line ----------------
 function rawroll(numdice, sides){	
