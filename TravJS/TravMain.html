@@ -17,7 +17,6 @@
     <script src="traveller-alerts.js"></script>
     <script src="traveller-characters.js"></script>
     <script src="traveller-skills.js"></script>
-    <script src="traveller-dm-selector-test.js"></script>
     <script src="diceRoller.js"></script>
     <script src="ship-management.js"></script>
     <script src="random-tables.js"></script>
@@ -36,7 +35,6 @@
         <ul class="nav nav-pills">
           <li> <a href="#/roll">Roll Test</a> </li>
           <li> <a href="#/characters">Characters</a></li>
-          <li> <a href="#/dmSelectorTest">DM Selector Test</a></li>
           <li> <a href="#/shipManagement">Ship Management</a></li>
           <li> <a href="#/random">Random Generators</a></li>
           <li> <a href="#/decoder">Decoder</a></li>
@@ -198,56 +196,6 @@
 
   </script>
 
-<!-------------------------- Skill Selector Template -------------------------->
-  <script type="text/ng-template" id="travellerSkillDm.view">
-    <div style="padding:10px;border:1px solid black;width:425px">
-      <ui-select on-select="updateCharList()" on-remove="updateCharList()" theme="bootstrap" ng-model="selected.skill" style="width:400px;margin-right:5px;margin-bottom:10px">
-        <ui-select-match placeholder="Select skill...">{{$select.selected.nameIncludingParent}}</ui-select-match>
-        <ui-select-choices repeat="skill in skills | filter: {nameIncludingParent: $select.search}">
-          <span ng-bind-html="skill.nameIncludingParent | highlight: $select.search"></span>
-        </ui-select-choices>
-      </ui-select>
-      <table style="margin-bottom:10px">
-        <tr>
-          <td style="padding-right:5px">
-            <ui-select multiple on-select="updateCharList()" on-remove="updateCharList()" theme="bootstrap" ng-model="selected.characteristics" style="width:250px;margin-right:5px">
-              <ui-select-match placeholder="Select characteristics...">{{$item.name}}</ui-select-match>
-              <ui-select-choices repeat="characteristic in characteristics | filter: {name: $select.search}">
-                <span ng-bind-html="characteristic.name | highlight: $select.search"></span>
-              </ui-select-choices>
-            </ui-select>
-          </td>
-          <td>
-            <button type="button" class="btn btn-danger" ng-click="clearSelections()">Clear Selections</button>
-          </td>
-        </tr>
-      </table>
-      <style>
-        table.resultsTable tr td {
-           cursor:pointer;
-        }
-        table.resultsTable tr:hover td {
-           background-color:WhiteSmoke;
-        }
-      </style>
-      <table class="resultsTable">
-        <tr ng-repeat="result in results" ng-click="selectResult($index)" >
-          <td style="padding-right:10px">{{result.character.name}}:</td>
-          <td style="padding-right:10px">{{result.dm}}</td>
-          <td><span ng-if="$index === selectedResultIndex" class="glyphicon glyphicon-arrow-left" aria-hidden="true" style="color:green"></span></td>
-        </tr>
-      </table>
-    </div>
-  </script>
-
-<!---------------------------- Skill Selector Test ---------------------------->
-  <script type="text/ng-template" id="dmSelectorTest.view">
-    <br><br>
-    <traveller-skill-dm ng-model="dmResult"></traveller-skill-dm>
-    <br>
-    <span ng-if="dmResult.character">You selected {{dmResult.character.name}}, who has a dice modifier of {{dmResult.dm}}.</span>
-  </script>
-
 <!----------------------------------Table Roller View-------------------------->
   <script type="text/ng-template" id="randomtables.view">
     <br><br>
@@ -358,8 +306,57 @@
             </li>
          </ol>
         </div>
-</script>
 
+    <!-- Skill Check DM Test -->
+    <br><br>
+    <trav-skill-check-dm ng-model="dmResult"></trav-skill-check-dm>
+    <br>
+    <span ng-if="dmResult.character">You selected {{dmResult.character.name}}, who has a dice modifier of {{dmResult.dm}}.</span>
+  </script>
+
+<!-------------------------- Skill Check DM Template -------------------------->
+  <script type="text/ng-template" id="travellerSkillDm.view">
+    <div style="padding:10px;border:1px solid black;width:421px">
+      <ui-select on-select="updateCharList()" on-remove="updateCharList()" theme="bootstrap" ng-model="selected.skill" style="width:400px;margin-right:5px;margin-bottom:10px">
+        <ui-select-match placeholder="Select skill...">{{$select.selected.nameIncludingParent}}</ui-select-match>
+        <ui-select-choices repeat="skill in skills | filter: {nameIncludingParent: $select.search}">
+          <span ng-bind-html="skill.nameIncludingParent | highlight: $select.search"></span>
+        </ui-select-choices>
+      </ui-select>
+      <table>
+        <tr>
+          <td style="padding-right:5px">
+            <ui-select multiple on-select="updateCharList()" on-remove="updateCharList()" theme="bootstrap" ng-model="selected.characteristics" style="width:250px;margin-right:5px">
+              <ui-select-match placeholder="Select characteristics...">{{$item.name}}</ui-select-match>
+              <ui-select-choices repeat="characteristic in characteristics | filter: {name: $select.search}">
+                <span ng-bind-html="characteristic.name | highlight: $select.search"></span>
+              </ui-select-choices>
+            </ui-select>
+          </td>
+          <td>
+            <button type="button" class="btn btn-danger" ng-click="clearSelections()">Clear Selections</button>
+          </td>
+        </tr>
+      </table>
+      <style>
+        table.resultsTable tr td {
+           cursor:pointer;
+           padding:2px;
+        }
+        table.resultsTable tr:hover td {
+           background-color:WhiteSmoke;
+        }
+      </style>
+      <table ng-if="results && results.length" class="resultsTable" style="margin-top:10px">
+        <tr><th colspan="3" style="padding-bottom:2px">Select a character:</th></tr>
+        <tr ng-repeat="result in results" ng-click="selectResult($index)" >
+          <td style="padding-left:20px;padding-right:10px">{{result.character.name}}</td>
+          <td style="padding-right:10px;text-align:right">{{result.dm}}</td>
+          <td><span ng-if="$index === selectedResultIndex" class="glyphicon glyphicon-arrow-left" aria-hidden="true" style="color:green"></span></td>
+        </tr>
+      </table>
+    </div>
+  </script>
 
 <!----------------------------------Ref View-------------------------->
   <script type="text/ng-template" id="Ref.view">
