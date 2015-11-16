@@ -81,6 +81,7 @@ rollModule.directive('travSkillCheckDm', [function() {
       {
          $scope.selected.skill = undefined;
          $scope.selected.characteristics = undefined;
+         $scope.selected.difficulty = undefined;
          $scope.updateCharList();
       }
 
