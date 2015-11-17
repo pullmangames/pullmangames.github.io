@@ -39,11 +39,6 @@ charModule.controller('charactersController', ['$scope', '$uibModal', 'character
       $scope.selectCharacter(charactersService.addCharacter());
    }
 
-   $scope.saveToLocalStorage = function()
-   {
-      localStorage.setItem("characterList", angular.toJson($scope.characterList));
-   }
-
    $scope.importCharacter = function(inputElementList)
    {
       var inputElement = inputElementList[0];
@@ -286,11 +281,9 @@ charModule.factory('character', ['skills', function(skills) {
    return character;
 }]);
 
-charModule.service('charactersService', ['$rootScope', 'character', 'skill', 'alertsService', function($rootScope, character, skill, alertsService) {
+charModule.service('charactersService', ['$rootScope', 'character', 'skill', 'alertsService', 'dataStorageService', function($rootScope, character, skill, alertsService, dataStorageService) {
    this.characters = [];
-
-   var _newCharsCreated = 0;
-   var _storedChars;
+   var _characters = this.characters;
 
    var _buildCharFromJsonChar = function(jsonChar, errorMsg)
    {
@@ -319,24 +312,25 @@ charModule.service('charactersService', ['$rootScope', 'character', 'skill', 'al
       return newChar;
    };
 
-   try
+   var _buildCharsFromJsonChars = angular.bind(this, function(jsonChars)
    {
-      _storedChars = angular.fromJson(localStorage.getItem("characterList"));
-   }
-   catch (err) { }
-
-   if (_storedChars)
-   {
-      var storedCount = _storedChars.length;
-      for (var i = 0; i < storedCount; i++)
+      if (jsonChars)
       {
-         var newChar = _buildCharFromJsonChar(_storedChars[i], "Saved character sheet has in invalid version number");
-         if (newChar)
+         var storedCount = jsonChars.length;
+         for (var i = 0; i < storedCount; i++)
          {
-            this.characters.push(newChar);
+            var newChar = _buildCharFromJsonChar(jsonChars[i], "Saved character sheet has in invalid version number");
+            if (newChar)
+            {
+               this.characters.push(newChar);
+            }
          }
       }
-   }
+   });
+   
+   dataStorageService.register(this, 'characters', _buildCharsFromJsonChars);
+
+   var _newCharsCreated = 0;
 
    this.addCharacter = function() {
       var newChar = new character();
