@@ -64,11 +64,54 @@
   <div class="row">
   
   
-  <div class="col-md-2">Current Status
+  <div class="col-md-3">Current Status - current / total (open)
+  <pre>
+Cargo: {{shipMan.log.status.totalCargo()}} / {{shipMan.partyShip.maxcargo}} ({{shipMan.partyShip.maxcargo - shipMan.log.status.totalCargo()}})
+Smuggle: TODO?
+Fuel: {{shipMan.log.status.fuel}} / {{shipMan.partyShip.maxfuel}} ({{shipMan.partyShip.maxfuel - shipMan.log.status.fuel}})
+Staterooms: {{shipMan.partyShip.crew/2 + shipMan.log.status.highpass + shipMan.log.status.midpass}} / {{shipMan.partyShip.staterooms}} ({{shipMan.partyShip.staterooms - (shipMan.partyShip.crew/2 + shipMan.log.status.highpass + shipMan.log.status.midpass)}})
+Crew: {{shipMan.partyShip.crew/2}}, High: {{shipMan.log.status.highpass}}, Mid: {{shipMan.log.status.midpass}}
+Low Berths: {{shipMan.log.status.lowpass}} / {{shipMan.partyShip.maxlow}} ({{shipMan.partyShip.maxlow - shipMan.log.status.lowpass}})
+Last Payment: {{shipMan.log.status.lastPayment}}
+Due: {{shipMan.partyShip.monthlypayment}} Cr on TODO (X days)
+Cash: {{shipMan.log.status.cash}} Cr.
+Maint holdback: {{shipMan.partyShip.annualmaint/12}} Cr. per 28 days
+Maint fund: {{shipMan.log.status.maintFund}} Cr. / {{shipMan.partyShip.annualmaint}} Cr. ({{shipMan.partyShip.annualmaint - shipMan.log.status.maintFund}} Cr.)
+Maint date: 1106:001 (TODO days)
+
+Turret:BL,BL,S
+Turret:BL,BL,S
+
+Pilot: -1 DM
+  </pre>
   
+  <!--
+  var theShip={}
+	theShip.size=200;
+	theShip.maxfuel=44;
+	theShip.maxcargo=64;
+	theShip.maxpassengers=5;
+	theShip.maxlow=6;
+	theShip.crew=10;
+	theShip.computer=5;
+	theShip.Jump=2;
+	theShip.fuelprocessors=2;
+	theShip.streamlined=true;
+	
+	
+	smm.partyShip=theShip;
+		
+	smm.log=[];
+	smm.log.status={};
+	smm.log.status.fuel=0;
+	smm.log.status.cargo={}
+	smm.log.status.midpass=0;
+	smm.log.status.highpass=0;
+	smm.log.status.lowpass=0;
   Stuff goes here like
   Eventually things like your cargo space 
   and your total cash
+  -->
   
   </div>
   <div class="col-md-6">Activities
@@ -79,21 +122,35 @@
 		   	Manual Log Entry/Adjustment<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
 		  </uib-accordion-heading>
 		  		 <form ng-submit="shipMan.manualLog()" class="form-inline">
-              	 	<input type="textarea"  class="form-control" ng-model="shipMan.input" size="40" placeholder="New log entry">
+              	 	<input type="textarea"  class="form-control" ng-model="shipMan.logText" size="40" placeholder="New log entry">
               	 	<br>
-               		<input type="text" class="form-control" ng-model="shipMan.inputDate" size="10" placeholder="Date">
-               		<input type="text" class="form-control" ng-model="shipMan.inputTimeElapsed" size="10" placeholder="Elapsed time">
+              	 	<input type="number" class="form-control" ng-model="shipMan.inputYear" size="4" placeholder="Year" >
+               		<input type="number" class="form-control" ng-model="shipMan.inputDate" size="4" placeholder="Date">
+               		<input type="number" class="form-control" ng-model="shipMan.inputTimeElapsed" size="4" placeholder="Elapsed time">
                		<input class="btn btn-default btn-primary" type="submit" value="Log">
            		</form>
-           		<br><br>
-           		<form ng-submit="shipMan.manualAdjust()" class="form-inline">
+           		<br>
+           		<form ng-submit="shipMan.manualCargoAdd()" class="form-inline">
               	 	<input type="textarea"  class="form-control" ng-model="shipMan.addCargoType" size="30" placeholder="Cargo Text">
-               		<input type="text" class="form-control" ng-model="shipMan.addCargoTons" size="10" placeholder="Tons">
-               		<br>
-               		<input type="text" class="form-control" ng-model="shipMan.addMoney" size="10" placeholder="Cr">
-               		<input type="text" class="form-control" ng-model="shipMan.addTime" size "10" placeholder="days">
-               		<input class="btn btn-default btn-primary" type="submit" value="Adjust">
+               		<input type="number" class="form-control" ng-model="shipMan.addCargoTons" size="10" placeholder="Tons">
+               		<input type="number" class="form-control" ng-model="shipMan.inputTimeElapsed" size="4" placeholder="Elapsed time">
+               		<input class="btn btn-default btn-primary" type="submit" value="Add Cargo">
            		</form>
+           		<br>
+           		<form ng-submit="shipMan.manualCredits()" class="form-inline">
+               		<input type="number" class="form-control" ng-model="shipMan.addMoney" size="10" placeholder="Cr">
+               		<input type="text" class="form-control" ng-model="shipMan.addMoneyDesc" size="20" placeholder="Reason">
+               		<input type="number" class="form-control" ng-model="shipMan.inputTimeElapsed" size="4" placeholder="Elapsed time">
+               		<input class="btn btn-default btn-primary" type="submit" value="Add">
+           		</form>
+           		<br>
+           		Set Date:
+           		<form ng-submit="shipMan.manualSetDate()" class="form-inline">
+           			<input type="number" class="form-control" ng-model="shipMan.log.status.year" size "4" placeholder="year">
+               		<input type="number" class="form-control" ng-model="shipMan.log.status.today" size "4" placeholder="date">
+               		<!--<input class="btn btn-default btn-primary" type="submit" value="Set">-->
+           		</form>
+           		
            		
 		</uib-accordion-group>
 		
@@ -334,7 +391,14 @@
 	  </uib-accordion>
   </div>
   	<div class="col-md-2">
-	  			Ship's log
+	  	Today: {{shipMan.log.status.year}}:{{shipMan.log.status.today}}
+	  	<br>
+	  	Ship's log
+	  	<ul class="list-group">
+         <li class="list-group-item" ng-repeat="logitem in shipMan.log track by $index">
+         <span> {{logitem.year}}:{{logitem.startDate}} - {{logitem.text}} - {{logitem.elapsed}} days </span>
+         </li>
+        </ul>
 	  			
 	</div>
   </div>
