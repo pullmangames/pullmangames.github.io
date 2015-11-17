@@ -16,8 +16,8 @@ shipManModule.controller('shipManagementController', function ($scope) {
 	theShip.fuelprocessors=2;
 	theShip.streamlined=true;
 	theShip.staterooms=10;
-	theShip.newprice=99999999;
-	theShip.discounted=.6;
+	theShip.newprice=57885500;
+	theShip.discounted=.5;
 	theShip.principal=theShip.newprice*theShip.discounted;
 	theShip.monthlypayment=theShip.principal/240;
 	theShip.annualmaint=theShip.newprice*.001;
