@@ -1,6 +1,6 @@
 shipManModule = angular.module('shipManagement', []); //declare the module for managing the ship
       
-shipManModule.controller('shipManagementController', function ($scope) {
+shipManModule.controller('shipManagementController', ['$scope', 'dataStorageService', function ($scope, dataStorageService) {
 	var smm=this;
 	
 	var theShip={}
@@ -21,41 +21,60 @@ shipManModule.controller('shipManagementController', function ($scope) {
 	theShip.principal=theShip.newprice*theShip.discounted;
 	theShip.monthlypayment=theShip.principal/240;
 	theShip.annualmaint=theShip.newprice*.001;
-	
-	
+
 	smm.partyShip=theShip;
-		
-	smm.log=[];
-	smm.log.status={};
-	smm.log.status.today=001;
-	smm.log.status.year=1105;
-	smm.log.status.fuel=0;
-	smm.log.status.cargo=[{"type":"demo", "detail":"some deets", "paid":100, "tons":10},{"type":"demo2", "paid":10000, "detail":"some deets", "tons":20}] //todo remove demo cargo
-	smm.log.status.midpass=0;
-	smm.log.status.highpass=0;
-	smm.log.status.lowpass=0;
-	smm.log.status.cash=0;
-	smm.log.status.maintFund=0;
-	smm.log.status.totalCargo = function(){
-		var total=0;
-		for (var i=0;i<this.cargo.length;i++)
-		{
-			total+=this.cargo[i].tons;
-		}
-		return total;
-	};
-	smm.log.status.totalCargoValue = function(){
-		var total=0;
-		for (var i=0;i<this.cargo.length;i++)
-		{
-			total+= (this.cargo[i].tons * this.cargo[i].paid);
-		}
-		return total;
-	};
-	
-	
-	
-	smm.log.entries=[];
+
+   function shipLog()
+   {
+      this.formatVersion = 1;
+      this.status={};
+      this.status.today=001;
+      this.status.year=1105;
+      this.status.fuel=0;
+      this.status.cargo=[{"type":"demo", "detail":"some deets", "paid":100, "tons":10},{"type":"demo2", "paid":10000, "detail":"some deets", "tons":20}] //todo remove demo cargo
+      this.status.midpass=0;
+      this.status.highpass=0;
+      this.status.lowpass=0;
+      this.status.cash=0;
+      this.status.maintFund=0;
+      this.status.totalCargo = function(){
+         var total=0;
+         for (var i=0;i<this.cargo.length;i++)
+         {
+            total+=this.cargo[i].tons;
+         }
+         return total;
+      };
+      this.status.totalCargoValue = function(){
+         var total=0;
+         for (var i=0;i<this.cargo.length;i++)
+         {
+            total+= (this.cargo[i].tons * this.cargo[i].paid);
+         }
+         return total;
+      };
+
+      this.entries=[];
+   }
+
+   smm.log = new shipLog();
+   $scope.shipLog = smm.log;
+   
+   var _buildShipLogFromJsonLog = angular.bind(this, function(jsonLog)
+   {
+      if (jsonLog)
+      {
+         if (   !jsonLog.formatVersion
+             || jsonLog.formatVersion != 1)
+         {
+            throw("danger", "Ship's log has invalid format. Unable to load.");
+         }
+
+         angular.merge(this.log, jsonLog);
+      }
+   });
+   
+   dataStorageService.register($scope, 'shipLog', _buildShipLogFromJsonLog);
 	
 	smm.inputYear=smm.log.status.year;
 	smm.inputDate=smm.log.status.today;
@@ -83,8 +102,8 @@ shipManModule.controller('shipManagementController', function ($scope) {
 	};
 	
 	smm.manualCredits=function(){
-	smm.log.status.cash += smm.addMoney;
-	smm.logEntry(smm.log.status.year, smm.log.status.today, smm.inputTimeElapsed, "[manual] " + smm.addMoneyDesc + ": " + smm.addMoney + " = " +smm.log.status.cash);
+      smm.log.status.cash += smm.addMoney;
+      smm.logEntry(smm.log.status.year, smm.log.status.today, smm.inputTimeElapsed, "[manual] " + smm.addMoneyDesc + ": " + smm.addMoney + " = " +smm.log.status.cash);
 	}
 	
 	smm.logEntry=function(newyear, newdate, newelapsed, newtext){
@@ -92,10 +111,10 @@ shipManModule.controller('shipManagementController', function ($scope) {
 		};
 
 	smm.logEntryRaw=function(newEntry) {
-		smm.log.push(newEntry)
+		smm.log.entries.push(newEntry)
 	};
 
-});
+}]);
 
 
 

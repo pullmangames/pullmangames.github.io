@@ -377,7 +377,7 @@ Cargo Bay
 	  	<br>
 	  	Ship's log
 	  	<ul class="list-group">
-         <li class="list-group-item" ng-repeat="logitem in shipMan.log track by $index">
+         <li class="list-group-item" ng-repeat="logitem in shipMan.log.entries track by $index">
          <span> {{logitem.year}}:{{logitem.startDate}} - {{logitem.text}} - {{logitem.elapsed}} days </span>
          </li>
         </ul>

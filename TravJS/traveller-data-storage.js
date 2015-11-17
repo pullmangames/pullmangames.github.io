@@ -48,7 +48,6 @@ dsModule.service('dataStorageService', ['$rootScope', function($rootScope) {
          function(newVal) {
             var outJson = angular.toJson(newVal);
             localStorage.setItem(key, outJson);
-            var readBack = localStorage.getItem(key);
          },
          propIsObject);
 
