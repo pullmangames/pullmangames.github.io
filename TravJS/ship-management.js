@@ -4,6 +4,7 @@ shipManModule.controller('shipManagementController', function ($scope) {
 	var smm=this;
 	
 	var theShip={}
+	theShip.name="Chameleon";
 	theShip.size=200;
 	theShip.maxfuel=44;
 	theShip.maxcargo=64;
@@ -29,7 +30,7 @@ shipManModule.controller('shipManagementController', function ($scope) {
 	smm.log.status.today=001;
 	smm.log.status.year=1105;
 	smm.log.status.fuel=0;
-	smm.log.status.cargo=[{"type":"demo", "detail":"some deets", "tons":10},{"type":"demo2", "detail":"some deets", "tons":20}] //todo remove demo cargo
+	smm.log.status.cargo=[{"type":"demo", "detail":"some deets", "paid":100, "tons":10},{"type":"demo2", "paid":10000, "detail":"some deets", "tons":20}] //todo remove demo cargo
 	smm.log.status.midpass=0;
 	smm.log.status.highpass=0;
 	smm.log.status.lowpass=0;
@@ -43,6 +44,15 @@ shipManModule.controller('shipManagementController', function ($scope) {
 		}
 		return total;
 	};
+	smm.log.status.totalCargoValue = function(){
+		var total=0;
+		for (var i=0;i<this.cargo.length;i++)
+		{
+			total+= (this.cargo[i].tons * this.cargo[i].paid);
+		}
+		return total;
+	};
+	
 	
 	
 	smm.log.entries=[];
@@ -64,8 +74,10 @@ shipManModule.controller('shipManagementController', function ($scope) {
 
 	smm.manualCargoAdd=function(){
 		var newcargo=cargoFactory();
-		newcargo.type=smm.addCargoType;
+		newcargo.detail=smm.addCargoType;
+		newcargo.type="MANUAL";
 		newcargo.tons=smm.addCargoTons;
+		newcargo.paid=smm.addPrice;
 		smm.log.status.cargo.push(newcargo);
 		smm.logEntry(smm.log.status.year, smm.log.status.today, smm.inputTimeElapsed, "[manual] loaded " + smm.addCargoType + ": "  +smm.addCargoTons + " dT");
 	};

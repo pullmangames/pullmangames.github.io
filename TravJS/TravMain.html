@@ -64,7 +64,7 @@
   <div class="row">
   
   
-  <div class="col-md-3">Current Status - current / total (open)
+  <div class="col-md-3">{{shipMan.partyShip.name}} current status <br> current / total (open):
   <pre>
 Cargo: {{shipMan.log.status.totalCargo()}} / {{shipMan.partyShip.maxcargo}} ({{shipMan.partyShip.maxcargo - shipMan.log.status.totalCargo()}})
 Smuggle: TODO?
@@ -75,6 +75,7 @@ Low Berths: {{shipMan.log.status.lowpass}} / {{shipMan.partyShip.maxlow}} ({{shi
 Last Payment: {{shipMan.log.status.lastPayment}}
 Due: {{shipMan.partyShip.monthlypayment}} Cr on TODO (X days)
 Cash: {{shipMan.log.status.cash}} Cr.
+Cargo Value:{{shipMan.log.status.totalCargoValue()}}
 Maint holdback: {{shipMan.partyShip.annualmaint/12}} Cr. per 28 days
 Maint fund: {{shipMan.log.status.maintFund}} Cr. / {{shipMan.partyShip.annualmaint}} Cr. ({{shipMan.partyShip.annualmaint - shipMan.log.status.maintFund}} Cr.)
 Maint date: 1106:001 (TODO days)
@@ -85,33 +86,12 @@ Turret:BL,BL,S
 Pilot: -1 DM
   </pre>
   
-  <!--
-  var theShip={}
-	theShip.size=200;
-	theShip.maxfuel=44;
-	theShip.maxcargo=64;
-	theShip.maxpassengers=5;
-	theShip.maxlow=6;
-	theShip.crew=10;
-	theShip.computer=5;
-	theShip.Jump=2;
-	theShip.fuelprocessors=2;
-	theShip.streamlined=true;
-	
-	
-	smm.partyShip=theShip;
-		
-	smm.log=[];
-	smm.log.status={};
-	smm.log.status.fuel=0;
-	smm.log.status.cargo={}
-	smm.log.status.midpass=0;
-	smm.log.status.highpass=0;
-	smm.log.status.lowpass=0;
-  Stuff goes here like
-  Eventually things like your cargo space 
-  and your total cash
-  -->
+Cargo Bay
+	  	<ul class="list-group">
+         <li class="list-group-item" ng-repeat="acargo in shipMan.log.status.cargo track by $index">
+         <span> {{acargo.type}}({{acargo.detail}}) paid {{acargo.paid}}[{{acargo.paid*acargo.tons}}] - {{acargo.tons}} dT </span>
+         </li>
+        </ul>
   
   </div>
   <div class="col-md-6">Activities
@@ -133,6 +113,7 @@ Pilot: -1 DM
            		<form ng-submit="shipMan.manualCargoAdd()" class="form-inline">
               	 	<input type="textarea"  class="form-control" ng-model="shipMan.addCargoType" size="30" placeholder="Cargo Text">
                		<input type="number" class="form-control" ng-model="shipMan.addCargoTons" size="10" placeholder="Tons">
+               		<input type="number" class="form-control" ng-model="shipMan.addPrice" size="10" placeholder="Cr/Ton">
                		<input type="number" class="form-control" ng-model="shipMan.inputTimeElapsed" size="4" placeholder="Elapsed time">
                		<input class="btn btn-default btn-primary" type="submit" value="Add Cargo">
            		</form>
