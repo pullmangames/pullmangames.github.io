@@ -17,6 +17,8 @@
     <script src="traveller-alerts.js"></script>
     <script src="traveller-characters.js"></script>
     <script src="traveller-skills.js"></script>
+    <script src="traveller-data-storage.js"></script>
+    <script src="traveller-app-config.js"></script>
     <script src="diceRoller.js"></script>
     <script src="ship-management.js"></script>
     <script src="random-tables.js"></script>
@@ -42,6 +44,7 @@
           <li> <a href="#/shipManagement">Ship Management</a></li>
           <li> <a href="#/random">Random Generators</a></li>
           <li> <a href="#/decoder">Decoder</a></li>
+          <li> <a href="#/config">Config</a></li>
         </ul>
       </div>
     </section>
@@ -376,7 +379,7 @@ Cargo Bay
 	  	<br>
 	  	Ship's log
 	  	<ul class="list-group">
-         <li class="list-group-item" ng-repeat="logitem in shipMan.log track by $index">
+         <li class="list-group-item" ng-repeat="logitem in shipMan.log.entries track by $index">
          <span> {{logitem.year}}:{{logitem.startDate}} - {{logitem.text}} - {{logitem.elapsed}} days </span>
          </li>
         </ul>
@@ -422,8 +425,7 @@ Cargo Bay
       <button id="charMgmtButton" type="button" class="btn btn-primary" uib-dropdown-toggle>Character Management<span class="caret"></span></button>
       <ul class="uib-dropdown-menu dropDownMenu" role="menu" aria-labelledby="charMgmtButton" id="charMgmtMenu">
         <li><span ng-click="addCharacter()">Create New</span></li>
-        <li><span class="charImporter">Import<input type="file" onchange="angular.element(this).scope().importCharacter(angular.element(this))"></span></li>
-        <li><span ng-click="saveToLocalStorage()">Save All</span></li>
+        <li><span class="fileChooser">Import<input type="file" onchange="angular.element(this).scope().importCharacter(angular.element(this))"></span></li>
         <li><span ng-click="exportAll()">Export All</span></li>
       </ul>
     </div>
@@ -823,6 +825,11 @@ Left alone, the scout and its heroic crew settled into the vacuous night and die
 
   </script>
   
-
+<!-------------------------------- Config View -------------------------------->
+  <script type="text/ng-template" id="config.view">
+    <br><br>
+    <button class="btn btn-primary" type="button" ng-click="exportAll()">Export All</button>
+    <button class="btn btn-primary fileChooser" type="button">Import All<input type="file" onchange="angular.element(this).scope().importAll(angular.element(this))" style="cursor:pointer"></button>
+  </script>
 </html>
 
