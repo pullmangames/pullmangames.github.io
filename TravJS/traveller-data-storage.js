@@ -77,7 +77,7 @@ dsModule.service('dataStorageService', ['$rootScope', 'alertsService', function(
          function(newVal) {
             localStorage.setItem(key, angular.toJson(newVal));
          },
-         angular.isObject(source[property]);
+         angular.isObject(source[property]));
 
       //Load whatever's in local storage and pass it to the onload function
       onload(angular.fromJson(localStorage.getItem(key)));
