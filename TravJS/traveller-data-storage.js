@@ -1,7 +1,8 @@
 dsModule = angular.module('travDataStorage', []); //declare the module for handling chracters
 
-dsModule.service('dataStorageService', ['$rootScope', function($rootScope) {
+dsModule.service('dataStorageService', ['$rootScope', 'alertsService', function($rootScope, alertsService) {
    var prefix = "dataStorageService_";
+   var prefixLen = prefix.length;
    var registeredData = [];
 
    this.register = function(source, property, onload)
@@ -18,7 +19,7 @@ dsModule.service('dataStorageService', ['$rootScope', function($rootScope) {
 
       var key = prefix + property;
 
-      registeredData.push({source:source, property:property, onload:onload});
+      registeredData.push({source:source, property:property, key:key, onload:onload});
 
       var scope = source;
       var watchName = property;
@@ -55,4 +56,58 @@ dsModule.service('dataStorageService', ['$rootScope', function($rootScope) {
       var objectFromJson = angular.fromJson(inJson);
       onload(objectFromJson);
    };
+   
+   this.exportAll = function()
+   {
+      var objsToBeExported = {};
+      for (var key in localStorage)
+      {
+         if (key.substring(0, prefixLen) === prefix)
+         {
+            objsToBeExported[key] = angular.fromJson(localStorage.getItem(key));
+         }
+      }
+      var jsonToExport = angular.toJson(objsToBeExported, 3);
+      var element = document.createElement('a');
+      element.setAttribute('href', 'data:application/json,' + encodeURIComponent(jsonToExport));
+      element.setAttribute('download', 'traveller_data.json');
+      element.style.display = 'none';
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+   }
+
+   this.importAll = function(fileToRead)
+   {
+      var reader = new FileReader();
+      reader.onload = function(e) { $rootScope.$apply(function() {
+         try {
+            var importedObjects = angular.fromJson(e.target.result);
+         } catch (err) {
+            alertsService.addAlert("danger", "The file you tried to import does not appear to be valid");
+            return;
+         }
+
+         for (var key in importedObjects)
+         {
+            if (key.substring(0, prefixLen) === prefix)
+            {
+               localStorage.setItem(key, angular.toJson(importedObjects[key]));
+            }
+            for (var i = 0; i < registeredData.length; i++)
+            {
+               if (registeredData[i].key === key)
+               {
+                  registeredData[i].onload(importedObjects[key]);
+               }
+            }
+         }
+      })};
+
+      try {
+         reader.readAsText(fileToRead);
+      } catch (err) {
+         alertsService.addAlert("danger", "Unable to read " + fileToRead.name)
+      }
+   }
 }]);

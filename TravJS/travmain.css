@@ -72,11 +72,11 @@ input[type="number"].skillValueInput {
 .dropDownMenuDisabled {
    color: DarkGray;
 }
-.charImporter {
+.fileChooser {
    position: relative;
    overflow: hidden;
 }
-.charImporter input[type=file] {
+.fileChooser input[type=file] {
    position: absolute;
    top: 0;
    right: 0;

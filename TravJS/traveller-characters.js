@@ -316,6 +316,7 @@ charModule.service('charactersService', ['$rootScope', 'character', 'skill', 'al
    {
       if (jsonChars)
       {
+         this.characters.length = 0;
          var storedCount = jsonChars.length;
          for (var i = 0; i < storedCount; i++)
          {

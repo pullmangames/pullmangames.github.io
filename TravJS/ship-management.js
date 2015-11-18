@@ -1,6 +1,6 @@
 shipManModule = angular.module('shipManagement', []); //declare the module for managing the ship
       
-shipManModule.controller('shipManagementController', ['$scope', 'dataStorageService', function ($scope, dataStorageService) {
+shipManModule.controller('shipManagementController', ['$scope', 'dataStorageService', 'alertsService', function ($scope, dataStorageService, alertsService) {
 	var smm=this;
 	
 	var theShip={}
@@ -67,9 +67,9 @@ shipManModule.controller('shipManagementController', ['$scope', 'dataStorageServ
          if (   !jsonLog.formatVersion
              || jsonLog.formatVersion != 1)
          {
-            throw("danger", "Ship's log has invalid format. Unable to load.");
+            alertsService.addAlert("danger", "Ship's log has invalid format. Unable to load.");
          }
-
+         this.log.entries.length = 0;
          angular.merge(this.log, jsonLog);
       }
    });
