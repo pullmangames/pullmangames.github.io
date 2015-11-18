@@ -108,23 +108,18 @@ rollModule.directive('travSkillCheckDm', [function() {
             if (selectedSkill)
             {
                var skill = character.skills.findSkill(selectedSkill.name);
-               if (skill.hasOwnProperty('value')) //User has the skill
+               var jackOfAllTrades = character.skills.findSkill("Jack of all Trades");
+
+               var effectiveSkill = -3;
+               if (jackOfAllTrades.hasOwnProperty('value') && jackOfAllTrades.value - 3 > effectiveSkill)
                {
-                  dm += skill.value;
+                  effectiveSkill = jackOfAllTrades.value - 3;
                }
-               else
+               if (skill.hasOwnProperty('value') && skill.value > effectiveSkill)
                {
-                  //If the user doesn't have the skill, see if there's a bonus from Jack of all Trades
-                  var jackOfAllTrades = character.skills.findSkill("Jack of all Trades");
-                  if (jackOfAllTrades.hasOwnProperty('value'))
-                  {
-                     dm += (jackOfAllTrades.value - 3);
-                  }
-                  else //No bonus - default DM of -3
-                  {
-                     dm -= 3;
-                  }
+                  effectiveSkill = skill.value;
                }
+               dm += effectiveSkill;
             }
             if (selectedStats)
             {
