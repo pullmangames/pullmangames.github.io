@@ -68,6 +68,7 @@ rollModule.directive('travSkillCheckDm', [function() {
       $scope.characteristics = charactersService.characteristics;
       $scope.difficulties = travRollService.difficulties;
       $scope.selected = {};
+      $scope.selected.extFactors = [];
       $scope.results = [];
       $scope.selectedResultIndex = -1;
 
@@ -82,6 +83,7 @@ rollModule.directive('travSkillCheckDm', [function() {
          $scope.selected.skill = undefined;
          $scope.selected.characteristics = undefined;
          $scope.selected.difficulty = undefined;
+         $scope.selected.extFactors.splice(0, $scope.selected.extFactors.length);
          $scope.updateCharList();
       }
 
@@ -166,7 +168,7 @@ rollModule.directive('travSkillCheckDm', [function() {
       templateUrl: 'travellerSkillDm.view',
       controller: controller
    };
-}])
+}]);
 
 rollModule.service('travRollService', [function() {
    this.difficulties = [
