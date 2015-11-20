@@ -160,7 +160,7 @@ skillsModule.factory('skills', ['skillsService', 'skill', function(skillsService
    return skills;
 }]);
 
-skillsModule.service('skillsService', [function() {
+skillsModule.service('skillsService', ['dataStorageService', function(dataStorageService) {
    this.defaultSkillList = [
       { name:"Admin",                                                       specialties:[] },
       { name:"Advocate",                                                    specialties:[] },
@@ -309,4 +309,45 @@ skillsModule.service('skillsService', [function() {
    this.lookupDefaultSkill = function(name) {
       return _defaultSkillDict[name];
    }
+
+   this.skillExternalFactors = {};
+   
+   var _buildEFsFromJsonEFs = angular.bind(this, function(jsonEFs)
+   {
+      for (var prop in this.skillExternalFactors)
+      {
+         if (this.skillExternalFactors.hasOwnProperty(prop))
+         {
+            delete this.skillExternalFactors[prop];
+         }
+      }
+      angular.merge(this.skillExternalFactors, jsonEFs);
+   });
+   
+   this.addSkillExternalFactor = function(skillName, externalFactor, value)
+   {
+      if (!this.skillExternalFactors[skillName])
+      {
+         this.skillExternalFactors[skillName] = [];
+      }
+      this.skillExternalFactors[skillName].push({externalFactor, value});
+   }
+   
+   this.deleteSkillExternalFactor = function(skillName, externalFactor)
+   {
+      for (var i = 0; i < this.skillExternalFactors[skillName].length; i++)
+      {
+         if (this.skillExternalFactors[skillName][i] === externalFactor)
+         {
+            this.skillExternalFactors[skillName][i].splice(i, 1);
+            if (this.skillExternalFactors[skillName][i].length === 0)
+            {
+               delete(this.skillExternalFactors[skillName]);
+            }
+            break;
+         }
+      }
+   }
+   
+   dataStorageService.register(this, 'skillExternalFactors', _buildEFsFromJsonEFs);
 }]);

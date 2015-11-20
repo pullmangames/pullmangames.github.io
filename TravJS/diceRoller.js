@@ -62,12 +62,14 @@ rollModule.controller('RollController', ['$scope', 'travRollService', 'character
 //  character: the selected character
 //  dm:        selected character's dice modifier
 rollModule.directive('travSkillCheckDm', [function() {
-   var controller = ['$scope', 'charactersService', 'skillsService', 'travRollService', function($scope, charactersService, skillsService, travRollService) {
+   var controller = ['$scope', '$uibModal', 'charactersService', 'skillsService', 'travRollService', function($scope, $uibModal, charactersService, skillsService, travRollService) {
 
       $scope.skills = skillsService.usableSkills;
+      $scope.externalFactors = skillsService.skillExternalFactors;
       $scope.characteristics = charactersService.characteristics;
       $scope.difficulties = travRollService.difficulties;
       $scope.selected = {};
+      $scope.selected.extFactors = [];
       $scope.results = [];
       $scope.selectedResultIndex = -1;
 
@@ -82,6 +84,7 @@ rollModule.directive('travSkillCheckDm', [function() {
          $scope.selected.skill = undefined;
          $scope.selected.characteristics = undefined;
          $scope.selected.difficulty = undefined;
+         $scope.selected.extFactors.splice(0, $scope.selected.extFactors.length);
          $scope.updateCharList();
       }
 
@@ -93,6 +96,7 @@ rollModule.directive('travSkillCheckDm', [function() {
          var selectedSkill = $scope.selected.skill;
          var selectedStats = $scope.selected.characteristics;
          var selectedDifficulty = $scope.selected.difficulty;
+         var selectedExtFactors = $scope.selected.extFactors;
 
          if (!selectedSkill && (!selectedStats || selectedStats.length === 0))
          {
@@ -104,6 +108,11 @@ rollModule.directive('travSkillCheckDm', [function() {
          {
             var character = characters[i];
             var dm = 0;
+            
+            for (var j = 0; j < selectedExtFactors.length; j++)
+            {
+               dm += selectedExtFactors[j].value;
+            }
             
             if (selectedSkill)
             {
@@ -156,6 +165,37 @@ rollModule.directive('travSkillCheckDm', [function() {
          //Sort by DM, highest to lowest
          $scope.results.sort(function(a,b){return b.dm-a.dm});
       };
+
+      //Modal for adding external factors ('other' +/- to DMs) to skills
+      var addExtFactorModalController = ['$scope', '$uibModalInstance', 'skillName', function($scope, $uibModalInstance, skill) {
+         $scope.skillNameIncludingParent = skill.nameIncludingParent;
+
+         $scope.addExtFactorModalOk = function() {
+            $uibModalInstance.close({name:$scope.newExternalFactorName, value:$scope.newExternalFactorValue});
+         };
+
+         $scope.addExtFactorModalCancel = function() {
+            $uibModalInstance.dismiss('cancel');
+         };
+      }];
+
+      $scope.openAddExtFactorModal = function() {
+         var modalInstance = $uibModal.open({
+            templateUrl: 'addExtFactorModal.view',
+            controller: addExtFactorModalController,
+            resolve: {
+               skillName: function () {
+                  return $scope.selected.skill;
+               }
+            }
+         });
+
+         modalInstance.result.then(
+            function(ef) {
+               skillsService.addSkillExternalFactor($scope.selected.skill.name, ef.name, ef.value);
+            }
+         );
+      }
    }];
 
    return {
@@ -166,7 +206,7 @@ rollModule.directive('travSkillCheckDm', [function() {
       templateUrl: 'travellerSkillDm.view',
       controller: controller
    };
-}])
+}]);
 
 rollModule.service('travRollService', [function() {
    this.difficulties = [
