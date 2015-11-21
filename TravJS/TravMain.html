@@ -525,40 +525,6 @@ Cargo Bay
 
   </script>
 
-<!---------------------- Skill External Factor Template ----------------------->
-  <script type="text/ng-template" id="travSkillExtFactor.view">
-    <table>
-      <tr>
-        <td>
-          <ui-select multiple on-select="updateSelection()" on-remove="updateSelection()" theme="bootstrap" ng-model="selected.externalFactors" style="width:359px;margin-right:5px">
-            <ui-select-match placeholder="Select external factors...">{{$item.externalFactor}}: {{$item.value}}</ui-select-match>
-            <ui-select-choices repeat="factor in externalFactors[skillName] | filter: {externalFactor: $select.search}">
-              <span ng-bind-html="factor.externalFactor | highlight: $select.search"></span>: {{factor.value}}
-            </ui-select-choices>
-          </ui-select>
-        </td>
-        <td>
-          <button type="button" ng-disabled="!skillName" class="btn btn-sm" ng-click="openAddExtFactorModal(skillName)" style="margin-right:5px"><span class="glyphicon glyphicon-plus"></span></button>
-        </td>
-  </script>
-
-  <!------------- Add Skill External Factor Modal ------------->
-  <script type="text/ng-template" id="addExtFactorModal.view">
-    <div class="modal-header">
-      <h4 class="modal-title">Add an external factor to {{skillName}}</h4>
-    </div>
-    <div class="modal-body row">
-      <div class="row">
-        <div class="col-md-9"><span style="margin-left:5px">Name:</span><input style="margin-left:5px;margin-bottom:10px;width:350px" ng-model="newExternalFactorName" autoFocus></input></div>
-        <div class="col-md-3"><span style="margin-left:5px">Value:</span><input style="margin-left:5px;width:40px" ng-model="newExternalFactorValue" type="number"></input></div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-success" type="button" ng-click="addExtFactorModalOk()">Add</button>
-      <button class="btn btn-default" type="button" ng-click="addExtFactorModalCancel()">Cancel</button>
-    </div>
-  </script>
-
 <!----------------------------------Table Roller View-------------------------->
   <script type="text/ng-template" id="randomtables.view">
     <br><br>
@@ -686,8 +652,22 @@ Cargo Bay
           <span ng-bind-html="skill.nameIncludingParent | highlight: $select.search"></span>
         </ui-select-choices>
       </ui-select>
-      <trav-skill-ext-factor skill-name="{{selected.skill.name}}" ng-model="selected.extFactors"></trav-skill-ext-factor>
-      <table style="margin-top:10px">
+      <table style="margin-bottom:10px">
+        <tr>
+          <td>
+            <ui-select multiple on-select="updateCharList()" on-remove="updateCharList()" theme="bootstrap" ng-model="selected.extFactors" style="width:359px;margin-right:5px">
+              <ui-select-match placeholder="Select external factors...">{{$item.externalFactor}}: {{$item.value}}</ui-select-match>
+              <ui-select-choices repeat="factor in externalFactors[selected.skill.name] | filter: {externalFactor: $select.search}">
+                <span ng-bind-html="factor.externalFactor | highlight: $select.search"></span>: {{factor.value}}
+              </ui-select-choices>
+            </ui-select>
+          </td>
+          <td>
+            <button type="button" ng-disabled="!selected.skill" class="btn btn-sm" ng-click="openAddExtFactorModal(selected.skill)" style="margin-right:5px"><span class="glyphicon glyphicon-plus"></span></button>
+          </td>
+        </tr>
+      </table>
+      <table>
         <tr>
           <td style="padding-right:5px">
             <ui-select multiple on-select="updateCharList()" on-remove="updateCharList()" theme="bootstrap" ng-model="selected.characteristics" style="width:250px;margin-right:5px">
@@ -731,6 +711,23 @@ Cargo Bay
           <td style="vertical-align:top"><button type="button" class="btn btn-danger" ng-click="clearSelections()">Clear Selections</button></td>
         </tr>
       </table>
+    </div>
+  </script>
+
+  <!------------- Add Skill External Factor Modal ------------->
+  <script type="text/ng-template" id="addExtFactorModal.view">
+    <div class="modal-header">
+      <h4 class="modal-title">Add an external factor to {{skillNameIncludingParent}}</h4>
+    </div>
+    <div class="modal-body row">
+      <div class="row">
+        <div class="col-md-9"><span style="margin-left:5px">Name:</span><input style="margin-left:5px;margin-bottom:10px;width:350px" ng-model="newExternalFactorName" autoFocus></input></div>
+        <div class="col-md-3"><span style="margin-left:5px">Value:</span><input style="margin-left:5px;width:40px" ng-model="newExternalFactorValue" type="number"></input></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-success" type="button" ng-click="addExtFactorModalOk()">Add</button>
+      <button class="btn btn-default" type="button" ng-click="addExtFactorModalCancel()">Cancel</button>
     </div>
   </script>
 
