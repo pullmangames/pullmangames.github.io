@@ -1,6 +1,6 @@
 shipManModule = angular.module('shipManagement', []); //declare the module for managing the ship
       
-shipManModule.controller('shipManagementController', ['$scope', 'dataStorageService', 'alertsService', function ($scope, dataStorageService, alertsService) {
+shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataStorageService', 'alertsService', function ($scope, $http, dataStorageService, alertsService) {
 	var smm=this;
 	
 	var theShip={}
@@ -113,7 +113,42 @@ shipManModule.controller('shipManagementController', ['$scope', 'dataStorageServ
 	smm.logEntryRaw=function(newEntry) {
 		smm.log.entries.push(newEntry)
 	};
+   
+   smm.selected = {};
+   smm.departureWorlds = [];
+   smm.refreshDepartureWorlds = function(worldName) {
+      var params = {q: worldName};
+      return $http.get('http://travellermap.com/api/search', {params: params})
+      .then(function(response) {
+         smm.departureWorlds = response.data.Results.Items;
+      });
+   };
 
+   smm.arrivalWorlds = [];
+   smm.refreshArrivalWorlds = function() {
+      smm.selected.arrivalWorld = {};
+      if (smm.selected.departureWorld)
+      {
+         var dw = smm.selected.departureWorld.World;
+         var params = {sx:dw.SectorX, sy:dw.SectorY, hx:dw.HexX, hy:dw.HexY, jump:smm.partyShip.Jump};
+         return $http.get('http://travellermap.com/api/jumpworlds', {params: params})
+         .then(function(response) {
+            smm.arrivalWorlds = response.data.Worlds;
+            for (var i = 0; i < smm.arrivalWorlds.length; i++)
+            {
+               if (smm.arrivalWorlds[i].Name === smm.selected.departureWorld.World.Name)
+               {
+                  smm.arrivalWorlds.splice(i, 1);
+                  break;
+               }
+            }
+         });
+      }
+      else
+      {
+         smm.arrivalWorlds = smm.arrivalWorlds.splice(0, smm.ArrivalWorlds.length);
+      }
+   };
 }]);
 
 
