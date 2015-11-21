@@ -646,7 +646,7 @@ Cargo Bay
 <!-------------------------- Skill Check DM Template -------------------------->
   <script type="text/ng-template" id="travellerSkillDm.view">
     <div style="padding:10px;border:1px solid black;width:421px">
-      <ui-select on-select="updateCharList()" on-remove="updateCharList()" theme="bootstrap" ng-model="selected.skill" style="width:400px;margin-right:5px;margin-bottom:10px">
+      <ui-select on-select="skillChanged()" on-remove="skillChanged()" theme="bootstrap" ng-model="selected.skill" style="width:400px;margin-right:5px;margin-bottom:10px">
         <ui-select-match placeholder="Select skill...">{{$select.selected.nameIncludingParent}}</ui-select-match>
         <ui-select-choices repeat="skill in skills | filter: {nameIncludingParent: $select.search}">
           <span ng-bind-html="skill.nameIncludingParent | highlight: $select.search"></span>
