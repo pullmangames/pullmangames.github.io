@@ -20,7 +20,10 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
 	theShip.discounted=.5;
 	theShip.principal=theShip.newprice*theShip.discounted;
 	theShip.monthlypayment=theShip.principal/240;
+	theShip.financedtotalprice=theShip.monthlypayment*480; //paid off after 480 payments
 	theShip.annualmaint=theShip.newprice*.001;
+	theShip.purchaseyear=1105;
+	theShip.purchaseday=001;
 
 	smm.partyShip=theShip;
 
@@ -31,11 +34,12 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       this.status.today=001;
       this.status.year=1105;
       this.status.fuel=0;
-      this.status.cargo=[{"type":"demo", "detail":"some deets", "paid":100, "tons":10},{"type":"demo2", "paid":10000, "detail":"some deets", "tons":20}] //todo remove demo cargo
+      this.status.cargo=[] //example: {"type":"demo", "detail":"some deets", "paid":100, "tons":10},{"type":"demo2", "paid":10000, "detail":"some deets", "tons":20}
       this.status.midpass=0;
       this.status.highpass=0;
       this.status.lowpass=0;
       this.status.cash=0;
+      this.status.totalpayments=0;
       this.status.maintFund=0;
       this.status.totalCargo = function(){
          var total=0;
@@ -190,7 +194,57 @@ var cargoFactory = function(){
 	return {"type":"", "detail":"", "tons":0};
 }
 
+var dateFactory = function(newyear, newday){
+	var newdate={};
+	newdate.year=newyear;
+	newdate.day=newday;
+	
+	newdate.toString=function(){
+		return this.year+":"+this.day;
+	};
+	
+	newdate.diffdays=function(otherdate){
+		return (otherdate.year - this.year) * 365 + (otherdate.day - this.day); 		
+	};
+	
+	newdate.daysaway=function(otherdate){
+		var numdays=this.diffdays(otherdate);
+		if (numdays<0) return ""+Math.abs(numdays)+" days ago";
+		else return ""+numdays+" days away";
+	};
+	
+	newdate.increment=function(daystochange){
+		var result=this.incrementinternaluse(daystochange);
+		this.year=result[0];
+		this.day=result[1];
+	};
+	
+	newdate.cloneandincrement=function(daystochange){
+		var result=this.incrementinternaluse(daystochange)
+		return dateFactory(result[0],result[1]);
+	};
+	
+	//for the other two increments
+	newdate.incrementinternaluse=function(daystochange){
+		var currentdays=(this.year*365)+this.day-1; //The -1 and +1 are to remove day 0, but it's a weird hack and I don't like it.
+		var newdays=currentdays+daystochange;
+		var calcyear=Math.trunc(newdays/365);
+		var calcday=newdays%365+1;
+		return [calcyear,calcday];
+	};
+	
 
+
+	return newdate;	
+};
+
+var calculateDueDate = function(monthly, currentpaid, purchasedate){
+	//check total mortgage paid vs. total financed price to see which payment we're on
+	var totalprice=monthly*480;
+	var paymentsmade=currentpaid/monthly;
+	return paymentsmade*28;
+	
+}
 
 /* overall sequence
 
