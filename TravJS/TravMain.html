@@ -134,36 +134,71 @@ Pilot: -1 DM
                   <uib-accordion-heading>
                     Manual Log Entry/Adjustment<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
                   </uib-accordion-heading>
-                  <form ng-submit="shipMan.manualLog()" class="form-inline">
-                    <input type="textarea"  class="form-control" ng-model="shipMan.logText" size="40" placeholder="New log entry">
-                    <br>
-                    <input type="number" class="form-control" ng-model="shipMan.inputYear" size="4" placeholder="Year" >
-                    <input type="number" class="form-control" ng-model="shipMan.inputDate" size="4" placeholder="Date">
-                    <input type="number" class="form-control" ng-model="shipMan.inputTimeElapsed" size="4" placeholder="Elapsed time">
-                    <input class="btn btn-default btn-primary" type="submit" value="Log">
-                  </form>
-                  <br>
-                  <form ng-submit="shipMan.manualCargoAdd()" class="form-inline">
-                    <input type="textarea"  class="form-control" ng-model="shipMan.addCargoType" size="30" placeholder="Cargo Text">
-                    <input type="number" class="form-control" ng-model="shipMan.addCargoTons" size="10" placeholder="Tons">
-                    <input type="number" class="form-control" ng-model="shipMan.addPrice" size="10" placeholder="Cr/Ton">
-                    <input type="number" class="form-control" ng-model="shipMan.inputTimeElapsed" size="4" placeholder="Elapsed time">
-                    <input class="btn btn-default btn-primary" type="submit" value="Add Cargo">
-                  </form>
-                  <br>
-                  <form ng-submit="shipMan.manualCredits()" class="form-inline">
-                    <input type="number" class="form-control" ng-model="shipMan.addMoney" size="10" placeholder="Cr">
-                    <input type="text" class="form-control" ng-model="shipMan.addMoneyDesc" size="20" placeholder="Reason">
-                    <input type="number" class="form-control" ng-model="shipMan.inputTimeElapsed" size="4" placeholder="Elapsed time">
-                    <input class="btn btn-default btn-primary" type="submit" value="Add">
-                  </form>
-                  <br>
-                  Set Date:
-                  <form ng-submit="shipMan.manualSetDate()" class="form-inline">
-                    <input type="number" class="form-control" ng-model="shipMan.log.status.year" size "4" placeholder="year">
-                    <input type="number" class="form-control" ng-model="shipMan.log.status.today" size "4" placeholder="date">
-                    <!--<input class="btn btn-default btn-primary" type="submit" value="Set">-->
-                  </form>
+                  <div>
+                    <form ng-submit="shipMan.manualLog()" class="form-inline">
+                      <input type="textarea"  class="form-control" ng-model="shipMan.logText" size="40" placeholder="New log entry">
+                      <br>
+                      <input type="number" class="form-control" ng-model="shipMan.inputYear" size="4" placeholder="Year" >
+                      <input type="number" class="form-control" ng-model="shipMan.inputDate" size="4" placeholder="Date">
+                      <input type="number" class="form-control" ng-model="shipMan.inputTimeElapsed" size="4" placeholder="Elapsed time">
+                      <input class="btn btn-default btn-primary" type="submit" value="Log">
+                    </form>
+                  </div>
+                  <hr>
+                  <div>
+                    <form ng-submit="shipMan.manualCargoAdd()" class="form-inline">
+                      <input type="textarea"  class="form-control" ng-model="shipMan.addCargoType" size="30" placeholder="Cargo Text">
+                      <input type="number" class="form-control" ng-model="shipMan.addCargoTons" size="10" placeholder="Tons">
+                      <input type="number" class="form-control" ng-model="shipMan.addPrice" size="10" placeholder="Cr/Ton">
+                      <input type="number" class="form-control" ng-model="shipMan.inputTimeElapsed" size="4" placeholder="Elapsed time">
+                      <input class="btn btn-default btn-primary" type="submit" value="Add Cargo">
+                    </form>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-md-8">
+                      <ui-select theme="bootstrap" ng-model="shipMan.cargoToDelete">
+                        <ui-select-match placeholder="Select cargo...">
+                          <div class="row">
+                            <div class="col-md-12">
+                              <strong>{{$select.selected.detail}}</strong><small> {{$select.selected.type}}</small>
+                            </div>
+                          </div>
+                        </ui-select-match>
+                        <ui-select-choices repeat="acargo in shipMan.log.status.cargo">
+                          <div class="row">
+                            <div class="col-md-12">
+                              <strong>{{acargo.detail}}</strong><small> {{acargo.type}}</small>
+                            </div>
+                            <div class="col-md-12">
+                              <small>{{acargo.tons}} dT @ Cr. {{acargo.paid}} / dT = Cr. {{acargo.paid*acargo.tons}}</small>
+                            </div>
+                          </div>
+                        </ui-select-choices>
+                      </ui-select>
+                    </div>
+                    <div class="col-md-4">
+                      <button class="btn btn-primary" type="button" ng-click="shipMan.manualCargoDelete()">Delete Cargo</button>
+                    </div>
+                  </div>
+                  <hr>
+                  <div>
+                    <form ng-submit="shipMan.manualCredits()" class="form-inline">
+                      <input type="number" class="form-control" ng-model="shipMan.addMoney" size="10" placeholder="Cr">
+                      <input type="text" class="form-control" ng-model="shipMan.addMoneyDesc" size="20" placeholder="Reason">
+                      <input type="number" class="form-control" ng-model="shipMan.inputTimeElapsed" size="4" placeholder="Elapsed time">
+                      <input class="btn btn-default btn-primary" type="submit" value="Add">
+                    </form>
+                  </div>
+                  <hr>
+                  <div>
+                    Set Date:
+                    <form ng-submit="shipMan.manualSetDate()" class="form-inline">
+                      <input type="number" class="form-control" ng-model="shipMan.log.status.year" size "4" placeholder="year">
+                      <input type="number" class="form-control" ng-model="shipMan.log.status.today" size "4" placeholder="date">
+                      <!--<input class="btn btn-default btn-primary" type="submit" value="Set">-->
+                    </form>
+                  </div>
                 </uib-accordion-group>
 
                 <uib-accordion-group>

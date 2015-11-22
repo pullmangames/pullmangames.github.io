@@ -100,6 +100,12 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
 		smm.log.status.cargo.push(newcargo);
 		smm.logEntry(smm.log.status.year, smm.log.status.today, smm.inputTimeElapsed, "[manual] loaded " + smm.addCargoType + ": "  +smm.addCargoTons + " dT");
 	};
+   
+   smm.manualCargoDelete = function() {
+      var cargo = smm.log.status.cargo;
+      cargo.splice(cargo.indexOf(smm.cargoToDelete, 1));
+      smm.cargoToDelete = undefined;
+   };
 	
 	smm.manualCredits=function(){
       smm.log.status.cash += smm.addMoney;
