@@ -113,8 +113,8 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
 	smm.logEntryRaw=function(newEntry) {
 		smm.log.entries.push(newEntry)
 	};
-   
-   smm.selected = {};
+
+   smm.tripData = {};
    smm.departureWorlds = [];
    smm.refreshDepartureWorlds = function(worldName) {
       var params = {q: worldName};
@@ -124,21 +124,21 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       });
    };
 
-   smm.arrivalWorlds = [];
+   smm.tripData.arrivalWorlds = [];
    smm.refreshArrivalWorlds = function() {
-      smm.selected.arrivalWorld = {};
-      if (smm.selected.departureWorld)
+      smm.tripData.arrivalWorld = {};
+      if (smm.tripData.departureWorld)
       {
-         var dw = smm.selected.departureWorld.World;
+         var dw = smm.tripData.departureWorld.World;
          var params = {sx:dw.SectorX, sy:dw.SectorY, hx:dw.HexX, hy:dw.HexY, jump:smm.partyShip.Jump};
          return $http.get('http://travellermap.com/api/jumpworlds', {params: params})
          .then(function(response) {
-            smm.arrivalWorlds = response.data.Worlds;
-            for (var i = 0; i < smm.arrivalWorlds.length; i++)
+            smm.tripData.arrivalWorlds = response.data.Worlds;
+            for (var i = 0; i < smm.tripData.arrivalWorlds.length; i++)
             {
-               if (smm.arrivalWorlds[i].Name === smm.selected.departureWorld.World.Name)
+               if (smm.tripData.arrivalWorlds[i].Name === smm.tripData.departureWorld.World.Name)
                {
-                  smm.arrivalWorlds.splice(i, 1);
+                  smm.tripData.arrivalWorlds.splice(i, 1);
                   break;
                }
             }
@@ -146,9 +146,33 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       }
       else
       {
-         smm.arrivalWorlds = smm.arrivalWorlds.splice(0, smm.ArrivalWorlds.length);
+         smm.tripData.arrivalWorlds = smm.tripData.arrivalWorlds.splice(0, smm.tripData.arrivalWorlds.length);
       }
    };
+   
+   var _buildTripDataFromJsonTrip = function(jsonTrip) {
+      if (jsonTrip && jsonTrip.departureWorld)
+      {
+         smm.tripData.departureWorld = jsonTrip.departureWorld;
+         if (jsonTrip.arrivalWorlds)
+         {
+            smm.tripData.arrivalWorlds = jsonTrip.arrivalWorlds;
+            if (jsonTrip.arrivalWorld)
+            {
+               for (var i = 0; i < jsonTrip.arrivalWorlds.length; i++)
+               {
+                  if (jsonTrip.arrivalWorlds[i].Name === jsonTrip.arrivalWorld.Name)
+                  {
+                     smm.tripData.arrivalWorld = jsonTrip.arrivalWorlds[i];
+                     break;
+                  }
+               }
+            }
+         }
+      }
+   }
+   
+   dataStorageService.register(smm, 'tripData', _buildTripDataFromJsonTrip);
 }]);
 
 

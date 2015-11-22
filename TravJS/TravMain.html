@@ -102,7 +102,7 @@ Pilot: -1 DM
           <div class="row">
             <div class="col-md-6">
               <h4>Departure</h4>
-              <ui-select theme="bootstrap" ng-model="shipMan.selected.departureWorld" on-select="shipMan.refreshArrivalWorlds()" on-remove="shipMan.refreshArrivalWorlds()">
+              <ui-select theme="bootstrap" ng-model="shipMan.tripData.departureWorld" on-select="shipMan.refreshArrivalWorlds()" on-remove="shipMan.refreshArrivalWorlds()">
                 <ui-select-match placeholder="Select departure...">{{$select.selected.World.Name}}</ui-select-match>
                 <ui-select-choices repeat="world in shipMan.departureWorlds" refresh="shipMan.refreshDepartureWorlds($select.search)" refresh-delay="0">
                   <span ng-bind-html="world.World.Name | highlight: $select.search"></span>
@@ -111,17 +111,17 @@ Pilot: -1 DM
             </div>
             <div class="col-md-6">
               <h4>Arrival</h4>
-              <ui-select theme="bootstrap" ng-model="shipMan.selected.arrivalWorld">
+              <ui-select theme="bootstrap" ng-model="shipMan.tripData.arrivalWorld">
                 <ui-select-match placeholder="Select arrival...">{{$select.selected.Name}}</ui-select-match>
-                <ui-select-choices repeat="world in shipMan.arrivalWorlds">
+                <ui-select-choices repeat="world in shipMan.tripData.arrivalWorlds">
                   <span ng-bind-html="world.Name | highlight: $select.search"></span>
                 </ui-select-choices>
               </ui-select>
             </div>
           </div>
           <div class="row">
-            <div class="col-md-12" ng-if="shipMan.selected.departureWorld" style="margin-top:5px">
-              <img class="center-block" src="http://travellermap.com/api/jumpmap?sx={{shipMan.selected.departureWorld.World.SectorX}}&sy={{shipMan.selected.departureWorld.World.SectorY}}&hx={{shipMan.selected.departureWorld.World.HexX}}&hy={{shipMan.selected.departureWorld.World.HexY}}&jump=4&scale=48">
+            <div class="col-md-12" ng-if="shipMan.tripData.departureWorld" style="margin-top:5px">
+              <img class="center-block" src="http://travellermap.com/api/jumpmap?sx={{shipMan.tripData.departureWorld.World.SectorX}}&sy={{shipMan.tripData.departureWorld.World.SectorY}}&hx={{shipMan.tripData.departureWorld.World.HexX}}&hy={{shipMan.tripData.departureWorld.World.HexY}}&jump=4&scale=48">
             </div>
           </div>
 
