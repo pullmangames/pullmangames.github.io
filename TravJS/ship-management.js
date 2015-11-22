@@ -199,6 +199,10 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
                }
             }
          }
+         //add some decoded data
+         smm.tripData.departureWorld.UWPsplit=uwpsplit(smm.tripData.departureWorld.UWP);
+         //when should this happen? smm.tripData.arrivalWorld.UWPsplit=uwpsplit(smm.tripData.arrivalWorld.UWP);
+         
       }
    }
    
@@ -262,6 +266,22 @@ var calculateDueDate = function(monthly, currentpaid, purchasedate){
 	return purchasedate.cloneandincrement(paymentsmade*28);
 	
 }
+
+var uwpsplit = function(uwp){
+	var splituwp=uwp.split("");
+	var decoded={'starport':splituwp[0],
+				 'size':splituwp[1],
+				 'atmosphere':splituwp[2],
+				 'hydrosphere':splituwp[3],
+				 'population':splituwp[4],
+				 'government':splituwp[5],
+				 'law':splituwp[6],
+				 'TL':splituwp[8]  //skip the dash
+				}
+	return decoded;
+	}
+	
+	
 
 /* overall sequence
 

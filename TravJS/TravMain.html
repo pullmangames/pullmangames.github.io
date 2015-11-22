@@ -235,7 +235,16 @@ Pilot: -1 DM
                       <uib-accordion-heading>
                         Passengers for Destination 1
                       </uib-accordion-heading>
-                      Actual controls go here
+                      Roll on the Available Passengers table
+                      	modified by events
+                      	modified by source population
+                      	modified by trade code table
+                      	modified by TL difference (max 5)
+                      	modified by rounding up passengers (Carouse/Streetwise, int/soc, average, days)
+                      Every group of 6 passengers taken, 4+ means one is special, roll on passenger table
+                      {{shipMan.tripData.departureWorld.UWPsplit}}
+                      {{shipMan.tripData.arrivalWorld.UWPsplit}}
+                      
                     </uib-accordion-group>
 
                     <uib-accordion-group>
