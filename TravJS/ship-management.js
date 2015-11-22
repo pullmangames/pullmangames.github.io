@@ -127,17 +127,18 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
    smm.tripData.arrivalWorlds = [];
    smm.refreshArrivalWorlds = function() {
       smm.tripData.arrivalWorld = {};
-      if (smm.tripData.departureWorld)
+      if (smm.tripData.departureWorldSearchResults)
       {
-         var dw = smm.tripData.departureWorld.World;
+         var dw = smm.tripData.departureWorldSearchResults.World;
          var params = {sx:dw.SectorX, sy:dw.SectorY, hx:dw.HexX, hy:dw.HexY, jump:smm.partyShip.Jump};
          return $http.get('http://travellermap.com/api/jumpworlds', {params: params})
          .then(function(response) {
             smm.tripData.arrivalWorlds = response.data.Worlds;
             for (var i = 0; i < smm.tripData.arrivalWorlds.length; i++)
             {
-               if (smm.tripData.arrivalWorlds[i].Name === smm.tripData.departureWorld.World.Name)
+               if (smm.tripData.arrivalWorlds[i].Name === smm.tripData.departureWorldSearchResults.World.Name)
                {
+                  smm.tripData.departureWorld = smm.tripData.arrivalWorlds[i];
                   smm.tripData.arrivalWorlds.splice(i, 1);
                   break;
                }
@@ -151,13 +152,15 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
    };
    
    var _buildTripDataFromJsonTrip = function(jsonTrip) {
-      if (jsonTrip && jsonTrip.departureWorld)
+      if (jsonTrip)
       {
          smm.tripData.departureWorld = jsonTrip.departureWorld;
-         if (jsonTrip.arrivalWorlds)
+         smm.tripData.departureWorldSearchResults = jsonTrip.departureWorldSearchResults;
+         if (jsonTrip.departureWorldSearchResults)
          {
             smm.tripData.arrivalWorlds = jsonTrip.arrivalWorlds;
-            if (jsonTrip.arrivalWorld)
+            smm.tripData.arrivalWorld = {};
+            if (jsonTrip.arrivalWorlds && jsonTrip.arrivalWorld)
             {
                for (var i = 0; i < jsonTrip.arrivalWorlds.length; i++)
                {

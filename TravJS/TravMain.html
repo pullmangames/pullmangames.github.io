@@ -102,7 +102,7 @@ Pilot: -1 DM
           <div class="row">
             <div class="col-md-6">
               <h4>Departure</h4>
-              <ui-select theme="bootstrap" ng-model="shipMan.tripData.departureWorld" on-select="shipMan.refreshArrivalWorlds()" on-remove="shipMan.refreshArrivalWorlds()">
+              <ui-select theme="bootstrap" ng-model="shipMan.tripData.departureWorldSearchResults" on-select="shipMan.refreshArrivalWorlds()" on-remove="shipMan.refreshArrivalWorlds()">
                 <ui-select-match placeholder="Select departure...">{{$select.selected.World.Name}}</ui-select-match>
                 <ui-select-choices repeat="world in shipMan.departureWorlds" refresh="shipMan.refreshDepartureWorlds($select.search)" refresh-delay="0">
                   <span ng-bind-html="world.World.Name | highlight: $select.search"></span>
@@ -120,8 +120,8 @@ Pilot: -1 DM
             </div>
           </div>
           <div class="row">
-            <div class="col-md-12" ng-if="shipMan.tripData.departureWorld" style="margin-top:5px">
-              <img class="center-block" ng-src="http://travellermap.com/api/jumpmap?sx={{shipMan.tripData.departureWorld.World.SectorX}}&sy={{shipMan.tripData.departureWorld.World.SectorY}}&hx={{shipMan.tripData.departureWorld.World.HexX}}&hy={{shipMan.tripData.departureWorld.World.HexY}}&jump=4&scale=48">
+            <div class="col-md-12" ng-if="shipMan.tripData.departureWorldSearchResults" style="margin-top:5px">
+              <img class="center-block" ng-src="http://travellermap.com/api/jumpmap?sx={{shipMan.tripData.departureWorldSearchResults.World.SectorX}}&sy={{shipMan.tripData.departureWorldSearchResults.World.SectorY}}&hx={{shipMan.tripData.departureWorldSearchResults.World.HexX}}&hy={{shipMan.tripData.departureWorldSearchResults.World.HexY}}&jump=4&scale=48">
             </div>
           </div>
 
