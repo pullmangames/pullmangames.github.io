@@ -76,12 +76,12 @@ Staterooms: {{shipMan.partyShip.crew/2 + shipMan.log.status.highpass + shipMan.l
 Crew: {{shipMan.partyShip.crew/2}}, High: {{shipMan.log.status.highpass}}, Mid: {{shipMan.log.status.midpass}}
 Low Berths: {{shipMan.log.status.lowpass}} / {{shipMan.partyShip.maxlow}} ({{shipMan.partyShip.maxlow - shipMan.log.status.lowpass}})
 Last Payment: {{shipMan.log.status.lastPayment}}
-Due: {{shipMan.partyShip.monthlypayment}} Cr on TODO (X days)
+Due: {{shipMan.partyShip.monthlypayment}} Cr on {{shipMan.log.status.dueDate().toString()}} ({{shipMan.log.status.daysUntilMortgage()}})
 Cash: {{shipMan.log.status.cash}} Cr.
 Cargo Value:{{shipMan.log.status.totalCargoValue()}} Cr.
-Maint holdback: {{shipMan.partyShip.annualmaint/12}} Cr. per 28 days
+Maint holdback: {{shipMan.partyShip.monthlymaint}} Cr. per 28 days
 Maint fund: {{shipMan.log.status.maintFund}} Cr. / {{shipMan.partyShip.annualmaint}} Cr. ({{shipMan.partyShip.annualmaint - shipMan.log.status.maintFund}} Cr.)
-Maint date: 1106:001 (TODO days)
+Maint date: 1106:001 ({{shipMan.log.status.daysUntilMaint()}})
 
 Turret:BL,BL,S
 Turret:BL,BL,S
@@ -196,9 +196,9 @@ Pilot: -1 DM
                   <div>
                     Set Date:
                     <form ng-submit="shipMan.manualSetDate()" class="form-inline">
-                      <input type="number" class="form-control" ng-model="shipMan.log.status.year" size "4" placeholder="year">
-                      <input type="number" class="form-control" ng-model="shipMan.log.status.today" size "4" placeholder="date">
-                      <!--<input class="btn btn-default btn-primary" type="submit" value="Set">-->
+                      <input type="number" class="form-control" ng-model="shipMan.inputYear" size "4" placeholder="year">
+                      <input type="number" class="form-control" ng-model="shipMan.inputDate" size "4" placeholder="date">
+                      <input class="btn btn-default btn-primary" type="submit" value="Set">
                     </form>
                   </div>
                 </uib-accordion-group>
@@ -444,7 +444,7 @@ Pilot: -1 DM
           </div>
         </div>
         <div class="col-md-3">
-          Today: {{shipMan.log.status.year}}:{{shipMan.log.status.today}}
+          Today: {{shipMan.log.status.date.toString();}}
           <br>
           Ship's log
           <ul class="list-group">

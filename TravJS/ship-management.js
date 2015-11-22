@@ -19,11 +19,12 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
 	theShip.newprice=57885500;
 	theShip.discounted=.5;
 	theShip.principal=theShip.newprice*theShip.discounted;
-	theShip.monthlypayment=theShip.principal/240;
+	theShip.monthlypayment=Math.ceil(theShip.principal/240);
 	theShip.financedtotalprice=theShip.monthlypayment*480; //paid off after 480 payments
-	theShip.annualmaint=theShip.newprice*.001;
-	theShip.purchaseyear=1105;
-	theShip.purchaseday=001;
+	theShip.annualmaint=Math.ceil(theShip.newprice*.001);
+	theShip.monthlymaint=Math.ceil(theShip.annualmaint/12);
+	theShip.purchasedate=dateFactory(1105,001);
+	theShip.lastmaint=theShip.purchasedate;
 
 	smm.partyShip=theShip;
 
@@ -31,8 +32,7 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
    {
       this.formatVersion = 1;
       this.status={};
-      this.status.today=001;
-      this.status.year=1105;
+      this.status.date=dateFactory(1105,001);
       this.status.fuel=0;
       this.status.cargo=[] //example: {"type":"demo", "detail":"some deets", "paid":100, "tons":10},{"type":"demo2", "paid":10000, "detail":"some deets", "tons":20}
       this.status.midpass=0;
@@ -56,6 +56,19 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
             total+= (this.cargo[i].tons * this.cargo[i].paid);
          }
          return total;
+      };
+      this.status.dueDate = function(){
+      	return calculateDueDate(smm.partyShip.monthlypayment, this.totalpayments, smm.partyShip.purchasedate);
+      };
+      this.status.daysUntilMortgage = function(){
+      	return this.date.daysaway(this.dueDate());
+      };
+      
+      this.status.maintDate = function(){
+      	return smm.partyShip.lastmaint.cloneandincrement(365);
+      };
+      this.status.daysUntilMaint = function(){
+      	return this.date.daysaway(this.maintDate());
       };
 
       this.entries=[];
@@ -121,7 +134,11 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
 		};
 
 	smm.logEntryRaw=function(newEntry) {
-		smm.log.entries.push(newEntry)
+		smm.log.entries.push(newEntry);
+	};
+	
+	smm.manualSetDate=function(){
+		 smm.log.status.date=dateFactory(smm.inputYear,smm.inputDate);
 	};
 
    smm.tripData = {};
@@ -200,7 +217,7 @@ var dateFactory = function(newyear, newday){
 	newdate.day=newday;
 	
 	newdate.toString=function(){
-		return this.year+":"+this.day;
+		return this.year+":"+new Intl.NumberFormat('en-US', { minimumIntegerDigits: 3 }).format(this.day);
 	};
 	
 	newdate.diffdays=function(otherdate){
@@ -241,8 +258,8 @@ var dateFactory = function(newyear, newday){
 var calculateDueDate = function(monthly, currentpaid, purchasedate){
 	//check total mortgage paid vs. total financed price to see which payment we're on
 	var totalprice=monthly*480;
-	var paymentsmade=currentpaid/monthly;
-	return paymentsmade*28;
+	var paymentsmade=currentpaid/monthly +1 ; //+1 because otherwise it'll be the purchase date for first payment
+	return purchasedate.cloneandincrement(paymentsmade*28);
 	
 }
 
