@@ -121,7 +121,9 @@ Pilot: -1 DM
           </div>
           <div class="row">
             <div class="col-md-12" ng-if="shipMan.tripData.departureWorldSearchResults" style="margin-top:5px">
-              <img class="center-block" ng-src="http://travellermap.com/api/jumpmap?sx={{shipMan.tripData.departureWorldSearchResults.World.SectorX}}&sy={{shipMan.tripData.departureWorldSearchResults.World.SectorY}}&hx={{shipMan.tripData.departureWorldSearchResults.World.HexX}}&hy={{shipMan.tripData.departureWorldSearchResults.World.HexY}}&jump=4&scale=48">
+              <a href="http://travellermap.com/?scale=64&sx={{shipMan.tripData.departureWorldSearchResults.World.SectorX}}&sy={{shipMan.tripData.departureWorldSearchResults.World.SectorY}}&hx={{shipMan.tripData.departureWorldSearchResults.World.HexX}}&hy={{shipMan.tripData.departureWorldSearchResults.World.HexY}}" target="_blank">
+                <img class="center-block" ng-src="http://travellermap.com/api/jumpmap?sx={{shipMan.tripData.departureWorldSearchResults.World.SectorX}}&sy={{shipMan.tripData.departureWorldSearchResults.World.SectorY}}&hx={{shipMan.tripData.departureWorldSearchResults.World.HexX}}&hy={{shipMan.tripData.departureWorldSearchResults.World.HexY}}&jump=4&scale=48">
+              </a>
             </div>
           </div>
 
