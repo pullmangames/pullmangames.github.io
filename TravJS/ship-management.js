@@ -1,6 +1,6 @@
 shipManModule = angular.module('shipManagement', []); //declare the module for managing the ship
       
-shipManModule.controller('shipManagementController', ['$scope', 'dataStorageService', 'alertsService', function ($scope, dataStorageService, alertsService) {
+shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataStorageService', 'alertsService', function ($scope, $http, dataStorageService, alertsService) {
 	var smm=this;
 	
 	var theShip={}
@@ -114,6 +114,68 @@ shipManModule.controller('shipManagementController', ['$scope', 'dataStorageServ
 		smm.log.entries.push(newEntry)
 	};
 
+   smm.tripData = {};
+   smm.departureWorlds = [];
+   smm.refreshDepartureWorlds = function(worldName) {
+      var params = {q: worldName};
+      return $http.get('http://travellermap.com/api/search', {params: params})
+      .then(function(response) {
+         smm.departureWorlds = response.data.Results.Items;
+      });
+   };
+
+   smm.tripData.arrivalWorlds = [];
+   smm.refreshArrivalWorlds = function() {
+      smm.tripData.arrivalWorld = {};
+      if (smm.tripData.departureWorldSearchResults)
+      {
+         var dw = smm.tripData.departureWorldSearchResults.World;
+         var params = {sx:dw.SectorX, sy:dw.SectorY, hx:dw.HexX, hy:dw.HexY, jump:smm.partyShip.Jump};
+         return $http.get('http://travellermap.com/api/jumpworlds', {params: params})
+         .then(function(response) {
+            smm.tripData.arrivalWorlds = response.data.Worlds;
+            for (var i = 0; i < smm.tripData.arrivalWorlds.length; i++)
+            {
+               if (smm.tripData.arrivalWorlds[i].Name === smm.tripData.departureWorldSearchResults.World.Name)
+               {
+                  smm.tripData.departureWorld = smm.tripData.arrivalWorlds[i];
+                  smm.tripData.arrivalWorlds.splice(i, 1);
+                  break;
+               }
+            }
+         });
+      }
+      else
+      {
+         smm.tripData.arrivalWorlds = smm.tripData.arrivalWorlds.splice(0, smm.tripData.arrivalWorlds.length);
+      }
+   };
+   
+   var _buildTripDataFromJsonTrip = function(jsonTrip) {
+      if (jsonTrip)
+      {
+         smm.tripData.departureWorld = jsonTrip.departureWorld;
+         smm.tripData.departureWorldSearchResults = jsonTrip.departureWorldSearchResults;
+         if (jsonTrip.departureWorldSearchResults)
+         {
+            smm.tripData.arrivalWorlds = jsonTrip.arrivalWorlds;
+            smm.tripData.arrivalWorld = {};
+            if (jsonTrip.arrivalWorlds && jsonTrip.arrivalWorld)
+            {
+               for (var i = 0; i < jsonTrip.arrivalWorlds.length; i++)
+               {
+                  if (jsonTrip.arrivalWorlds[i].Name === jsonTrip.arrivalWorld.Name)
+                  {
+                     smm.tripData.arrivalWorld = jsonTrip.arrivalWorlds[i];
+                     break;
+                  }
+               }
+            }
+         }
+      }
+   }
+   
+   dataStorageService.register(smm, 'tripData', _buildTripDataFromJsonTrip);
 }]);
 
 
