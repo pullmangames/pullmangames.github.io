@@ -231,15 +231,14 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
                   if (jsonTrip.arrivalWorlds[i].Name === jsonTrip.arrivalWorld.Name)
                   {
                      smm.tripData.arrivalWorld = jsonTrip.arrivalWorlds[i];
-                     break;
+                     //add some decoded data
+         			 smm.tripData.departureWorld.UWPsplit=uwpsplit(smm.tripData.departureWorld.UWP);
+         			 smm.tripData.arrivalWorld.UWPsplit=uwpsplit(smm.tripData.arrivalWorld.UWP);         
+                     break;     
                   }
                }
             }
-         }
-         //add some decoded data
-         smm.tripData.departureWorld.UWPsplit=uwpsplit(smm.tripData.departureWorld.UWP);
-         //when should this happen? smm.tripData.arrivalWorld.UWPsplit=uwpsplit(smm.tripData.arrivalWorld.UWP);
-         
+         }         
       }
    }
    

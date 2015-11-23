@@ -1,4 +1,89 @@
-{
+  var REMARKS_TABLE = {
+    // Planetary
+    As: 'Asteroid Belt',
+    De: 'Desert',
+    Fl: 'Fluid Hydrographics (in place of water)',
+    Ga: 'Garden World',
+    He: 'Hellworld',
+    Ic: 'Ice Capped',
+    Oc: 'Ocean World',
+    Va: 'Vacuum World',
+    Wa: 'Water World',
+
+    // Population
+    Di: 'Dieback',
+    Ba: 'Barren',
+    Lo: 'Low Population',
+    Ni: 'Non-Industrial',
+    Ph: 'Pre-High Population',
+    Hi: 'High Population',
+
+    // Economic
+    Pa: 'Pre-Agricultural',
+    Ag: 'Agricultural',
+    Na: 'Non-Agricultural',
+    Px: 'Prison, Exile Camp',
+    Pi: 'Pre-Industrial',
+    In: 'Industrialized',
+    Po: 'Poor',
+    Pr: 'Pre-Rich',
+    Ri: 'Rich',
+
+    // Climate
+    Fr: 'Frozen',
+    Ho: 'Hot',
+    Co: 'Cold',
+    Lk: 'Locked',
+    Tr: 'Tropic',
+    Tu: 'Tundra',
+    Tz: 'Twilight Zone',
+
+    // Secondary
+    Fa: 'Farming',
+    Mi: 'Mining',
+    Mr: 'Military Rule',
+    Pe: 'Penal Colony',
+    Re: 'Reserve',
+
+    // Political
+    Cp: 'Subsector Capital',
+    Cs: 'Sector Capital',
+    Cx: 'Capital',
+    Cy: 'Colony',
+
+    // Special
+    Sa: 'Satellite',
+    Fo: 'Forbidden',
+    Pz: 'Puzzle',
+    Da: 'Danger',
+    Ab: 'Data Repository',
+    An: 'Ancient Site',
+
+    Rs: 'Research Station',
+    RsA: 'Research Station Alpha',
+    RsB: 'Research Station Beta',
+    RsG: 'Research Station Gamma',
+    RsD: 'Research Station Delta',
+    RsE: 'Research Station Epsilon',
+    RsZ: 'Research Station Zeta',
+    RsH: 'Research Station Eta',
+    RsT: 'Research Station Theta',
+
+    // Legacy
+    Nh: 'Non-Hiver Population',
+    Nk: "Non-K'kree Population",
+    Tp: 'Terra-prime',
+    Tn: 'Terra-norm',
+    Lt: 'Low Technology',
+    Ht: 'High Technology',
+    //Fa: 'Fascinating', // Conflicts with T5: Farming.
+    St: 'Steppeworld',
+    Ex: 'Exile Camp',
+    //Pr: 'Prison World', // Conflicts with T5: Pre-Rich.
+    Xb: 'Xboat Station'
+  };
+
+var FREIGHT_TABLES = {
 "FreightAvailableLotsTable":[
 {"incidental":0, "minor":0, "major":0},
 {"incidental":0, "minor":0, "major":0},
@@ -59,7 +144,8 @@
 "Red Zone":"-5000" 
 },
 
-"WorldTypes":["Agricultural",
+"WorldTypes":[
+"Agricultural",
 "Asteroid",
 "Barren",
 "Desert",
@@ -78,3 +164,5 @@
 "Red Zone"
 ]
 }
+
+
