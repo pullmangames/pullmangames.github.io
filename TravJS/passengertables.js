@@ -19,7 +19,7 @@ var PassengersByTradeType={
 		Ga:2,
 		Hi:4,
 		Ic:-1,
-		In:1
+		In:1,
 		Lo:-4,
 		Ni:-1,
 		Po:-1,
