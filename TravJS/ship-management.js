@@ -19,7 +19,7 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       { name: "Visit Gas Giant",                            subSteps: [
          { name: "Gas Giant Encounter",                     htmlTemplate: "shipman.accordion.TBD.view" },
          { name: "Skimming",                                htmlTemplate: "shipman.accordion.TBD.view" }]},
-      { name: "Jump Point Encounter",                       lTemplate: "shipman.accordion.TBD.view" },
+      { name: "Jump Point Encounter",                       htmlTemplate: "shipman.accordion.TBD.view" },
       { name: "Jump",                                       subSteps: [
          { name: "Astrogation check",                       htmlTemplate: "shipman.accordion.TBD.view" },
          { name: "Engine power check",                      htmlTemplate: "shipman.accordion.TBD.view" },
