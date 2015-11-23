@@ -7,35 +7,35 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       { name: "Manual Log Entry/Adjustment",                htmlTemplate: "shipman.accordion.manualOps.view" },
       { name: "Hunt for jobs/patrons/rumors/etc.",          htmlTemplate: "shipman.accordion.TBD.view" },
       { name: "Enter Destination(s)",                       subSteps: [
-         { name: "Freight for Destination 1",                   htmlTemplate: "shipman.accordion.TBD.view" },
-         { name: "Mail for Destination 1",                      htmlTemplate: "shipman.accordion.TBD.view" },
-         { name: "Passengers for Destination 1",                htmlTemplate: "shipman.accordion.destinations.passengers.view" },
-         { name: "Other for Destination 1",                     htmlTemplate: "shipman.accordion.TBD.view" }]},
-      { name: "Find a Trade Goods Seller",                  htmlTemplate: "shipman.accordion.TBD.view" },
+         { name: "Freight for Destination 1",               htmlTemplate: "shipman.accordion.TBD.view" },
+         { name: "Mail for Destination 1",                  htmlTemplate: "shipman.accordion.TBD.view" },
+         { name: "Passengers for Destination 1",            htmlTemplate: "shipman.accordion.destinations.passengers.view" },
+         { name: "Other for Destination 1",                 htmlTemplate: "shipman.accordion.TBD.view" }]},
+      { name: "Buy Trade Goods",                            htmlTemplate: "shipman.accordion.buyTradeGoods.view" },
       { name: "Finalize ship loadout",                      htmlTemplate: "shipman.accordion.finalizeLoadout.view" },
       { name: "Buy life support, fuel, pay berthing costs", htmlTemplate: "shipman.accordion.TBD.view" },
       { name: "Depart Port",                                htmlTemplate: "shipman.accordion.TBD.view" },
       { name: "Port Encounter",                             htmlTemplate: "shipman.accordion.TBD.view" },
       { name: "Visit Gas Giant",                            subSteps: [
-         { name: "Gas Giant Encounter",                        htmlTemplate: "shipman.accordion.TBD.view" },
-         { name: "Skimming",                                   htmlTemplate: "shipman.accordion.TBD.view" }]},
+         { name: "Gas Giant Encounter",                     htmlTemplate: "shipman.accordion.TBD.view" },
+         { name: "Skimming",                                htmlTemplate: "shipman.accordion.TBD.view" }]},
       { name: "Jump Point Encounter",                       htmlTemplate: "shipman.accordion.TBD.view" },
       { name: "Jump",                                       subSteps: [
-         { name: "Astrogation check",                          htmlTemplate: "shipman.accordion.TBD.view" },
-         { name: "Engine power check",                         htmlTemplate: "shipman.accordion.TBD.view" },
-         { name: "Jump check",                                 htmlTemplate: "shipman.accordion.TBD.view" }]},
+         { name: "Astrogation check",                       htmlTemplate: "shipman.accordion.TBD.view" },
+         { name: "Engine power check",                      htmlTemplate: "shipman.accordion.TBD.view" },
+         { name: "Jump check",                              htmlTemplate: "shipman.accordion.TBD.view" }]},
       { name: "JumpSpace",                                  htmlTemplate: "shipman.accordion.jumpSpace.view" },
       { name: "Exit Jump - Encounter",                      htmlTemplate: "shipman.accordion.TBD.view" },
       { name: "Visit Gas Giant",                            subSteps: [
-         { name: "Gas Giant Encounter",                        htmlTemplate: "shipman.accordion.TBD.view" },
-         { name: "Skimming",                                   htmlTemplate: "shipman.accordion.TBD.view" }]},
+         { name: "Gas Giant Encounter",                     htmlTemplate: "shipman.accordion.TBD.view" },
+         { name: "Skimming",                                htmlTemplate: "shipman.accordion.TBD.view" }]},
       { name: "Port Arrival - Encounter",                   htmlTemplate: "shipman.accordion.TBD.view" },
       { name: "Land/Dock",                                  htmlTemplate: "shipman.accordion.TBD.view" },
       { name: "Unload",                                     subSteps: [
-         { name: "Freight",                                    htmlTemplate: "shipman.accordion.TBD.view" },
-         { name: "Mail",                                       htmlTemplate: "shipman.accordion.TBD.view" },
-         { name: "Passengers",                                 htmlTemplate: "shipman.accordion.TBD.view" },
-         { name: "Other",                                      htmlTemplate: "shipman.accordion.TBD.view" }]},
+         { name: "Freight",                                 htmlTemplate: "shipman.accordion.TBD.view" },
+         { name: "Mail",                                    htmlTemplate: "shipman.accordion.TBD.view" },
+         { name: "Passengers",                              htmlTemplate: "shipman.accordion.TBD.view" },
+         { name: "Other",                                   htmlTemplate: "shipman.accordion.TBD.view" }]},
       { name: "Find a trade goods buyer",                   htmlTemplate: "shipman.accordion.TBD.view" },
       { name: "Tax",                                        htmlTemplate: "shipman.accordion.TBD.view" },
    ];
@@ -244,6 +244,17 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
    }
    
    dataStorageService.register(smm, 'tripData', _buildTripDataFromJsonTrip);
+   
+   smm.buyTradeGoods = {};
+   smm.buyTradeGoods.supplier = {};
+   smm.buyTradeGoods.suppliers = {
+      standard:      {name:"Supplier",                 skillCheck:{skills:['Broker'],                    characteristics:['edu', 'soc'], difficulty: 'Average'   },  timeDice:1, timeScale:'d'},
+      commonGoods:   {name:"Common-Goods Supplier",    skillCheck:{skills:['Broker'],                    characteristics:['edu', 'soc'], difficulty: 'Easy'      },  timeDice:1, timeScale:'d'},
+      blackMarket:   {name:"Black Market Supplier",    skillCheck:{skills:['Streetwise'],                characteristics:['edu', 'soc'], difficulty: 'Average'   },  timeDice:1, timeScale:'d'},
+      morallyNeutral:{name:"Morally Neutral Supplier", skillCheck:{skills:['Streetwise', 'Investigate'], characteristics:['edu', 'soc'], difficulty: 'Difficult' },  timeDice:2, timeScale:'d'},
+      online:        {name:"Online Supplier",          skillCheck:{skills:['Computers'],                 characteristics:['edu'],        difficulty: 'Average'   },  timeDice:1, timeScale:'h'}
+   };
+
 }]);
 
 

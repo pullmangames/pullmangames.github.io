@@ -63,35 +63,6 @@ rollModule.controller('RollController', ['$scope', 'travRollService', 'character
 //  dm:        selected character's dice modifier
 rollModule.directive('travSkillCheckDm', [function() {
    var controller = ['$scope', '$uibModal', 'charactersService', 'skillsService', 'travRollService', function($scope, $uibModal, charactersService, skillsService, travRollService) {
-
-      $scope.skills = skillsService.usableSkills;
-      $scope.externalFactors = skillsService.skillExternalFactors;
-      $scope.characteristics = charactersService.characteristics;
-      $scope.difficulties = travRollService.difficulties;
-      $scope.selected = {};
-      $scope.selected.extFactors = [];
-      $scope.results = [];
-      $scope.selectedResultIndex = -1;
-
-      $scope.selectResult = function(index)
-      {
-         $scope.selectedResultIndex = index;
-         $scope.ngModel = $scope.results[index];
-      };
-      
-      $scope.clearSelections = function()
-      {
-         $scope.selected.skill = undefined;
-         $scope.skillChanged();
-      }
-
-      $scope.skillChanged = function() {
-         $scope.selected.characteristics = undefined;
-         $scope.selected.difficulty = undefined;
-         $scope.selected.extFactors.splice(0, $scope.selected.extFactors.length);
-         $scope.updateCharList();
-      };
-
       $scope.updateCharList = function() {
          $scope.results = [];
          $scope.selectedResultIndex = -1;
@@ -170,6 +141,70 @@ rollModule.directive('travSkillCheckDm', [function() {
          $scope.results.sort(function(a,b){return b.dm-a.dm});
       };
 
+      $scope.selectResult = function(index)
+      {
+         $scope.selectedResultIndex = index;
+         $scope.ngModel = $scope.results[index];
+      };
+      
+      $scope.clearSelections = function()
+      {
+         $scope.selected.skill = undefined;
+         $scope.skillChanged();
+      }
+
+      $scope.skillChanged = function() {
+         $scope.selected.characteristics = undefined;
+         $scope.selected.difficulty = undefined;
+         $scope.selected.extFactors.splice(0, $scope.selected.extFactors.length);
+         $scope.updateCharList();
+      };
+
+      var updateSkillList = function() {
+         $scope.selectableSkills = [];
+         if ($scope.skills)
+         {
+            for (var i = 0; i < $scope.skills.length; i++)
+            {
+               var skillToAdd = skillsService.lookupDefaultSkill($scope.skills[i]);
+               if (skillToAdd)
+               {
+                  $scope.selectableSkills.push(skillToAdd);
+               }
+               else
+               {
+                  throw "Invalid skill: " + $scope.skills[i];
+               }
+            }
+         }
+   
+         if (!$scope.selectableSkills || !$scope.selectableSkills.length)
+         {
+            $scope.selectableSkills = skillsService.usableSkills;
+         }
+
+         $scope.clearSelections();
+
+         if ($scope.selectableSkills.length === 1)
+         {
+            $scope.selected.skill = $scope.selectableSkills[0];
+            $scope.skillChanged();
+         }
+      };
+
+      $scope.externalFactors = skillsService.skillExternalFactors;
+      $scope.characteristics = charactersService.characteristics;
+      $scope.difficulties = travRollService.difficulties;
+      $scope.selected = {};
+      $scope.selected.extFactors = [];
+      $scope.results = [];
+      $scope.selectedResultIndex = -1;
+      updateSkillList();
+
+      $scope.$watch('skills', function() {
+         updateSkillList();
+      });
+
       //Modal for adding external factors ('other' +/- to DMs) to skills
       var addExtFactorModalController = ['$scope', '$uibModalInstance', 'skillName', function($scope, $uibModalInstance, skill) {
          $scope.skillNameIncludingParent = skill.nameIncludingParent;
@@ -205,7 +240,8 @@ rollModule.directive('travSkillCheckDm', [function() {
    return {
       restrict: 'E',
       scope: {
-         ngModel: "="
+         ngModel: "=",
+         skills: "="
       },
       templateUrl: 'travellerSkillDm.view',
       controller: controller
