@@ -11,7 +11,7 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
          { name: "Mail for Destination 1",                  htmlTemplate: "shipman.accordion.TBD.view" },
          { name: "Passengers for Destination 1",            htmlTemplate: "shipman.accordion.destinations.passengers.view" },
          { name: "Other for Destination 1",                 htmlTemplate: "shipman.accordion.TBD.view" }]},
-      { name: "Find a Trade Goods Seller",                  htmlTemplate: "shipman.accordion.TBD.view" },
+      { name: "Buy Trade Goods",                            htmlTemplate: "shipman.accordion.buyTradeGoods.view" },
       { name: "Finalize ship loadout",                      htmlTemplate: "shipman.accordion.finalizeLoadout.view" },
       { name: "Buy life support, fuel, pay berthing costs", htmlTemplate: "shipman.accordion.TBD.view" },
       { name: "Depart Port",                                htmlTemplate: "shipman.accordion.TBD.view" },
@@ -244,6 +244,17 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
    }
    
    dataStorageService.register(smm, 'tripData', _buildTripDataFromJsonTrip);
+   
+   smm.buyTradeGoods = {};
+   smm.buyTradeGoods.supplier = {};
+   smm.buyTradeGoods.suppliers = {
+      standard:      {name:"Supplier",                 skillCheck:{skills:['Broker'],                    characteristics:['edu', 'soc'], difficulty: 'Average'   },  timeDice:1, timeScale:'d'},
+      commonGoods:   {name:"Common-Goods Supplier",    skillCheck:{skills:['Broker'],                    characteristics:['edu', 'soc'], difficulty: 'Easy'      },  timeDice:1, timeScale:'d'},
+      blackMarket:   {name:"Black Market Supplier",    skillCheck:{skills:['Streetwise'],                characteristics:['edu', 'soc'], difficulty: 'Average'   },  timeDice:1, timeScale:'d'},
+      morallyNeutral:{name:"Morally Neutral Supplier", skillCheck:{skills:['Streetwise', 'Investigate'], characteristics:['edu', 'soc'], difficulty: 'Difficult' },  timeDice:2, timeScale:'d'},
+      online:        {name:"Online Supplier",          skillCheck:{skills:['Computers'],                 characteristics:['edu'],        difficulty: 'Average'   },  timeDice:1, timeScale:'h'}
+   };
+
 }]);
 
 

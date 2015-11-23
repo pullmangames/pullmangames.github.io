@@ -147,6 +147,24 @@
     {{shipMan.tripData.arrivalWorld.UWPsplit}}
   </script>
 
+  <!---------- Accordion: Buy Trade Goods ----------->
+  <script type="text/ng-template" id="shipman.accordion.buyTradeGoods.view">
+    <div ng-if="!shipMan.tripData.departureWorld">
+      You must select a departure world before you can purchase trade goods.
+    </div>
+    <div ng-if="shipMan.tripData.departureWorld">
+      Supplier:
+      <div class="btn-group">
+        <label class="btn btn-primary" ng-model="shipMan.buyTradeGoods.supplier" uib-btn-radio="shipMan.buyTradeGoods.suppliers['standard']">Standard</label>
+        <label class="btn btn-primary" ng-model="shipMan.buyTradeGoods.supplier" uib-btn-radio="shipMan.buyTradeGoods.suppliers['commonGoods']">Common Goods</label>
+        <label class="btn btn-primary" ng-model="shipMan.buyTradeGoods.supplier" uib-btn-radio="shipMan.buyTradeGoods.suppliers['blackMarket']">Black Market</label>
+        <label class="btn btn-primary" ng-model="shipMan.buyTradeGoods.supplier" uib-btn-radio="shipMan.buyTradeGoods.suppliers['morallyNeutral']">Morally Neutral</label>
+        <label class="btn btn-primary" ng-model="shipMan.buyTradeGoods.supplier" uib-btn-radio="shipMan.buyTradeGoods.suppliers['online']">Online</label>
+      </div>
+      <trav-skill-check-dm ng-attr-skills="shipMan.buyTradeGoods.supplier.skillCheck.skills"></trav-skill-check-dm>
+    </div>
+  </script>
+
   <!---------- Accordion: Finalize Loadout ----------->
   <script type="text/ng-template" id="shipman.accordion.finalizeLoadout.view">
     Calculate risk vs. reward score, roll shipping hazards
@@ -535,7 +553,7 @@ Pilot: -1 DM
     <div style="padding:10px;border:1px solid black;width:421px">
       <ui-select on-select="skillChanged()" on-remove="skillChanged()" theme="bootstrap" ng-model="selected.skill" style="width:400px;margin-right:5px;margin-bottom:10px">
         <ui-select-match placeholder="Select skill...">{{$select.selected.nameIncludingParent}}</ui-select-match>
-        <ui-select-choices repeat="skill in skills | filter: {nameIncludingParent: $select.search}">
+        <ui-select-choices repeat="skill in selectableSkills | filter: {nameIncludingParent: $select.search}">
           <span ng-bind-html="skill.nameIncludingParent | highlight: $select.search"></span>
         </ui-select-choices>
       </ui-select>
