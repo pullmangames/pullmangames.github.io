@@ -161,7 +161,11 @@
         <label class="btn btn-primary" ng-model="shipMan.buyTradeGoods.supplier" uib-btn-radio="shipMan.buyTradeGoods.suppliers['morallyNeutral']">Morally Neutral</label>
         <label class="btn btn-primary" ng-model="shipMan.buyTradeGoods.supplier" uib-btn-radio="shipMan.buyTradeGoods.suppliers['online']">Online</label>
       </div>
-      <trav-skill-check-dm ng-attr-skills="shipMan.buyTradeGoods.supplier.skillCheck.skills"></trav-skill-check-dm>
+      <div style="margin-top:10px">
+        <trav-skill-check-dm ng-attr-skills="shipMan.buyTradeGoods.supplier.skillCheck.skills"
+                             ng-attr-characteristics="shipMan.buyTradeGoods.supplier.skillCheck.characteristics">
+        </trav-skill-check-dm>
+      </div>
     </div>
   </script>
 
@@ -551,7 +555,7 @@ Pilot: -1 DM
 <!-------------------------- Skill Check DM Template -------------------------->
   <script type="text/ng-template" id="travellerSkillDm.view">
     <div style="padding:10px;border:1px solid black;width:421px">
-      <ui-select on-select="skillChanged()" on-remove="skillChanged()" theme="bootstrap" ng-model="selected.skill" style="width:400px;margin-right:5px;margin-bottom:10px">
+      <ui-select on-select="skillChanged()" on-remove="skillChanged()" theme="bootstrap" ng-model="selected.skill" ng-disabled="locked.skills" style="width:400px;margin-right:5px;margin-bottom:10px">
         <ui-select-match placeholder="Select skill...">{{$select.selected.nameIncludingParent}}</ui-select-match>
         <ui-select-choices repeat="skill in selectableSkills | filter: {nameIncludingParent: $select.search}">
           <span ng-bind-html="skill.nameIncludingParent | highlight: $select.search"></span>
@@ -575,9 +579,9 @@ Pilot: -1 DM
       <table>
         <tr>
           <td style="padding-right:5px">
-            <ui-select multiple on-select="updateCharList()" on-remove="updateCharList()" theme="bootstrap" ng-model="selected.characteristics" style="width:250px;margin-right:5px">
+            <ui-select multiple on-select="updateCharList()" on-remove="updateCharList()" theme="bootstrap" ng-model="selected.characteristics" ng-disabled="locked.characteristics" style="width:250px;margin-right:5px">
               <ui-select-match placeholder="Select characteristics...">{{$item.name}}</ui-select-match>
-              <ui-select-choices repeat="characteristic in characteristics | filter: {name: $select.search}">
+              <ui-select-choices repeat="characteristic in selectableCharacteristics | filter: {name: $select.search}">
                 <span ng-bind-html="characteristic.name | highlight: $select.search"></span>
               </ui-select-choices>
             </ui-select>

@@ -378,6 +378,17 @@ charModule.service('charactersService', ['$rootScope', 'character', 'skill', 'al
       { name: "Soc", order: 5}
    ];
    
+   this.characteristicsDict = {};
+   for (var i = 0; i < this.characteristics.length; i++)
+   {
+      this.characteristicsDict[this.characteristics[i].name.toLowerCase()] = this.characteristics[i];
+   }
+   
+   this.lookupCharacteristic = function(name)
+   {
+      return this.characteristicsDict[name.toLowerCase()];
+   }
+   
    this.dmFromCharacteristic = function(value) {
       if (value <= 0)
       {
