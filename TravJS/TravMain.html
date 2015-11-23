@@ -60,6 +60,103 @@
 
 
 <!----------------------------------Ship Manager View-------------------------->
+  <!---------- Accordion: TBD ----------->
+  <script type="text/ng-template" id="shipman.accordion.TBD.view">
+    TBD
+  </script>
+
+  <!---------- Accordion: Manual Operations ----------->
+  <script type="text/ng-template" id="shipman.accordion.manualOps.view">
+    <div>
+      <form ng-submit="shipMan.manualLog()" class="form-inline">
+        <input type="textarea"  class="form-control" ng-model="shipMan.logText" size="40" placeholder="New log entry">
+        <br>
+        <input type="number" class="form-control" ng-model="shipMan.inputYear" size="4" placeholder="Year" >
+        <input type="number" class="form-control" ng-model="shipMan.inputDate" size="4" placeholder="Date">
+        <input type="number" class="form-control" ng-model="shipMan.inputTimeElapsed" size="4" placeholder="Elapsed time">
+        <input class="btn btn-default btn-primary" type="submit" value="Log">
+      </form>
+    </div>
+    <hr>
+    <div>
+      <form ng-submit="shipMan.manualCargoAdd()" class="form-inline">
+        <input type="textarea"  class="form-control" ng-model="shipMan.addCargoType" size="30" placeholder="Cargo Text">
+        <input type="number" class="form-control" ng-model="shipMan.addCargoTons" size="10" placeholder="Tons">
+        <input type="number" class="form-control" ng-model="shipMan.addPrice" size="10" placeholder="Cr/Ton">
+        <input type="number" class="form-control" ng-model="shipMan.inputTimeElapsed" size="4" placeholder="Elapsed time">
+        <input class="btn btn-default btn-primary" type="submit" value="Add Cargo">
+      </form>
+    </div>
+    <hr>
+    <div class="row">
+      <div class="col-md-8">
+        <ui-select theme="bootstrap" ng-model="shipMan.cargoToDelete">
+          <ui-select-match placeholder="Select cargo...">
+            <div class="row">
+              <div class="col-md-12">
+                <strong>{{$select.selected.detail}}</strong><small> {{$select.selected.type}}</small>
+              </div>
+            </div>
+          </ui-select-match>
+          <ui-select-choices repeat="acargo in shipMan.log.status.cargo">
+            <div class="row">
+              <div class="col-md-12">
+                <strong>{{acargo.detail}}</strong><small> {{acargo.type}}</small>
+              </div>
+              <div class="col-md-12">
+                <small>{{acargo.tons}} dT @ Cr. {{acargo.paid}} / dT = Cr. {{acargo.paid*acargo.tons}}</small>
+              </div>
+            </div>
+          </ui-select-choices>
+        </ui-select>
+      </div>
+      <div class="col-md-4">
+        <button class="btn btn-primary" type="button" ng-click="shipMan.manualCargoDelete()">Delete Cargo</button>
+      </div>
+    </div>
+    <hr>
+    <div>
+      <form ng-submit="shipMan.manualCredits()" class="form-inline">
+        <input type="number" class="form-control" ng-model="shipMan.addMoney" size="10" placeholder="Cr">
+        <input type="text" class="form-control" ng-model="shipMan.addMoneyDesc" size="20" placeholder="Reason">
+        <input type="number" class="form-control" ng-model="shipMan.inputTimeElapsed" size="4" placeholder="Elapsed time">
+        <input class="btn btn-default btn-primary" type="submit" value="Add">
+      </form>
+    </div>
+    <hr>
+    <div>
+      Set Date:
+      <form ng-submit="shipMan.manualSetDate()" class="form-inline">
+        <input type="number" class="form-control" ng-model="shipMan.inputYear" size "4" placeholder="year">
+        <input type="number" class="form-control" ng-model="shipMan.inputDate" size "4" placeholder="date">
+        <input class="btn btn-default btn-primary" type="submit" value="Set">
+      </form>
+    </div>
+  </script>
+  
+  <!---------- Accordion: Destinations -> Passengers ----------->
+  <script type="text/ng-template" id="shipman.accordion.destinations.passengers.view">
+    Roll on the Available Passengers table
+       modified by events
+       modified by source population
+       modified by trade code table
+       modified by TL difference (max 5)
+       modified by rounding up passengers (Carouse/Streetwise, int/soc, average, days)
+    Every group of 6 passengers taken, 4+ means one is special, roll on passenger table
+    {{shipMan.tripData.departureWorld.UWPsplit}}
+    {{shipMan.tripData.arrivalWorld.UWPsplit}}
+  </script>
+
+  <!---------- Accordion: Finalize Loadout ----------->
+  <script type="text/ng-template" id="shipman.accordion.finalizeLoadout.view">
+    Calculate risk vs. reward score, roll shipping hazards
+  </script>
+
+  <!---------- Accordion: JumpSpace ----------->
+  <script type="text/ng-template" id="shipman.accordion.jumpSpace.view">
+    Time taken in jump?
+  </script>
+
   <script type="text/ng-template" id="shipMan.view">
     <br><br>
 
@@ -95,10 +192,10 @@ Pilot: -1 DM
               <span> {{acargo.type}}({{acargo.detail}}) paid {{acargo.paid}}[{{acargo.paid*acargo.tons}}] - {{acargo.tons}} dT </span>
             </li>
           </ul>
-
         </div>
 
         <div class="col-md-6">
+
           <div class="row">
             <div class="col-md-6">
               <h4>Departure</h4>
@@ -129,329 +226,33 @@ Pilot: -1 DM
 
           <div class="row">
             <div class="col-md-12" style="margin-top:5px">
-
               <uib-accordion close-others="false">
-
-                <uib-accordion-group>
-                  <uib-accordion-heading>
-                    Manual Log Entry/Adjustment
-                  </uib-accordion-heading>
-                  <div>
-                    <form ng-submit="shipMan.manualLog()" class="form-inline">
-                      <input type="textarea"  class="form-control" ng-model="shipMan.logText" size="40" placeholder="New log entry">
-                      <br>
-                      <input type="number" class="form-control" ng-model="shipMan.inputYear" size="4" placeholder="Year" >
-                      <input type="number" class="form-control" ng-model="shipMan.inputDate" size="4" placeholder="Date">
-                      <input type="number" class="form-control" ng-model="shipMan.inputTimeElapsed" size="4" placeholder="Elapsed time">
-                      <input class="btn btn-default btn-primary" type="submit" value="Log">
-                    </form>
-                  </div>
-                  <hr>
-                  <div>
-                    <form ng-submit="shipMan.manualCargoAdd()" class="form-inline">
-                      <input type="textarea"  class="form-control" ng-model="shipMan.addCargoType" size="30" placeholder="Cargo Text">
-                      <input type="number" class="form-control" ng-model="shipMan.addCargoTons" size="10" placeholder="Tons">
-                      <input type="number" class="form-control" ng-model="shipMan.addPrice" size="10" placeholder="Cr/Ton">
-                      <input type="number" class="form-control" ng-model="shipMan.inputTimeElapsed" size="4" placeholder="Elapsed time">
-                      <input class="btn btn-default btn-primary" type="submit" value="Add Cargo">
-                    </form>
-                  </div>
-                  <hr>
-                  <div class="row">
-                    <div class="col-md-8">
-                      <ui-select theme="bootstrap" ng-model="shipMan.cargoToDelete">
-                        <ui-select-match placeholder="Select cargo...">
-                          <div class="row">
-                            <div class="col-md-12">
-                              <strong>{{$select.selected.detail}}</strong><small> {{$select.selected.type}}</small>
+                <div ng-repeat="step in shipMan.accordionData" style="margin-top:5px">
+                  <uib-accordion-group>
+                    <uib-accordion-heading>{{step.name}}</uib-accordion-heading>
+                    <div ng-if="step.subSteps">
+                      <uib-accordion close-others="false">
+                        <div ng-repeat="subStep in step.subSteps" style="margin-top:5px">
+                          <uib-accordion-group>
+                            <uib-accordion-heading>{{subStep.name}}</uib-accordion-heading>
+                            <div ng-if="subStep.htmlTemplate">
+                              <ng-include src="subStep.htmlTemplate"></ng-include>
                             </div>
-                          </div>
-                        </ui-select-match>
-                        <ui-select-choices repeat="acargo in shipMan.log.status.cargo">
-                          <div class="row">
-                            <div class="col-md-12">
-                              <strong>{{acargo.detail}}</strong><small> {{acargo.type}}</small>
-                            </div>
-                            <div class="col-md-12">
-                              <small>{{acargo.tons}} dT @ Cr. {{acargo.paid}} / dT = Cr. {{acargo.paid*acargo.tons}}</small>
-                            </div>
-                          </div>
-                        </ui-select-choices>
-                      </ui-select>
+                          </uib-accordion-group>
+                        </div>
+                      </uib-accordion>
                     </div>
-                    <div class="col-md-4">
-                      <button class="btn btn-primary" type="button" ng-click="shipMan.manualCargoDelete()">Delete Cargo</button>
+                    <div ng-if="step.htmlTemplate">
+                      <ng-include src="step.htmlTemplate"></ng-include>
                     </div>
-                  </div>
-                  <hr>
-                  <div>
-                    <form ng-submit="shipMan.manualCredits()" class="form-inline">
-                      <input type="number" class="form-control" ng-model="shipMan.addMoney" size="10" placeholder="Cr">
-                      <input type="text" class="form-control" ng-model="shipMan.addMoneyDesc" size="20" placeholder="Reason">
-                      <input type="number" class="form-control" ng-model="shipMan.inputTimeElapsed" size="4" placeholder="Elapsed time">
-                      <input class="btn btn-default btn-primary" type="submit" value="Add">
-                    </form>
-                  </div>
-                  <hr>
-                  <div>
-                    Set Date:
-                    <form ng-submit="shipMan.manualSetDate()" class="form-inline">
-                      <input type="number" class="form-control" ng-model="shipMan.inputYear" size "4" placeholder="year">
-                      <input type="number" class="form-control" ng-model="shipMan.inputDate" size "4" placeholder="date">
-                      <input class="btn btn-default btn-primary" type="submit" value="Set">
-                    </form>
-                  </div>
-                </uib-accordion-group>
-
-                <uib-accordion-group>
-                  <uib-accordion-heading>
-                    Hunt for jobs/patrons/rumors/etc.
-                  </uib-accordion-heading>
-                  Actual controls go here
-                </uib-accordion-group>
-
-                <uib-accordion-group>
-                  <uib-accordion-heading>
-                    Enter Destination(s)
-                  </uib-accordion-heading>
-                  <!-- Freight, mail, etc for each -->
-                  <uib-accordion close-others="false">
-
-                    <uib-accordion-group>
-                      <uib-accordion-heading>
-                        Freight for Destination 1
-                      </uib-accordion-heading>
-                      Actual controls go here
-                    </uib-accordion-group>
-
-                    <uib-accordion-group>
-                      <uib-accordion-heading>
-                        Mail for Destination 1
-                      </uib-accordion-heading>
-                      Actual controls go here
-                    </uib-accordion-group>
-
-                    <uib-accordion-group>
-                      <uib-accordion-heading>
-                        Passengers for Destination 1
-                      </uib-accordion-heading>
-                      Roll on the Available Passengers table
-                      	modified by events
-                      	modified by source population
-                      	modified by trade code table
-                      	modified by TL difference (max 5)
-                      	modified by rounding up passengers (Carouse/Streetwise, int/soc, average, days)
-                      Every group of 6 passengers taken, 4+ means one is special, roll on passenger table
-                      {{shipMan.tripData.departureWorld.UWPsplit}}
-                      {{shipMan.tripData.arrivalWorld.UWPsplit}}
-                      
-                    </uib-accordion-group>
-
-                    <uib-accordion-group>
-                      <uib-accordion-heading>
-                        Other for Destination 1
-                      </uib-accordion-heading>
-                      Actual controls go here
-                    </uib-accordion-group>
-
-                  </uib-accordion>
-                </uib-accordion-group>
-
-                <uib-accordion-group>
-                  <uib-accordion-heading>
-                    Find a Trade Goods Seller
-                  </uib-accordion-heading>
-                  Actual controls go here
-                </uib-accordion-group>
-
-                <uib-accordion-group>
-                  <uib-accordion-heading>
-                    Finalize ship loadout
-                  </uib-accordion-heading>
-                  Actual controls go here
-                  Calculate risk vs. reward score, roll shipping hazards
-                </uib-accordion-group>
-
-                <uib-accordion-group>
-                  <uib-accordion-heading>
-                    Buy life support, fuel, pay berthing costs
-                  </uib-accordion-heading>
-                  Actual controls go here
-                </uib-accordion-group>
-
-                <uib-accordion-group>
-                  <uib-accordion-heading>
-                    Depart Port
-                  </uib-accordion-heading>
-                  Pilot Check
-                </uib-accordion-group>
-
-                <uib-accordion-group>
-                  <uib-accordion-heading>
-                    Port Encounter
-                  </uib-accordion-heading>
-                  Actual controls go here
-                </uib-accordion-group>
-
-                <uib-accordion-group>
-                  <uib-accordion-heading>
-                    Visit Gas Giant
-                  </uib-accordion-heading>
-                  <uib-accordion close-others="false">
-
-                    <uib-accordion-group>
-                      <uib-accordion-heading>
-                        Gas Giant Encounter
-                      </uib-accordion-heading>
-                      Actual controls go here
-                    </uib-accordion-group>
-
-                    <uib-accordion-group>
-                      <uib-accordion-heading>
-                        Skimming
-                      </uib-accordion-heading>
-                      Actual controls go here
-                    </uib-accordion-group>
-
-                  </uib-accordion>
-                </uib-accordion-group>
-
-                <uib-accordion-group>
-                  <uib-accordion-heading>
-                    Jump Point Encounter
-                  </uib-accordion-heading>
-                  Actual controls go here
-                </uib-accordion-group>
-
-                <uib-accordion-group>
-                  <uib-accordion-heading>
-                    Jump
-                  </uib-accordion-heading>
-                  <uib-accordion close-others="false">
-
-                    <uib-accordion-group>
-                      <uib-accordion-heading>
-                        Astrogation check
-                      </uib-accordion-heading>
-                      Actual controls go here
-                    </uib-accordion-group>
-
-                    <uib-accordion-group>
-                      <uib-accordion-heading>
-                        Engine power check
-                      </uib-accordion-heading>
-                      Actual controls go here
-                    </uib-accordion-group>
-
-                    <uib-accordion-group>
-                      <uib-accordion-heading>
-                        Jump check
-                      </uib-accordion-heading>
-                      Actual controls go here
-                    </uib-accordion-group>
-
-                  </uib-accordion>
-                </uib-accordion-group>
-
-                <uib-accordion-group>
-                  <uib-accordion-heading>
-                    JumpSpace
-                  </uib-accordion-heading>
-                  Time taken in jump?
-                </uib-accordion-group>
-
-                <uib-accordion-group>
-                  <uib-accordion-heading>
-                    Exit Jump - Encounter
-                  </uib-accordion-heading>
-                  Actual controls go here
-                </uib-accordion-group>
-
-                <uib-accordion-group>
-                  <uib-accordion-heading>
-                    Visit Gas Giant
-                  </uib-accordion-heading>
-                  <uib-accordion close-others="false">
-
-                  <uib-accordion-group>
-                    <uib-accordion-heading>
-                      Gas Giant Encounter
-                    </uib-accordion-heading>
-                    Actual controls go here
                   </uib-accordion-group>
-
-                  <uib-accordion-group>
-                    <uib-accordion-heading>
-                      Skimming
-                    </uib-accordion-heading>
-                    Actual controls go here
-                  </uib-accordion-group>
-
-                  </uib-accordion>
-                </uib-accordion-group>
-
-                <uib-accordion-group>
-                  <uib-accordion-heading>
-                    Port Arrival - Encounter
-                  </uib-accordion-heading>
-                  Actual controls go here
-                </uib-accordion-group>
-
-                <uib-accordion-group>
-                  <uib-accordion-heading>
-                    Land/Dock
-                  </uib-accordion-heading>
-                  Actual controls go here
-                </uib-accordion-group>
-
-                <uib-accordion-group>
-                  <uib-accordion-heading>
-                  Unload
-                  </uib-accordion-heading>
-                  <uib-accordion close-others="false">
-
-                  <uib-accordion-group>
-                    <uib-accordion-heading>
-                      Freight
-                    </uib-accordion-heading>
-                    Actual controls go here
-                  </uib-accordion-group>
-
-                  <uib-accordion-group>
-                    <uib-accordion-heading>
-                      Mail
-                    </uib-accordion-heading>
-                    Actual controls go here
-                  </uib-accordion-group>
-
-                  <uib-accordion-group>
-                    <uib-accordion-heading>
-                      Passengers
-                    </uib-accordion-heading>
-                    Actual controls go here
-                  </uib-accordion-group>
-
-                  </uib-accordion>
-                </uib-accordion-group>
-
-                <uib-accordion-group>
-                  <uib-accordion-heading>
-                    Find a trade goods buyer
-                  </uib-accordion-heading>
-                  Actual controls go here
-                </uib-accordion-group>
-
-                <uib-accordion-group>
-                  <uib-accordion-heading>
-                    Tax
-                  </uib-accordion-heading>
-                  Actual controls go here
-                </uib-accordion-group>
-
+                </div>
               </uib-accordion>
             </div>
           </div>
+
         </div>
+        
         <div class="col-md-3">
           Today: {{shipMan.log.status.date.toString();}}
           <br>
@@ -461,9 +262,10 @@ Pilot: -1 DM
               <span> {{logitem.year}}:{{logitem.startDate}} - {{logitem.text}} - {{logitem.elapsed}} days </span>
             </li>
           </ul>
-
         </div>
+
       </div>
+
     </div>
 
   </script>
