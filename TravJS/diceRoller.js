@@ -65,6 +65,10 @@ rollModule.directive('travSkillCheckDm', [function() {
    var controller = ['$scope', '$uibModal', 'charactersService', 'skillsService', 'travRollService', function($scope, $uibModal, charactersService, skillsService, travRollService) {
       $scope.updateCharList = function() {
          $scope.results = [];
+         if ($scope.requireAll && !allSelected())
+         {
+            return;
+         }
          $scope.selectedResultIndex = -1;
          $scope.ngModel = {};
          var characters = charactersService.characters;
@@ -149,19 +153,29 @@ rollModule.directive('travSkillCheckDm', [function() {
       
       $scope.clearSelections = function()
       {
-         $scope.selected.skill = undefined;
+         if (!$scope.locked.skills)
+         {
+            $scope.selected.skill = undefined;
+         }
          $scope.skillChanged();
       }
 
       $scope.skillChanged = function() {
-         $scope.selected.characteristics = undefined;
-         $scope.selected.difficulty = undefined;
+         if (!$scope.locked.characteristics)
+         {
+            $scope.selected.characteristics = undefined;
+         }
+         if (!$scope.locked.difficulty)
+         {
+            $scope.selected.difficulty = undefined;
+         }
          $scope.selected.extFactors.splice(0, $scope.selected.extFactors.length);
          $scope.updateCharList();
       };
 
       var updateSkillList = function() {
          $scope.selectableSkills = [];
+         $scope.selected.skill = undefined;
          if ($scope.skills)
          {
             for (var i = 0; i < $scope.skills.length; i++)
@@ -177,33 +191,112 @@ rollModule.directive('travSkillCheckDm', [function() {
                }
             }
          }
-   
+         
          if (!$scope.selectableSkills || !$scope.selectableSkills.length)
          {
             $scope.selectableSkills = skillsService.usableSkills;
          }
 
-         $scope.clearSelections();
-
          if ($scope.selectableSkills.length === 1)
          {
             $scope.selected.skill = $scope.selectableSkills[0];
-            $scope.skillChanged();
+            $scope.locked.skills = true;
          }
+         else
+         {
+            $scope.locked.skills = false;
+         }
+      
+         $scope.updateCharList();
       };
 
+      var updateCharacteristicsList = function() {
+         $scope.selectableCharacteristics = [];
+         if ($scope.characteristics)
+         {
+            for (var i = 0; i < $scope.characteristics.length; i++)
+            {
+               var characteristicToAdd = charactersService.lookupCharacteristic($scope.characteristics[i]);
+               if (characteristicToAdd)
+               {
+                  $scope.selectableCharacteristics.push(characteristicToAdd);
+               }
+               else
+               {
+                  throw "Invalid characteristic: " + $scope.characteristics[i];
+               }
+            }
+         }
+         
+         if (!$scope.selectableCharacteristics || !$scope.selectableCharacteristics.length)
+         {
+            $scope.selectableCharacteristics = charactersService.characteristics;
+            $scope.locked.characteristics = false;
+         }
+         else
+         {
+            $scope.selected.characteristics = [];
+            for (var i = 0; i < $scope.selectableCharacteristics.length; i++)
+            {
+               $scope.selected.characteristics.push($scope.selectableCharacteristics[i]);
+            }
+            $scope.locked.characteristics = true;
+         }
+
+         $scope.updateCharList();
+      };
+
+      var updateDifficultyList = function() {
+         $scope.selectableDifficulties = [];
+         $scope.selected.difficulty = undefined;
+         if ($scope.difficulty)
+         {
+            var difficultyToAdd = travRollService.lookupDifficulty($scope.difficulty);
+            if (difficultyToAdd)
+            {
+               $scope.selectableDifficulties.push(difficultyToAdd);
+            }
+            else
+            {
+               throw "Invalid difficulty: " + $scope.difficulty;
+            }
+         }
+         
+         if (!$scope.selectableDifficulties || !$scope.selectableDifficulties.length)
+         {
+            $scope.selectableDifficulties = travRollService.difficulties;
+         }
+
+         if ($scope.selectableDifficulties.length === 1)
+         {
+            $scope.selected.difficulty = $scope.selectableDifficulties[0];
+            $scope.locked.difficulty = true;
+         }
+         else
+         {
+            $scope.locked.difficulty = false;
+         }
+      
+         $scope.updateCharList();
+      };
+
+      var allSelected = function() {
+         return $scope.selected.skill && $scope.selected.characteristics && $scope.selected.characteristics.length && $scope.selected.difficulty;
+      }
+
       $scope.externalFactors = skillsService.skillExternalFactors;
-      $scope.characteristics = charactersService.characteristics;
-      $scope.difficulties = travRollService.difficulties;
       $scope.selected = {};
       $scope.selected.extFactors = [];
       $scope.results = [];
       $scope.selectedResultIndex = -1;
+      $scope.locked = {};
       updateSkillList();
-
-      $scope.$watch('skills', function() {
-         updateSkillList();
-      });
+      updateCharacteristicsList();
+      updateDifficultyList();
+      $scope.$watch('skills', updateSkillList);
+      $scope.$watch('characteristics', updateCharacteristicsList);
+      $scope.$watch('difficulty', updateDifficultyList);
+      $scope.$watch('requireAll', $scope.updateCharList);
 
       //Modal for adding external factors ('other' +/- to DMs) to skills
       var addExtFactorModalController = ['$scope', '$uibModalInstance', 'skillName', function($scope, $uibModalInstance, skill) {
@@ -241,7 +334,10 @@ rollModule.directive('travSkillCheckDm', [function() {
       restrict: 'E',
       scope: {
          ngModel: "=",
-         skills: "="
+         skills: "=",
+         characteristics: "=",
+         difficulty: "=",
+         requireAll: "@"
       },
       templateUrl: 'travellerSkillDm.view',
       controller: controller
@@ -258,6 +354,17 @@ rollModule.service('travRollService', [function() {
       {name: "Very Difficult", value: -4},
       {name: "Formidable",     value: -6}
    ];
+   
+   var _difficultiesDict = {};
+   for (var i = 0; i < this.difficulties.length; i++)
+   {
+      _difficultiesDict[this.difficulties[i].name.toLowerCase()] = this.difficulties[i];
+   }
+   
+   this.lookupDifficulty = function(name)
+   {
+      return _difficultiesDict[name.toLowerCase()];
+   }
 }]);
 
 //------------------Raw JS (no Angular junk) below this line ----------------
