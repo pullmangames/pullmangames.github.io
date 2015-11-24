@@ -1,6 +1,6 @@
 
 var PassengersByTradeType={
-	current:{
+	departure:{
 		As:1,
 		Ba:-5,
 		De:-1,
@@ -12,7 +12,7 @@ var PassengersByTradeType={
 		//Az:2 How to see if it's amber?
 		//Rd:4 how to see if it's red?
 	},
-	destination:{
+	arrival:{
 		As:-1,
 		Ba:-5,
 		De:-1,
@@ -33,61 +33,61 @@ var PassengersByTradeType={
 
 var AvailablePassengers={
 	low:[
-		"0",
-		"2d6-6",
-		"2d6",
-		"2d6",
-		"3d6-1d6",
-		"3d6-1d6",
-		"3d6",
-		"3d6",
-		"4d6",
-		"4d6",
-		"5d6",
-		"5d6",
-		"6d6",
-		"6d6",
-		"7d6",
-		"8d6",
-		"9d6"
+ 		"0",
+		"Math.max(rawroll(2,6).total-6,0)",// 		"2d6-6",
+		"rawroll(2,6).total",// 		"2d6",
+		"rawroll(2,6).total",// 		"2d6",
+		"rawroll(3,6).total-rawroll(1,6).total",// 		"3d6-1d6",
+		"rawroll(3,6).total-rawroll(1,6).total",// 		"3d6-1d6",
+		"rawroll(3,6).total",// 		"3d6",
+		"rawroll(3,6).total",// 		"3d6",
+		"rawroll(4,6).total",// 		"4d6",
+		"rawroll(4,6).total",// 		"4d6",
+		"rawroll(5,6).total",// 		"5d6",
+		"rawroll(5,6).total",// 		"5d6",
+		"rawroll(6,6).total",// 		"6d6",
+		"rawroll(6,6).total",// 		"6d6",
+		"rawroll(7,6).total",// 		"7d6",
+		"rawroll(8,6).total",// 		"8d6",
+		"rawroll(9,6).total"// 		"9d6"
 	],
 	mid:[
-		"0",
-		"0",
-		"1d6-2",
-		"1d6",
-		"2d6-1d6",
-		"2d6-1d6",
-		"2d6",
-		"3d6-2d6",
-		"3d6-1d6",
-		"3d6-1d6",
-		"3d6",
-		"4d6",
-		"4d6",
-		"4d6",
-		"5d6",
-		"5d6",
-		"6d6"
+ 		"0",
+ 		"0",
+		"Math.max(rawroll(1,6).total-2)",// 		"1d6-2",
+		"rawroll(1,6).total",// 		"1d6",
+		"Math.max(rawroll(2,6).total-rawroll(1,6).total)",// 		"2d6-1d6",
+		"Math.max(rawroll(2,6).total-rawroll(1,6).total)",// 		"2d6-1d6",
+		"rawroll(2,6).total",// 		"2d6",
+		"rawroll(3,6).total-rawroll(2,6).total",// 		"3d6-2d6",
+		"rawroll(3,6).total-rawroll(1,6).total",// 		"3d6-1d6",
+		"rawroll(3,6).total-rawroll(1,6).total",// 		"3d6-1d6",
+		"rawroll(3,6).total",// 		"3d6",
+		"rawroll(4,6).total",// 		"4d6",
+		"rawroll(4,6).total",// 		"4d6",
+		"rawroll(4,6).total",// 		"4d6",
+		"rawroll(5,6).total",// 		"5d6",
+		"rawroll(5,6).total",// 		"5d6",
+		"rawroll(6,6).total"// 		"6d6"
 	],
 	high:[
-		"0",
-		"0",
-		"0",
-		"1d6-1d6",
-		"2d6-2d6",
-		"2d6-1d6",
-		"3d6-2d6",
-		"3d6-2d6",
-		"3d6-1d6",
-		"3d6-1d6",
-		"3d6-1d6",
-		"3d6",
-		"3d6",
-		"4d6",
-		"4d6",
-		"4d6",
-		"5d6"
+ 		"0",
+ 		"0",
+ 		"0",
+		"Math.max(rawroll(1,6).total-rawroll(1,6).total)",// 		"1d6-1d6",
+		"Math.max(rawroll(2,6).total-rawroll(2,6).total)",// 		"2d6-2d6",
+		"Math.max(rawroll(2,6).total-rawroll(1,6).total)",// 		"2d6-1d6",
+		"Math.max(rawroll(3,6).total-rawroll(2,6).total)",// 		"3d6-2d6",
+		"Math.max(rawroll(3,6).total-rawroll(2,6).total)",// 		"3d6-2d6",
+		"Math.max(rawroll(3,6).total-rawroll(1,6).total)",// 		"3d6-1d6",
+		"Math.max(rawroll(3,6).total-rawroll(1,6).total)",// 		"3d6-1d6",
+		"Math.max(rawroll(3,6).total-rawroll(1,6).total)",// 		"3d6-1d6",
+		"rawroll(3,6).total",// 		"3d6",
+		"rawroll(3,6).total",// 		"3d6",
+		"rawroll(4,6).total",// 		"4d6",
+		"rawroll(4,6).total",// 		"4d6",
+		"rawroll(4,6).total",// 		"4d6",
+		"rawroll(5,6).total"// 		"5d6"
 	]
 	};
 
@@ -95,14 +95,14 @@ var AvailablePassengers={
 var RandomPassenger={};
 
 var PassengerWorldEvents={
-	"Current":{
+	"departure":{
 		"war":5,
 		"epidemic":6,
 		"celebration":-2,
 		"Tourist Attractions":-3,
 		"Economic Boom":-1,
 		"Media Attention":-1},
-	"Destination":{
+	"arrival":{
 		"war":-5,
 		"epidemic":-10,
 		"celebration":3,

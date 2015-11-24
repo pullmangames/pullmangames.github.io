@@ -254,13 +254,49 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       online:        {name:"Online Supplier",          skillCheck:{skills:['Computers'],                 characteristics:['edu'],        difficulty: 'Average'   },  timeDice:1, timeScale:'h'}
    };
 
+	smm.availablePassengers=function() {
+		return calculatePassengers(smm.tripData.departureWorld,smm.tripData.arrivalWorld);
+		}
+
 }]);
 
+var calculatePassengers=function(departureWorld,arrivalWorld){
+/*
+
+
+ Roll on the Available Passengers table
+       modified by events
+       modified by source population
+       modified by trade code table
+       modified by TL difference (max 5)
+       modified by rounding up passengers (Carouse/Streetwise, int/soc, average, days)
+    Every group of 6 passengers taken, 4+ means one is special, roll on passenger table
+    {{shipMan.tripData.departureWorld.UWPsplit}}
+  
+*/
+
+var departremarksmod=modifiersPerTradeCode(PassengersByTradeType.departure, departureWorld.Remarks);
+var arrivalremarksmod=modifiersPerTradeCode(PassengersByTradeType.arrival, arrivalWorld.Remarks);
+
+var AvailablePassengersEntry = parseInt(departureWorld.UWPsplit["population"]) 
+								+ departremarksmod + arrivalremarksmod
+								+ Math.min(Math.abs(departureWorld.UWPsplit["TL"]-arrivalWorld.UWPsplit["TL"]),5)
+								//TODO + events table + rounding up passengers
+
+var passengers=0;								
+/*var passengers={"low":eval(AvailablePassengers.low[AvailablePassengersEntry]),
+				"mid":eval(AvailablePassengers.mid[AvailablePassengersEntry]),
+				"high":eval(AvailablePassengers.high[AvailablePassengersEntry])}*/
+
+return passengers;
+
+
+};
 
 
 var cargoFactory = function(){
 	return {"type":"", "detail":"", "tons":0};
-}
+};
 
 var dateFactory = function(newyear, newday){
 	var newdate={};
@@ -300,8 +336,6 @@ var dateFactory = function(newyear, newday){
 		var calcday=newdays%365+1;
 		return [calcyear,calcday];
 	};
-	
-
 
 	return newdate;	
 };
