@@ -288,9 +288,9 @@ var AvailablePassengersEntry = departureWorld.UWPsplit["population"]
 								//TODO + events table + rounding up passengers
 
 var passengers=0;								
-/*var passengers={"low":eval(AvailablePassengers.low[AvailablePassengersEntry]),
-				"mid":eval(AvailablePassengers.mid[AvailablePassengersEntry]),
-				"high":eval(AvailablePassengers.high[AvailablePassengersEntry])}*/
+var passengers={"low":AvailablePassengers.low[AvailablePassengersEntry](),
+				"mid":AvailablePassengers.mid[AvailablePassengersEntry](),
+				"high":AvailablePassengers.high[AvailablePassengersEntry]()}
 
 return passengers;
 
