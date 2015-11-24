@@ -161,7 +161,10 @@ rollModule.directive('travSkillCheckDm', [function() {
          {
             $scope.selected.characteristics = undefined;
          }
-         $scope.selected.difficulty = undefined;
+         if (!$scope.locked.difficulty)
+         {
+            $scope.selected.difficulty = undefined;
+         }
          $scope.selected.extFactors.splice(0, $scope.selected.extFactors.length);
          $scope.updateCharList();
       };
@@ -239,8 +242,41 @@ rollModule.directive('travSkillCheckDm', [function() {
          $scope.updateCharList();
       };
 
+      var updateDifficultyList = function() {
+         $scope.selectableDifficulties = [];
+         $scope.selected.difficulty = undefined;
+         if ($scope.difficulty)
+         {
+            var difficultyToAdd = travRollService.lookupDifficulty($scope.difficulty);
+            if (difficultyToAdd)
+            {
+               $scope.selectableDifficulties.push(difficultyToAdd);
+            }
+            else
+            {
+               throw "Invalid difficulty: " + $scope.difficulty;
+            }
+         }
+         
+         if (!$scope.selectableDifficulties || !$scope.selectableDifficulties.length)
+         {
+            $scope.selectableDifficulties = travRollService.difficulties;
+         }
+
+         if ($scope.selectableDifficulties.length === 1)
+         {
+            $scope.selected.difficulty = $scope.selectableDifficulties[0];
+            $scope.locked.difficulty = true;
+         }
+         else
+         {
+            $scope.locked.difficulty = false;
+         }
+      
+         $scope.updateCharList();
+      };
+
       $scope.externalFactors = skillsService.skillExternalFactors;
-      $scope.difficulties = travRollService.difficulties;
       $scope.selected = {};
       $scope.selected.extFactors = [];
       $scope.results = [];
@@ -250,6 +286,7 @@ rollModule.directive('travSkillCheckDm', [function() {
       updateCharacteristicsList();
       $scope.$watch('skills', updateSkillList);
       $scope.$watch('characteristics', updateCharacteristicsList);
+      $scope.$watch('difficulty', updateDifficultyList);
 
       //Modal for adding external factors ('other' +/- to DMs) to skills
       var addExtFactorModalController = ['$scope', '$uibModalInstance', 'skillName', function($scope, $uibModalInstance, skill) {
@@ -288,7 +325,8 @@ rollModule.directive('travSkillCheckDm', [function() {
       scope: {
          ngModel: "=",
          skills: "=",
-         characteristics: "="
+         characteristics: "=",
+         difficulty: "="
       },
       templateUrl: 'travellerSkillDm.view',
       controller: controller
@@ -305,6 +343,17 @@ rollModule.service('travRollService', [function() {
       {name: "Very Difficult", value: -4},
       {name: "Formidable",     value: -6}
    ];
+   
+   var _difficultiesDict = {};
+   for (var i = 0; i < this.difficulties.length; i++)
+   {
+      _difficultiesDict[this.difficulties[i].name.toLowerCase()] = this.difficulties[i];
+   }
+   
+   this.lookupDifficulty = function(name)
+   {
+      return _difficultiesDict[name.toLowerCase()];
+   }
 }]);
 
 //------------------Raw JS (no Angular junk) below this line ----------------
