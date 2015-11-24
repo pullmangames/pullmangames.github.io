@@ -258,8 +258,8 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       online:        {name:"Online Supplier",          skillCheck:{skills:['Computers'],                 characteristics:['edu'],        difficulty: 'Average'   },  timeDice:1, timeScale:'h'}
    };
 
-	smm.availablePassengers=function() {
-		return calculatePassengers(smm.tripData.departureWorld,smm.tripData.arrivalWorld);
+smm.generateAvailablePassengers=function() {
+		smm.availablePassengers = calculatePassengers(smm.tripData.departureWorld,smm.tripData.arrivalWorld);
 		}
 
 }]);

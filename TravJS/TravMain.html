@@ -137,16 +137,9 @@
   
   <!---------- Accordion: Destinations -> Passengers ----------->
   <script type="text/ng-template" id="shipman.accordion.destinations.passengers.view">
-    Roll on the Available Passengers table
-       modified by events
-       modified by source population
-       modified by trade code table
-       modified by TL difference (max 5)
-       modified by rounding up passengers (Carouse/Streetwise, int/soc, average, days)
-    Every group of 6 passengers taken, 4+ means one is special, roll on passenger table
-    {{shipMan.tripData.departureWorld}}
-    {{shipMan.tripData.arrivalWorld}}
-    {{shipMan.availablePassengers()}}
+	 <form ng-submit="shipMan.generateAvailablePassengers()" class="form-inline">
+        <input class="btn btn-default btn-primary" type="submit" value="Generate">
+    {{shipMan.availablePassengers}}
   </script>
 
   <!---------- Accordion: Buy Trade Goods ----------->
