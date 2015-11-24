@@ -326,9 +326,19 @@ var uwpsplit = function(uwp){
 				 'TL':splituwp[8]  //skip the dash
 				}
 	return decoded;
-	}
+	};
 	
-	
+var modifiersPerTradeCode = function(table, remarks){
+	var total=0;
+	var remarklist=remarks.split(" ");
+	for (var i=0;i<remarklist.length;i++){
+		if (remarklist[i] in table)
+			total+=table[remarklist[i]];
+			}
+	return total;
+}
+
+
 
 /* overall sequence
 
