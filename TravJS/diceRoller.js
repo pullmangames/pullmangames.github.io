@@ -211,15 +211,17 @@ rollModule.directive('travSkillCheckDm', [function() {
       };
 
       var updateCharacteristicsList = function() {
-         $scope.selectableCharacteristics = [];
+         $scope.selected.characteristics = [];
+         $scope.locked.characteristics = false;
          if ($scope.characteristics)
          {
             for (var i = 0; i < $scope.characteristics.length; i++)
             {
-               var characteristicToAdd = charactersService.lookupCharacteristic($scope.characteristics[i]);
-               if (characteristicToAdd)
+               var characteristicToSelect = charactersService.lookupCharacteristic($scope.characteristics[i]);
+               if (characteristicToSelect)
                {
-                  $scope.selectableCharacteristics.push(characteristicToAdd);
+                  $scope.selected.characteristics.push(characteristicToSelect);
+                  $scope.locked.characteristics = true;
                }
                else
                {
@@ -228,33 +230,19 @@ rollModule.directive('travSkillCheckDm', [function() {
             }
          }
          
-         if (!$scope.selectableCharacteristics || !$scope.selectableCharacteristics.length)
-         {
-            $scope.selectableCharacteristics = charactersService.characteristics;
-            $scope.locked.characteristics = false;
-         }
-         else
-         {
-            $scope.selected.characteristics = [];
-            for (var i = 0; i < $scope.selectableCharacteristics.length; i++)
-            {
-               $scope.selected.characteristics.push($scope.selectableCharacteristics[i]);
-            }
-            $scope.locked.characteristics = true;
-         }
-
          $scope.updateCharList();
       };
 
       var updateDifficultyList = function() {
-         $scope.selectableDifficulties = [];
          $scope.selected.difficulty = undefined;
+         $scope.locked.difficulty = false;
          if ($scope.difficulty)
          {
-            var difficultyToAdd = travRollService.lookupDifficulty($scope.difficulty);
-            if (difficultyToAdd)
+            var difficultyToSelect = travRollService.lookupDifficulty($scope.difficulty);
+            if (difficultyToSelect)
             {
-               $scope.selectableDifficulties.push(difficultyToAdd);
+               $scope.selected.difficulty = difficultyToSelect;
+               $scope.locked.difficulty = true;
             }
             else
             {
@@ -262,21 +250,6 @@ rollModule.directive('travSkillCheckDm', [function() {
             }
          }
          
-         if (!$scope.selectableDifficulties || !$scope.selectableDifficulties.length)
-         {
-            $scope.selectableDifficulties = travRollService.difficulties;
-         }
-
-         if ($scope.selectableDifficulties.length === 1)
-         {
-            $scope.selected.difficulty = $scope.selectableDifficulties[0];
-            $scope.locked.difficulty = true;
-         }
-         else
-         {
-            $scope.locked.difficulty = false;
-         }
-      
          $scope.updateCharList();
       };
 
@@ -284,7 +257,9 @@ rollModule.directive('travSkillCheckDm', [function() {
          return $scope.selected.skill && $scope.selected.characteristics && $scope.selected.characteristics.length && $scope.selected.difficulty;
       }
 
+      $scope.selectableCharacteristics = charactersService.characteristics;
       $scope.externalFactors = skillsService.skillExternalFactors;
+      $scope.selectableDifficulties = travRollService.difficulties;
       $scope.selected = {};
       $scope.selected.extFactors = [];
       $scope.results = [];
