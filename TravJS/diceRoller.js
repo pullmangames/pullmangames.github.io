@@ -65,6 +65,10 @@ rollModule.directive('travSkillCheckDm', [function() {
    var controller = ['$scope', '$uibModal', 'charactersService', 'skillsService', 'travRollService', function($scope, $uibModal, charactersService, skillsService, travRollService) {
       $scope.updateCharList = function() {
          $scope.results = [];
+         if ($scope.requireAll && !allSelected())
+         {
+            return;
+         }
          $scope.selectedResultIndex = -1;
          $scope.ngModel = {};
          var characters = charactersService.characters;
@@ -276,6 +280,10 @@ rollModule.directive('travSkillCheckDm', [function() {
          $scope.updateCharList();
       };
 
+      var allSelected = function() {
+         return $scope.selected.skill && $scope.selected.characteristics && $scope.selected.characteristics.length && $scope.selected.difficulty;
+      }
+
       $scope.externalFactors = skillsService.skillExternalFactors;
       $scope.selected = {};
       $scope.selected.extFactors = [];
@@ -284,9 +292,11 @@ rollModule.directive('travSkillCheckDm', [function() {
       $scope.locked = {};
       updateSkillList();
       updateCharacteristicsList();
+      updateDifficultyList();
       $scope.$watch('skills', updateSkillList);
       $scope.$watch('characteristics', updateCharacteristicsList);
       $scope.$watch('difficulty', updateDifficultyList);
+      $scope.$watch('requireAll', $scope.updateCharList);
 
       //Modal for adding external factors ('other' +/- to DMs) to skills
       var addExtFactorModalController = ['$scope', '$uibModalInstance', 'skillName', function($scope, $uibModalInstance, skill) {
@@ -326,7 +336,8 @@ rollModule.directive('travSkillCheckDm', [function() {
          ngModel: "=",
          skills: "=",
          characteristics: "=",
-         difficulty: "="
+         difficulty: "=",
+         requireAll: "@"
       },
       templateUrl: 'travellerSkillDm.view',
       controller: controller

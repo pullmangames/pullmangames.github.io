@@ -164,7 +164,8 @@
       <div style="margin-top:10px">
         <trav-skill-check-dm ng-attr-skills="shipMan.buyTradeGoods.supplier.skillCheck.skills"
                              ng-attr-characteristics="shipMan.buyTradeGoods.supplier.skillCheck.characteristics"
-                             ng-attr-difficulty="shipMan.buyTradeGoods.supplier.skillCheck.difficulty">
+                             ng-attr-difficulty="shipMan.buyTradeGoods.supplier.skillCheck.difficulty"
+                             ng-attr-require-all="true">
         </trav-skill-check-dm>
       </div>
     </div>
@@ -590,7 +591,7 @@ Pilot: -1 DM
           <td>
             <ui-select on-select="updateCharList()" on-remove="updateCharList()" theme="bootstrap" ng-model="selected.difficulty" ng-disabled="locked.difficulty" style="width:139px;margin-right:5px">
               <ui-select-match placeholder="Select difficulty...">{{$select.selected.name}}</ui-select-match>
-              <ui-select-choices repeat="difficulty in difficulties | filter: {name: $select.search}">
+              <ui-select-choices repeat="difficulty in selectableDifficulties | filter: {name: $select.search}">
                 <span ng-bind-html="difficulty.name | highlight: $select.search"></span>
               </ui-select-choices>
             </ui-select>
