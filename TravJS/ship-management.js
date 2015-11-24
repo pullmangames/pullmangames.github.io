@@ -198,16 +198,21 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
          return $http.get('http://travellermap.com/api/jumpworlds', {params: params})
          .then(function(response) {
             smm.tripData.arrivalWorlds = response.data.Worlds;
+            var indexToSplice;
             for (var i = 0; i < smm.tripData.arrivalWorlds.length; i++)
             {
                //Decode each world's UWP data
-               smm.tripData.arrivalWorlds[i].UWPsplit = uwpsplit(smm.tripData.departureWorld.UWP);
+               smm.tripData.arrivalWorlds[i].UWPsplit = uwpsplit(smm.tripData.arrivalWorlds[i].UWP);
                //One of the arrival worlds returned by travellermaps.com will actually be the departure world, but with more data. Save it.
                if (smm.tripData.arrivalWorlds[i].Name === smm.tripData.departureWorldSearchResults.World.Name)
                {
                   smm.tripData.departureWorld = smm.tripData.arrivalWorlds[i];
-                  smm.tripData.arrivalWorlds.splice(i, 1);
+                  indexToSplice = i;
                }
+            }
+            if (indexToSplice !== undefined)
+            {
+                smm.tripData.arrivalWorlds.splice(indexToSplice, 1);
             }
          });
       }
@@ -277,7 +282,7 @@ var calculatePassengers=function(departureWorld,arrivalWorld){
 var departremarksmod=modifiersPerTradeCode(PassengersByTradeType.departure, departureWorld.Remarks);
 var arrivalremarksmod=modifiersPerTradeCode(PassengersByTradeType.arrival, arrivalWorld.Remarks);
 
-var AvailablePassengersEntry = parseInt(departureWorld.UWPsplit["population"]) 
+var AvailablePassengersEntry = departureWorld.UWPsplit["population"]
 								+ departremarksmod + arrivalremarksmod
 								+ Math.min(Math.abs(departureWorld.UWPsplit["TL"]-arrivalWorld.UWPsplit["TL"]),5)
 								//TODO + events table + rounding up passengers
@@ -350,14 +355,14 @@ var calculateDueDate = function(monthly, currentpaid, purchasedate){
 var uwpsplit = function(uwp) {
    var splituwp=uwp.split("");
    return {
-      'starport':splituwp[0],
-      'size':splituwp[1],
-      'atmosphere':splituwp[2],
-      'hydrosphere':splituwp[3],
-      'population':splituwp[4],
-      'government':splituwp[5],
-      'law':splituwp[6],
-      'TL':splituwp[8]  //skip the dash
+      'starport':   splituwp[0],
+      'size':       parseInt(splituwp[1], 36),
+      'atmosphere': parseInt(splituwp[2], 36),
+      'hydrosphere':parseInt(splituwp[3], 36),
+      'population': parseInt(splituwp[4], 36),
+      'government': parseInt(splituwp[5], 36),
+      'law':        parseInt(splituwp[6], 36),
+      'TL':         parseInt(splituwp[8], 36)  //skip the dash
    };
 }
 
