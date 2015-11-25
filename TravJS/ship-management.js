@@ -251,11 +251,11 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
    smm.buyTradeGoods = {};
    smm.buyTradeGoods.supplier = {};
    smm.buyTradeGoods.suppliers = {
-      standard:      {name:"Supplier",                 skillCheck:{skills:['Broker'],                    characteristics:['edu', 'soc'], difficulty: 'Average'   },  timeDice:1, timeScale:'d'},
-      commonGoods:   {name:"Common-Goods Supplier",    skillCheck:{skills:['Broker'],                    characteristics:['edu', 'soc'], difficulty: 'Easy'      },  timeDice:1, timeScale:'d'},
-      blackMarket:   {name:"Black Market Supplier",    skillCheck:{skills:['Streetwise'],                characteristics:['edu', 'soc'], difficulty: 'Average'   },  timeDice:1, timeScale:'d'},
-      morallyNeutral:{name:"Morally Neutral Supplier", skillCheck:{skills:['Streetwise', 'Investigate'], characteristics:['edu', 'soc'], difficulty: 'Difficult' },  timeDice:2, timeScale:'d'},
-      online:        {name:"Online Supplier",          skillCheck:{skills:['Computers'],                 characteristics:['edu'],        difficulty: 'Average'   },  timeDice:1, timeScale:'h'}
+      standard:      {name:"Supplier",                 skillCheck:{skills:['Broker'],                    characteristics:['edu', 'soc'], difficulty: 'Average'   },  goods:['common', 'legal'           ], timeDice:1, timeScale:'d'},
+      commonGoods:   {name:"Common-Goods Supplier",    skillCheck:{skills:['Broker'],                    characteristics:['edu', 'soc'], difficulty: 'Easy'      },  goods:['common'                    ], timeDice:1, timeScale:'d'},
+      blackMarket:   {name:"Black Market Supplier",    skillCheck:{skills:['Streetwise'],                characteristics:['edu', 'soc'], difficulty: 'Average'   },  goods:[                   'illegal'], timeDice:1, timeScale:'d'},
+      morallyNeutral:{name:"Morally Neutral Supplier", skillCheck:{skills:['Streetwise', 'Investigate'], characteristics:['edu', 'soc'], difficulty: 'Difficult' },  goods:['common', 'legal', 'illegal'], timeDice:2, timeScale:'d'},
+      online:        {name:"Online Supplier",          skillCheck:{skills:['Computers'],                 characteristics:['edu'],        difficulty: 'Average'   },  goods:['common', 'legal           '], timeDice:1, timeScale:'h'}
    };
 
 smm.generateAvailablePassengers=function() {

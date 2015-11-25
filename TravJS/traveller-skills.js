@@ -311,6 +311,7 @@ skillsModule.service('skillsService', ['dataStorageService', function(dataStorag
    }
 
    this.skillExternalFactors = {};
+   var _skillEFsDict = {};
 
    var _buildEFsFromJsonEFs = angular.bind(this, function(jsonEFs)
    {
@@ -322,15 +323,47 @@ skillsModule.service('skillsService', ['dataStorageService', function(dataStorag
          }
       }
       angular.merge(this.skillExternalFactors, jsonEFs);
+
+      _skillEFsDict = {};
+      for (var prop in this.skillExternalFactors)
+      {
+         if (this.skillExternalFactors.hasOwnProperty(prop))
+         {
+            var lcProp = prop.toLowerCase();
+            _skillEFsDict[lcProp] = {};
+            for (var i = 0; i < this.skillExternalFactors[prop].length; i++)
+            {
+               _skillEFsDict[lcProp][this.skillExternalFactors[prop][i].externalFactor.toLowerCase()] = this.skillExternalFactors[prop][i];
+            }
+         }
+      }
    });
 
    this.addSkillExternalFactor = function(skillName, externalFactor, value)
    {
+      var lcSkillName = skillName.toLowerCase();
+      if (_skillEFsDict[lcSkillName] === undefined)
+      {
+         _skillEFsDict[lcSkillName] = {};
+      }
+
+      var lcEf = externalFactor.toLowerCase();
+      if (_skillEFsDict[lcSkillName][lcEf] !== undefined)
+      {
+         if (_skillEFsDict[lcSkillName][lcEf].value !== value)
+         {
+            throw "Unable to add external factor '" + externalFactor + "' to skill '" + skillName + "'. An external factor with the same name and a different value already exists for that skill."
+         }
+         return;
+      }
+
       if (!this.skillExternalFactors[skillName])
       {
          this.skillExternalFactors[skillName] = [];
       }
-      this.skillExternalFactors[skillName].push({externalFactor, value});
+      var newEfObj = {externalFactor, value};
+      this.skillExternalFactors[skillName].push(newEfObj);
+      _skillEFsDict[lcSkillName][lcEf] = newEfObj;
    }
 
    this.deleteSkillExternalFactor = function(skillName, externalFactor)
@@ -339,15 +372,27 @@ skillsModule.service('skillsService', ['dataStorageService', function(dataStorag
       {
          if (this.skillExternalFactors[skillName][i] === externalFactor)
          {
-            this.skillExternalFactors[skillName][i].splice(i, 1);
-            if (this.skillExternalFactors[skillName][i].length === 0)
+            this.skillExternalFactors[skillName].splice(i, 1);
+            if (this.skillExternalFactors[skillName].length === 0)
             {
                delete(this.skillExternalFactors[skillName]);
             }
+            delete(_skillEFsDict[skillName.toLowerCase()][externalFactor.externalFactor.toLowerCase()]);
             break;
          }
       }
    }
+
+   this.lookupSkillExternalFactor = function(skillName, efName)
+   {
+      var lcSkillName = skillName.toLowerCase();
+      var retVal = _skillEFsDict[lcSkillName];
+      if (retVal !== undefined)
+      {
+         retVal = _skillEFsDict[lcSkillName][efName.toLowerCase()];
+      }
+      return retVal;
+   };
 
    dataStorageService.register(this, 'skillExternalFactors', _buildEFsFromJsonEFs);
 }]);
