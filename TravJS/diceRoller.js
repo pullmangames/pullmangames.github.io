@@ -65,6 +65,8 @@ rollModule.directive('travSkillCheckDm', [function() {
    var controller = ['$scope', '$uibModal', 'charactersService', 'skillsService', 'travRollService', function($scope, $uibModal, charactersService, skillsService, travRollService) {
       $scope.updateCharList = function() {
          $scope.results = [];
+         $scope.selectedResultIndex = -1;
+         $scope.ngModel = undefined;
          if ($scope.requireAll && !allSelected())
          {
             return;
@@ -160,7 +162,6 @@ rollModule.directive('travSkillCheckDm', [function() {
       }
 
       $scope.skillChanged = function() {
-         $scope.ngModel = undefined;
          if (!$scope.locked.characteristics)
          {
             $scope.selected.characteristics = undefined;
@@ -173,7 +174,6 @@ rollModule.directive('travSkillCheckDm', [function() {
       };
 
       var updateSkillList = function() {
-         $scope.ngModel = undefined;
          $scope.selectableSkills = [];
          $scope.selected.skill = undefined;
          if ($scope.skills)
