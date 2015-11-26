@@ -169,8 +169,7 @@ rollModule.directive('travSkillCheckDm', [function() {
          {
             $scope.selected.difficulty = undefined;
          }
-         $scope.selected.extFactors.splice(0, $scope.selected.extFactors.length);
-         $scope.updateCharList();
+         updateExtFactorsList(); //Don't need to call updateCharList here - updateExtFactorsList does it for us.
       };
 
       var updateSkillList = function() {
@@ -249,9 +248,29 @@ rollModule.directive('travSkillCheckDm', [function() {
                throw "Invalid difficulty: " + $scope.difficulty;
             }
          }
-         
+
          $scope.updateCharList();
       };
+
+      var updateExtFactorsList = function() {
+         $scope.selected.extFactors = [];
+         if ($scope.extFactors)
+         {
+            for (var i = 0; i < $scope.extFactors.length; i++)
+            {
+               if ($scope.extFactors[i] && $scope.extFactors[i].externalFactor !== undefined && $scope.extFactors[i].value !== undefined)
+               {
+                  $scope.selected.extFactors.push($scope.extFactors[i]);
+               }
+            }
+         }
+
+         $scope.updateCharList();
+      }
+
+      $scope.extFactorLocked = function(ef) {
+         return $scope.extFactors.indexOf(ef) !== -1;
+      }
 
       var allSelected = function() {
          return $scope.selected.skill && $scope.selected.characteristics && $scope.selected.characteristics.length && $scope.selected.difficulty;
@@ -272,6 +291,7 @@ rollModule.directive('travSkillCheckDm', [function() {
       $scope.$watch('characteristics', updateCharacteristicsList);
       $scope.$watch('difficulty', updateDifficultyList);
       $scope.$watch('requireAll', $scope.updateCharList);
+      $scope.$watch('extFactors', updateExtFactorsList);
 
       //Modal for adding external factors ('other' +/- to DMs) to skills
       var addExtFactorModalController = ['$scope', '$uibModalInstance', 'skillName', function($scope, $uibModalInstance, skill) {
@@ -312,6 +332,7 @@ rollModule.directive('travSkillCheckDm', [function() {
          skills: "=",
          characteristics: "=",
          difficulty: "=",
+         extFactors: "=",
          requireAll: "@"
       },
       templateUrl: 'travellerSkillDm.view',

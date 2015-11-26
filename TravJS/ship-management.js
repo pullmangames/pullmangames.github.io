@@ -247,15 +247,28 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
    }
    
    dataStorageService.register(smm, 'tripData', _buildTripDataFromJsonTrip);
-   
+
    smm.buyTradeGoods = {};
+
+   smm.buyTradeGoods.externalFactors = {};
+   smm.buyTradeGoods.externalFactors.findSupplier = {};
+   smm.buyTradeGoods.externalFactors.findSupplier.starport = {
+      a:{externalFactor:"Class A Starport", value:6},
+      b:{externalFactor:"Class B Starport", value:4},
+      c:{externalFactor:"Class C Starport", value:2}
+   };
+   smm.buyTradeGoods.externalFactors.findSupplier.assistant = {
+      contact:{externalFactor:"Contact in Local Area", value:1},
+      ally:   {externalFactor:"Ally in Local Area",    value:2}
+   };
+
    smm.buyTradeGoods.supplier = {};
    smm.buyTradeGoods.suppliers = {
-      standard:      {name:"Supplier",                 skillCheck:{skills:['Broker'],                    characteristics:['edu', 'soc'], difficulty: 'Average'   },  timeDice:1, timeScale:'d'},
-      commonGoods:   {name:"Common-Goods Supplier",    skillCheck:{skills:['Broker'],                    characteristics:['edu', 'soc'], difficulty: 'Easy'      },  timeDice:1, timeScale:'d'},
-      blackMarket:   {name:"Black Market Supplier",    skillCheck:{skills:['Streetwise'],                characteristics:['edu', 'soc'], difficulty: 'Average'   },  timeDice:1, timeScale:'d'},
-      morallyNeutral:{name:"Morally Neutral Supplier", skillCheck:{skills:['Streetwise', 'Investigate'], characteristics:['edu', 'soc'], difficulty: 'Difficult' },  timeDice:2, timeScale:'d'},
-      online:        {name:"Online Supplier",          skillCheck:{skills:['Computers'],                 characteristics:['edu'],        difficulty: 'Average'   },  timeDice:1, timeScale:'h'}
+      standard:      {name:"Supplier",                 skillCheck:{skills:['Broker'],                    characteristics:['edu', 'soc'], difficulty: 'Average'   },  goods:['common', 'legal'           ], timeDice:1, timeScale:'d'},
+      commonGoods:   {name:"Common-Goods Supplier",    skillCheck:{skills:['Broker'],                    characteristics:['edu', 'soc'], difficulty: 'Easy'      },  goods:['common'                    ], timeDice:1, timeScale:'d'},
+      blackMarket:   {name:"Black Market Supplier",    skillCheck:{skills:['Streetwise'],                characteristics:['edu', 'soc'], difficulty: 'Average'   },  goods:[                   'illegal'], timeDice:1, timeScale:'d'},
+      morallyNeutral:{name:"Morally Neutral Supplier", skillCheck:{skills:['Streetwise', 'Investigate'], characteristics:['edu', 'soc'], difficulty: 'Difficult' },  goods:['common', 'legal', 'illegal'], timeDice:2, timeScale:'d'},
+      online:        {name:"Online Supplier",          skillCheck:{skills:['Computers'],                 characteristics:['edu'],        difficulty: 'Average'   },  goods:['common', 'legal           '], timeDice:1, timeScale:'h'}
    };
 
 smm.generateAvailablePassengers=function() {
@@ -355,7 +368,7 @@ var calculateDueDate = function(monthly, currentpaid, purchasedate){
 var uwpsplit = function(uwp) {
    var splituwp=uwp.split("");
    return {
-      'starport':   splituwp[0],
+      'starport':   splituwp[0].toLowerCase(),
       'size':       parseInt(splituwp[1], 36),
       'atmosphere': parseInt(splituwp[2], 36),
       'hydrosphere':parseInt(splituwp[3], 36),

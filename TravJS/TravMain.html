@@ -149,7 +149,7 @@
     </div>
     <div ng-if="shipMan.tripData.departureWorld">
       Supplier:
-      <div class="btn-group">
+      <div class="btn-group" style="margin-bottom:10px">
         <label class="btn btn-primary" ng-model="shipMan.buyTradeGoods.supplier" uib-btn-radio="shipMan.buyTradeGoods.suppliers['standard']">Standard</label>
         <label class="btn btn-primary" ng-model="shipMan.buyTradeGoods.supplier" uib-btn-radio="shipMan.buyTradeGoods.suppliers['commonGoods']">Common Goods</label>
         <label class="btn btn-primary" ng-model="shipMan.buyTradeGoods.supplier" uib-btn-radio="shipMan.buyTradeGoods.suppliers['blackMarket']">Black Market</label>
@@ -157,10 +157,18 @@
         <!-- online only available on worlds with TL >= 8 -->
         <label ng-if="shipMan.tripData.departureWorld.UWPsplit.TL >= 8" class="btn btn-primary" ng-model="shipMan.buyTradeGoods.supplier" uib-btn-radio="shipMan.buyTradeGoods.suppliers['online']">Online</label>
       </div>
-      <div style="margin-top:10px">
+      <br>
+      Assistance in Local Area:
+      <div class="btn-group" style="margin-bottom:10px">
+        <label class="btn btn-primary" ng-model="shipMan.buyTradeGoods.assistant" uncheckable uib-btn-radio="'contact'">Contact</label>
+        <label class="btn btn-primary" ng-model="shipMan.buyTradeGoods.assistant" uncheckable uib-btn-radio="'ally'">Ally</label>
+      </div>
+      <div>
         <trav-skill-check-dm ng-attr-skills="shipMan.buyTradeGoods.supplier.skillCheck.skills"
                              ng-attr-characteristics="shipMan.buyTradeGoods.supplier.skillCheck.characteristics"
                              ng-attr-difficulty="shipMan.buyTradeGoods.supplier.skillCheck.difficulty"
+                             ng-attr-ext-factors="[shipMan.buyTradeGoods.externalFactors.findSupplier.starport[shipMan.tripData.departureWorld.UWPsplit.starport],
+                                                   shipMan.buyTradeGoods.externalFactors.findSupplier.assistant[shipMan.buyTradeGoods.assistant]]"
                              ng-attr-require-all="true">
         </trav-skill-check-dm>
       </div>
@@ -563,7 +571,7 @@ Pilot: -1 DM
         <tr>
           <td>
             <ui-select multiple on-select="updateCharList()" on-remove="updateCharList()" theme="bootstrap" ng-model="selected.extFactors" style="width:359px;margin-right:5px">
-              <ui-select-match placeholder="Select external factors...">{{$item.externalFactor}}: {{$item.value}}</ui-select-match>
+              <ui-select-match ui-lock-choice="extFactorLocked($item)" placeholder="Select external factors...">{{$item.externalFactor}}: {{$item.value}}</ui-select-match>
               <ui-select-choices repeat="factor in externalFactors[selected.skill.name] | filter: {externalFactor: $select.search}">
                 <span ng-bind-html="factor.externalFactor | highlight: $select.search"></span>: {{factor.value}}
               </ui-select-choices>
