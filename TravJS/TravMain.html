@@ -176,7 +176,7 @@
       <div>
         <button ng-disabled="!shipMan.buyTradeGoods.supplierFinder" class="btn btn-primary" type="button" ng-click="shipMan.buyTradeGoods.rollForSupplier()">Roll to Find Supplier</button>
         <strong style="margin-left:5px;margin-right:5px">OR</strong>
-        <button class="btn btn-primary" type="button" ng-click="shipMan.buyTradeGoods.hireGuideForSupplier()">Hire Guide</button>
+        <button ng-disabled="!shipMan.buyTradeGoods.supplier.guideCanFind" class="btn btn-primary" type="button" ng-click="shipMan.buyTradeGoods.hireGuideForSupplier()">Hire Guide</button>
       </div>
     </div>
   </script>
@@ -575,21 +575,6 @@ Pilot: -1 DM
       </ui-select>
       <table style="margin-bottom:10px">
         <tr>
-          <td>
-            <ui-select multiple on-select="updateCharList()" on-remove="updateCharList()" theme="bootstrap" ng-model="selected.extFactors" style="width:359px;margin-right:5px">
-              <ui-select-match ui-lock-choice="extFactorLocked($item)" placeholder="Select external factors...">{{$item.externalFactor}}: {{$item.value}}</ui-select-match>
-              <ui-select-choices repeat="factor in externalFactors[selected.skill.name] | filter: {externalFactor: $select.search}">
-                <span ng-bind-html="factor.externalFactor | highlight: $select.search"></span>: {{factor.value}}
-              </ui-select-choices>
-            </ui-select>
-          </td>
-          <td>
-            <button type="button" ng-disabled="!selected.skill" class="btn btn-sm" ng-click="openAddExtFactorModal(selected.skill)" style="margin-right:5px"><span class="glyphicon glyphicon-plus"></span></button>
-          </td>
-        </tr>
-      </table>
-      <table>
-        <tr>
           <td style="padding-right:5px">
             <ui-select multiple on-select="updateCharList()" on-remove="updateCharList()" theme="bootstrap" ng-model="selected.characteristics" ng-disabled="locked.characteristics" style="width:250px;margin-right:5px">
               <ui-select-match placeholder="Select characteristics...">{{$item.name}}</ui-select-match>
@@ -605,6 +590,21 @@ Pilot: -1 DM
                 <span ng-bind-html="difficulty.name | highlight: $select.search"></span>
               </ui-select-choices>
             </ui-select>
+          </td>
+        </tr>
+      </table>
+      <table>
+        <tr>
+          <td>
+            <ui-select multiple on-select="updateCharList()" on-remove="updateCharList()" theme="bootstrap" ng-model="selected.extFactors" style="width:359px;margin-right:5px">
+              <ui-select-match ui-lock-choice="extFactorLocked($item)" placeholder="Select external factors...">{{$item.externalFactor}}: {{$item.value}}</ui-select-match>
+              <ui-select-choices repeat="factor in externalFactors[selected.skill.name] | filter: {externalFactor: $select.search}">
+                <span ng-bind-html="factor.externalFactor | highlight: $select.search"></span>: {{factor.value}}
+              </ui-select-choices>
+            </ui-select>
+          </td>
+          <td>
+            <button type="button" ng-disabled="!selected.skill" class="btn btn-sm" ng-click="openAddExtFactorModal(selected.skill)" style="margin-right:5px"><span class="glyphicon glyphicon-plus"></span></button>
           </td>
         </tr>
       </table>

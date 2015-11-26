@@ -111,24 +111,51 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       this.entries=[];
    }
 
+   $scope.smmPersistent = {};
    smm.log = new shipLog();
-   $scope.shipLog = smm.log;
+   $scope.smmPersistent.shipLog = smm.log;
+   smm.tripData = {};
+   $scope.smmPersistent.tripData = smm.tripData;
    
-   var _buildShipLogFromJsonLog = angular.bind(this, function(jsonLog)
+   var _buildSmmPersistentDataFromJson = angular.bind(this, function(json)
    {
-      if (jsonLog)
+      if (json)
       {
-         if (   !jsonLog.formatVersion
-             || jsonLog.formatVersion != 1)
+         if (json.shipLog)
          {
-            alertsService.addAlert("danger", "Ship's log has invalid format. Unable to load.");
+            if (   !json.shipLog.formatVersion
+                || json.shipLog.formatVersion != 1)
+            {
+               alertsService.addAlert("danger", "Ship's log has invalid format. Unable to load.");
+            }
+            this.log.entries.length = 0;
+            angular.merge(this.log, json.shipLog);
          }
-         this.log.entries.length = 0;
-         angular.merge(this.log, jsonLog);
+         if (json.tripData)
+         {
+            smm.tripData.departureWorld = json.tripData.departureWorld;
+            smm.tripData.departureWorldSearchResults = json.tripData.departureWorldSearchResults;
+            if (json.tripData.departureWorldSearchResults)
+            {
+               smm.tripData.arrivalWorlds = json.tripData.arrivalWorlds;
+               smm.tripData.arrivalWorld = {};
+               if (json.tripData.arrivalWorlds && json.tripData.arrivalWorld)
+               {
+                  for (var i = 0; i < json.tripData.arrivalWorlds.length; i++)
+                  {
+                     if (json.tripData.arrivalWorlds[i].Name === json.tripData.arrivalWorld.Name)
+                     {
+                        smm.tripData.arrivalWorld = json.tripData.arrivalWorlds[i];
+                        break;
+                     }
+                  }
+               }
+            }
+         }
       }
    });
-   
-   dataStorageService.register($scope, 'shipLog', _buildShipLogFromJsonLog);
+
+   dataStorageService.register($scope, 'smmPersistent', _buildSmmPersistentDataFromJson);
    
    smm.inputYear=smm.log.status.year;
    smm.inputDate=smm.log.status.today;
@@ -178,7 +205,6 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
        smm.log.status.date=dateFactory(smm.inputYear,smm.inputDate);
    };
 
-   smm.tripData = {};
    smm.departureWorlds = [];
    smm.refreshDepartureWorlds = function(worldName) {
       var params = {q: worldName};
@@ -222,32 +248,6 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       }
    };
    
-   var _buildTripDataFromJsonTrip = function(jsonTrip) {
-      if (jsonTrip)
-      {
-         smm.tripData.departureWorld = jsonTrip.departureWorld;
-         smm.tripData.departureWorldSearchResults = jsonTrip.departureWorldSearchResults;
-         if (jsonTrip.departureWorldSearchResults)
-         {
-            smm.tripData.arrivalWorlds = jsonTrip.arrivalWorlds;
-            smm.tripData.arrivalWorld = {};
-            if (jsonTrip.arrivalWorlds && jsonTrip.arrivalWorld)
-            {
-               for (var i = 0; i < jsonTrip.arrivalWorlds.length; i++)
-               {
-                  if (jsonTrip.arrivalWorlds[i].Name === jsonTrip.arrivalWorld.Name)
-                  {
-                     smm.tripData.arrivalWorld = jsonTrip.arrivalWorlds[i];
-                     break;     
-                  }
-               }
-            }
-         }         
-      }
-   }
-   
-   dataStorageService.register(smm, 'tripData', _buildTripDataFromJsonTrip);
-
    smm.buyTradeGoods = {};
 
    smm.buyTradeGoods.externalFactors = {};
@@ -264,12 +264,15 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
 
    smm.buyTradeGoods.supplier = {};
    smm.buyTradeGoods.suppliers = {
-      standard:      {name:"Supplier",                 skillCheck:{skills:['Broker'],                    characteristics:['edu', 'soc'], difficulty: 'Average'   },  goods:['common', 'legal'           ], timeDice:1, timeScale:'d'},
-      commonGoods:   {name:"Common-Goods Supplier",    skillCheck:{skills:['Broker'],                    characteristics:['edu', 'soc'], difficulty: 'Easy'      },  goods:['common'                    ], timeDice:1, timeScale:'d'},
-      blackMarket:   {name:"Black Market Supplier",    skillCheck:{skills:['Streetwise'],                characteristics:['edu', 'soc'], difficulty: 'Average'   },  goods:[                   'illegal'], timeDice:1, timeScale:'d'},
-      morallyNeutral:{name:"Morally Neutral Supplier", skillCheck:{skills:['Streetwise', 'Investigate'], characteristics:['edu', 'soc'], difficulty: 'Difficult' },  goods:['common', 'legal', 'illegal'], timeDice:2, timeScale:'d'},
-      online:        {name:"Online Supplier",          skillCheck:{skills:['Computers'],                 characteristics:['edu'],        difficulty: 'Average'   },  goods:['common', 'legal           '], timeDice:1, timeScale:'h'}
+      standard:      {name:"Supplier",                 skillCheck:{skills:['Broker'],                    characteristics:['edu', 'soc'], difficulty: 'Average'   },  goods:['common', 'legal'           ], guideCanFind:true,  timeDice:1, timeScale:'d'},
+      commonGoods:   {name:"Common-Goods Supplier",    skillCheck:{skills:['Broker'],                    characteristics:['edu', 'soc'], difficulty: 'Easy'      },  goods:['common'                    ], guideCanFind:true,  timeDice:1, timeScale:'d'},
+      blackMarket:   {name:"Black Market Supplier",    skillCheck:{skills:['Streetwise'],                characteristics:['edu', 'soc'], difficulty: 'Average'   },  goods:[                   'illegal'], guideCanFind:true,  timeDice:1, timeScale:'d'},
+      morallyNeutral:{name:"Morally Neutral Supplier", skillCheck:{skills:['Streetwise', 'Investigate'], characteristics:['edu', 'soc'], difficulty: 'Difficult' },  goods:['common', 'legal', 'illegal'], guideCanFind:false, timeDice:2, timeScale:'d'},
+      online:        {name:"Online Supplier",          skillCheck:{skills:['Computers'],                 characteristics:['edu'],        difficulty: 'Average'   },  goods:['common', 'legal           '], guideCanFind:false, timeDice:1, timeScale:'h'}
    };
+
+   //Set the default supplier
+   smm.buyTradeGoods.supplier = smm.buyTradeGoods.suppliers['standard'];
 
 smm.generateAvailablePassengers=function() {
 		smm.availablePassengers = calculatePassengers(smm.tripData.departureWorld,smm.tripData.arrivalWorld);
