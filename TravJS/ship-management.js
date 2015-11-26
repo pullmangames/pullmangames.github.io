@@ -257,6 +257,10 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       b:{externalFactor:"Class B Starport", value:4},
       c:{externalFactor:"Class C Starport", value:2}
    };
+   smm.buyTradeGoods.externalFactors.findSupplier.assistant = {
+      contact:{externalFactor:"Contact in Local Area", value:1},
+      ally:   {externalFactor:"Ally in Local Area",    value:2}
+   };
 
    smm.buyTradeGoods.supplier = {};
    smm.buyTradeGoods.suppliers = {

@@ -169,8 +169,7 @@ rollModule.directive('travSkillCheckDm', [function() {
          {
             $scope.selected.difficulty = undefined;
          }
-         updateExtFactorsList();
-         $scope.updateCharList();
+         updateExtFactorsList(); //Don't need to call updateCharList here - updateExtFactorsList does it for us.
       };
 
       var updateSkillList = function() {
@@ -265,6 +264,8 @@ rollModule.directive('travSkillCheckDm', [function() {
                }
             }
          }
+
+         $scope.updateCharList();
       }
 
       $scope.extFactorLocked = function(ef) {
