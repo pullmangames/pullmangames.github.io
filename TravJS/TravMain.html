@@ -148,7 +148,7 @@
       You must select a departure world before you can purchase trade goods.
     </div>
     <div ng-if="shipMan.tripData.departureWorld">
-      Supplier:
+      <strong style="margin-right:5px">Supplier</strong>
       <div class="btn-group" style="margin-bottom:10px">
         <label class="btn btn-primary" ng-model="shipMan.buyTradeGoods.supplier" uib-btn-radio="shipMan.buyTradeGoods.suppliers['standard']">Standard</label>
         <label class="btn btn-primary" ng-model="shipMan.buyTradeGoods.supplier" uib-btn-radio="shipMan.buyTradeGoods.suppliers['commonGoods']">Common Goods</label>
@@ -158,19 +158,25 @@
         <label ng-if="shipMan.tripData.departureWorld.UWPsplit.TL >= 8" class="btn btn-primary" ng-model="shipMan.buyTradeGoods.supplier" uib-btn-radio="shipMan.buyTradeGoods.suppliers['online']">Online</label>
       </div>
       <br>
-      Assistance in Local Area:
+      <strong style="margin-right:5px">Assistance in Local Area</strong>
       <div class="btn-group" style="margin-bottom:10px">
         <label class="btn btn-primary" ng-model="shipMan.buyTradeGoods.assistant" uncheckable uib-btn-radio="'contact'">Contact</label>
         <label class="btn btn-primary" ng-model="shipMan.buyTradeGoods.assistant" uncheckable uib-btn-radio="'ally'">Ally</label>
       </div>
-      <div>
-        <trav-skill-check-dm ng-attr-skills="shipMan.buyTradeGoods.supplier.skillCheck.skills"
+      <div style="margin-bottom:10px">
+        <trav-skill-check-dm ng-model="shipMan.buyTradeGoods.supplierFinder"
+                             ng-attr-skills="shipMan.buyTradeGoods.supplier.skillCheck.skills"
                              ng-attr-characteristics="shipMan.buyTradeGoods.supplier.skillCheck.characteristics"
                              ng-attr-difficulty="shipMan.buyTradeGoods.supplier.skillCheck.difficulty"
                              ng-attr-ext-factors="[shipMan.buyTradeGoods.externalFactors.findSupplier.starport[shipMan.tripData.departureWorld.UWPsplit.starport],
                                                    shipMan.buyTradeGoods.externalFactors.findSupplier.assistant[shipMan.buyTradeGoods.assistant]]"
                              ng-attr-require-all="true">
         </trav-skill-check-dm>
+      </div>
+      <div>
+        <button ng-disabled="!shipMan.buyTradeGoods.supplierFinder" class="btn btn-primary" type="button" ng-click="shipMan.buyTradeGoods.rollForSupplier()">Roll to Find Supplier</button>
+        <strong style="margin-left:5px;margin-right:5px">OR</strong>
+        <button class="btn btn-primary" type="button" ng-click="shipMan.buyTradeGoods.hireGuideForSupplier()">Hire Guide</button>
       </div>
     </div>
   </script>
