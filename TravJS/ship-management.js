@@ -111,27 +111,63 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       this.entries=[];
    }
 
+   $scope.smmPersistent = {};
    smm.log = new shipLog();
-   $scope.shipLog = smm.log;
+   $scope.smmPersistent.shipLog = smm.log;
+   smm.tripData = {};
+   $scope.smmPersistent.tripData = smm.tripData;
+   smm.buyTradeGoods = {};
+   smm.buyTradeGoods.persistent = {};
+   smm.buyTradeGoods.persistent.suppliersFound = {};
+   $scope.smmPersistent.buyTradeGoods = smm.buyTradeGoods.persistent;
    
-   var _buildShipLogFromJsonLog = angular.bind(this, function(jsonLog)
+   var _buildSmmPersistentDataFromJson = angular.bind(this, function(json)
    {
-      if (jsonLog)
+      if (json)
       {
-         if (   !jsonLog.formatVersion
-             || jsonLog.formatVersion != 1)
+         if (json.shipLog)
          {
-            alertsService.addAlert("danger", "Ship's log has invalid format. Unable to load.");
+            if (   !json.shipLog.formatVersion
+                || json.shipLog.formatVersion != 1)
+            {
+               alertsService.addAlert("danger", "Ship's log has invalid format. Unable to load.");
+            }
+            this.log.entries.length = 0;
+            angular.merge(this.log, json.shipLog);
          }
-         this.log.entries.length = 0;
-         angular.merge(this.log, jsonLog);
+         if (json.tripData)
+         {
+            smm.tripData.departureWorld = json.tripData.departureWorld;
+            smm.tripData.departureWorldSearchResults = json.tripData.departureWorldSearchResults;
+            if (json.tripData.departureWorldSearchResults)
+            {
+               if (!smm.tripData.arrivalWorlds)
+               {
+                  smm.tripData.arrivalWorlds = [];
+               }
+               smm.tripData.arrivalWorlds.length = 0;
+               Array.prototype.push.apply(smm.tripData.arrivalWorlds, json.tripData.arrivalWorlds);
+               smm.tripData.arrivalWorld = {};
+               if (json.tripData.arrivalWorlds && json.tripData.arrivalWorld)
+               {
+                  for (var i = 0; i < json.tripData.arrivalWorlds.length; i++)
+                  {
+                     if (json.tripData.arrivalWorlds[i].Name === json.tripData.arrivalWorld.Name)
+                     {
+                        smm.tripData.arrivalWorld = json.tripData.arrivalWorlds[i];
+                        break;
+                     }
+                  }
+               }
+            }
+         }
       }
    });
+
+   dataStorageService.register($scope, 'smmPersistent', _buildSmmPersistentDataFromJson);
    
-   dataStorageService.register($scope, 'shipLog', _buildShipLogFromJsonLog);
-   
-   smm.inputYear=smm.log.status.year;
-   smm.inputDate=smm.log.status.today;
+   smm.inputYear = smm.log.status.date.year;
+   smm.inputDate = smm.log.status.date.day;
    
    
    //cargo on the ship looks like this:
@@ -178,7 +214,6 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
        smm.log.status.date=dateFactory(smm.inputYear,smm.inputDate);
    };
 
-   smm.tripData = {};
    smm.departureWorlds = [];
    smm.refreshDepartureWorlds = function(worldName) {
       var params = {q: worldName};
@@ -188,7 +223,6 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       });
    };
 
-   smm.tripData.arrivalWorlds = [];
    smm.refreshArrivalWorlds = function() {
       smm.tripData.arrivalWorld = {};
       if (smm.tripData.departureWorldSearchResults)
@@ -197,7 +231,12 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
          var params = {sx:dw.SectorX, sy:dw.SectorY, hx:dw.HexX, hy:dw.HexY, jump:smm.partyShip.Jump};
          return $http.get('http://travellermap.com/api/jumpworlds', {params: params})
          .then(function(response) {
-            smm.tripData.arrivalWorlds = response.data.Worlds;
+            if (!smm.tripData.arrivalWorlds)
+            {
+               smm.tripData.arrivalWorlds = [];
+            }
+            smm.tripData.arrivalWorlds.length = 0;
+            Array.prototype.push.apply(smm.tripData.arrivalWorlds, response.data.Worlds);
             var indexToSplice;
             for (var i = 0; i < smm.tripData.arrivalWorlds.length; i++)
             {
@@ -222,34 +261,6 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       }
    };
    
-   var _buildTripDataFromJsonTrip = function(jsonTrip) {
-      if (jsonTrip)
-      {
-         smm.tripData.departureWorld = jsonTrip.departureWorld;
-         smm.tripData.departureWorldSearchResults = jsonTrip.departureWorldSearchResults;
-         if (jsonTrip.departureWorldSearchResults)
-         {
-            smm.tripData.arrivalWorlds = jsonTrip.arrivalWorlds;
-            smm.tripData.arrivalWorld = {};
-            if (jsonTrip.arrivalWorlds && jsonTrip.arrivalWorld)
-            {
-               for (var i = 0; i < jsonTrip.arrivalWorlds.length; i++)
-               {
-                  if (jsonTrip.arrivalWorlds[i].Name === jsonTrip.arrivalWorld.Name)
-                  {
-                     smm.tripData.arrivalWorld = jsonTrip.arrivalWorlds[i];
-                     break;     
-                  }
-               }
-            }
-         }         
-      }
-   }
-   
-   dataStorageService.register(smm, 'tripData', _buildTripDataFromJsonTrip);
-
-   smm.buyTradeGoods = {};
-
    smm.buyTradeGoods.externalFactors = {};
    smm.buyTradeGoods.externalFactors.findSupplier = {};
    smm.buyTradeGoods.externalFactors.findSupplier.starport = {
@@ -261,19 +272,46 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       contact:{externalFactor:"Contact in Local Area", value:1},
       ally:   {externalFactor:"Ally in Local Area",    value:2}
    };
+   smm.buyTradeGoods.externalFactors.findSupplier.suppliersFound = {};
 
    smm.buyTradeGoods.supplier = {};
    smm.buyTradeGoods.suppliers = {
-      standard:      {name:"Supplier",                 skillCheck:{skills:['Broker'],                    characteristics:['edu', 'soc'], difficulty: 'Average'   },  goods:['common', 'legal'           ], timeDice:1, timeScale:'d'},
-      commonGoods:   {name:"Common-Goods Supplier",    skillCheck:{skills:['Broker'],                    characteristics:['edu', 'soc'], difficulty: 'Easy'      },  goods:['common'                    ], timeDice:1, timeScale:'d'},
-      blackMarket:   {name:"Black Market Supplier",    skillCheck:{skills:['Streetwise'],                characteristics:['edu', 'soc'], difficulty: 'Average'   },  goods:[                   'illegal'], timeDice:1, timeScale:'d'},
-      morallyNeutral:{name:"Morally Neutral Supplier", skillCheck:{skills:['Streetwise', 'Investigate'], characteristics:['edu', 'soc'], difficulty: 'Difficult' },  goods:['common', 'legal', 'illegal'], timeDice:2, timeScale:'d'},
-      online:        {name:"Online Supplier",          skillCheck:{skills:['Computers'],                 characteristics:['edu'],        difficulty: 'Average'   },  goods:['common', 'legal           '], timeDice:1, timeScale:'h'}
+      standard:      {name:"Supplier",                 skillCheck:{skills:['Broker'],                    characteristics:['edu', 'soc'], difficulty: 'Average'   },  goods:['common', 'legal'           ], guideCanFind:true,  timeDice:1, timeScale:'d'},
+      commonGoods:   {name:"Common-Goods Supplier",    skillCheck:{skills:['Broker'],                    characteristics:['edu', 'soc'], difficulty: 'Easy'      },  goods:['common'                    ], guideCanFind:true,  timeDice:1, timeScale:'d'},
+      blackMarket:   {name:"Black Market Supplier",    skillCheck:{skills:['Streetwise'],                characteristics:['edu', 'soc'], difficulty: 'Average'   },  goods:[                   'illegal'], guideCanFind:true,  timeDice:1, timeScale:'d'},
+      morallyNeutral:{name:"Morally Neutral Supplier", skillCheck:{skills:['Streetwise', 'Investigate'], characteristics:['edu', 'soc'], difficulty: 'Difficult' },  goods:['common', 'legal', 'illegal'], guideCanFind:false, timeDice:2, timeScale:'d'},
+      online:        {name:"Online Supplier",          skillCheck:{skills:['Computers'],                 characteristics:['edu'],        difficulty: 'Average'   },  goods:['common', 'legal           '], guideCanFind:false, timeDice:1, timeScale:'h'}
    };
 
-smm.generateAvailablePassengers=function() {
-		smm.availablePassengers = calculatePassengers(smm.tripData.departureWorld,smm.tripData.arrivalWorld);
-		}
+   //Set the default supplier type
+   smm.buyTradeGoods.supplier = smm.buyTradeGoods.suppliers['standard'];
+
+   smm.buyTradeGoods.rollToFindSupplier = function() {
+      var result = dicethrow(0, [smm.buyTradeGoods.supplierFinder.dm]);
+      smm.buyTradeGoods.findSupplierResult = result;
+      smm.buyTradeGoods.supplierFinder = undefined;
+      if (result.pass)
+      {
+         //Record a successful supplier search on this world: -1 for additional searches in the next 30 days
+         var suppliersFound = smm.buyTradeGoods.persistent.suppliersFound[smm.tripData.departureWorld.Hex];
+         if (!suppliersFound)
+         {
+            suppliersFound = [];
+            smm.buyTradeGoods.persistent.suppliersFound[smm.tripData.departureWorld.Hex] = suppliersFound;
+         }
+         suppliersFound.push(smm.log.status.date);
+         var len = suppliersFound.length;
+         var plural = len > 1 ? "s" : "";
+         smm.buyTradeGoods.externalFactors.findSupplier.suppliersFound = {
+            externalFactor:len + " supplier" + plural + " found in past month",
+            value:len * -1
+         };
+      }
+   };
+
+   smm.generateAvailablePassengers=function() {
+      smm.availablePassengers = calculatePassengers(smm.tripData.departureWorld,smm.tripData.arrivalWorld);
+   };
 
 }]);
 

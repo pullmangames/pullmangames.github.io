@@ -63,14 +63,19 @@ rollModule.controller('RollController', ['$scope', 'travRollService', 'character
 //  dm:        selected character's dice modifier
 rollModule.directive('travSkillCheckDm', [function() {
    var controller = ['$scope', '$uibModal', 'charactersService', 'skillsService', 'travRollService', function($scope, $uibModal, charactersService, skillsService, travRollService) {
+
+      var clearSelectedResults = function() {
+         $scope.selectedResultIndex = -1;
+         $scope.ngModel = undefined;
+      }
+
       $scope.updateCharList = function() {
          $scope.results = [];
+         clearSelectedResults();
          if ($scope.requireAll && !allSelected())
          {
             return;
          }
-         $scope.selectedResultIndex = -1;
-         $scope.ngModel = {};
          var characters = charactersService.characters;
          var selectedSkill = $scope.selected.skill;
          var selectedStats = $scope.selected.characteristics;
@@ -323,6 +328,15 @@ rollModule.directive('travSkillCheckDm', [function() {
             }
          );
       }
+
+      var ngModelChanged = function() {
+         if ($scope.ngModel === undefined)
+         {
+            clearSelectedResults();
+         }
+      }
+
+      $scope.$watch('ngModel', ngModelChanged);
    }];
 
    return {
@@ -410,7 +424,11 @@ function dicethrow(difficulty, DMs){
 	if (rollresult.effect ==0)  							{rollresult.pass=P_SUCCESS; rollresult.magnitude=M_MARGINAL;}
 	if (rollresult.effect >=1 && rollresult.effect <= 5) 	{rollresult.pass=P_SUCCESS; rollresult.magnitude=M_AVERAGE;}
 	if (rollresult.effect >= 6) 							{rollresult.pass=P_SUCCESS; rollresult.magnitude=M_EXCEPTIONAL;}
-	
+
+   rollresult.passString = PASS_STRINGS[rollresult.pass];
+   rollresult.magnitudeString = MAGNITUDE_STRINGS[rollresult.magnitude];
+   rollresult.summary = rollresult.magnitudeString + " " + rollresult.passString;
+
 	rollresult.timing=rawroll(1,6).total;
 	return rollresult;
 	

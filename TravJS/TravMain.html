@@ -148,7 +148,7 @@
       You must select a departure world before you can purchase trade goods.
     </div>
     <div ng-if="shipMan.tripData.departureWorld">
-      Supplier:
+      <strong style="margin-right:5px">Supplier</strong>
       <div class="btn-group" style="margin-bottom:10px">
         <label class="btn btn-primary" ng-model="shipMan.buyTradeGoods.supplier" uib-btn-radio="shipMan.buyTradeGoods.suppliers['standard']">Standard</label>
         <label class="btn btn-primary" ng-model="shipMan.buyTradeGoods.supplier" uib-btn-radio="shipMan.buyTradeGoods.suppliers['commonGoods']">Common Goods</label>
@@ -158,19 +158,29 @@
         <label ng-if="shipMan.tripData.departureWorld.UWPsplit.TL >= 8" class="btn btn-primary" ng-model="shipMan.buyTradeGoods.supplier" uib-btn-radio="shipMan.buyTradeGoods.suppliers['online']">Online</label>
       </div>
       <br>
-      Assistance in Local Area:
+      <strong style="margin-right:5px">Assistance in Local Area</strong>
       <div class="btn-group" style="margin-bottom:10px">
         <label class="btn btn-primary" ng-model="shipMan.buyTradeGoods.assistant" uncheckable uib-btn-radio="'contact'">Contact</label>
         <label class="btn btn-primary" ng-model="shipMan.buyTradeGoods.assistant" uncheckable uib-btn-radio="'ally'">Ally</label>
       </div>
-      <div>
-        <trav-skill-check-dm ng-attr-skills="shipMan.buyTradeGoods.supplier.skillCheck.skills"
+      <div style="margin-bottom:10px">
+        <trav-skill-check-dm ng-model="shipMan.buyTradeGoods.supplierFinder"
+                             ng-attr-skills="shipMan.buyTradeGoods.supplier.skillCheck.skills"
                              ng-attr-characteristics="shipMan.buyTradeGoods.supplier.skillCheck.characteristics"
                              ng-attr-difficulty="shipMan.buyTradeGoods.supplier.skillCheck.difficulty"
                              ng-attr-ext-factors="[shipMan.buyTradeGoods.externalFactors.findSupplier.starport[shipMan.tripData.departureWorld.UWPsplit.starport],
-                                                   shipMan.buyTradeGoods.externalFactors.findSupplier.assistant[shipMan.buyTradeGoods.assistant]]"
+                                                   shipMan.buyTradeGoods.externalFactors.findSupplier.assistant[shipMan.buyTradeGoods.assistant],
+                                                   shipMan.buyTradeGoods.externalFactors.findSupplier.suppliersFound]"
                              ng-attr-require-all="true">
         </trav-skill-check-dm>
+      </div>
+      <div style="margin-bottom:10px">
+        <button ng-disabled="!shipMan.buyTradeGoods.supplierFinder" class="btn btn-primary" type="button" ng-click="shipMan.buyTradeGoods.rollToFindSupplier()">Roll to Find Supplier</button>
+        <strong style="margin-left:5px;margin-right:5px">OR</strong>
+        <button ng-disabled="!shipMan.buyTradeGoods.supplier.guideCanFind" class="btn btn-primary" type="button" ng-click="shipMan.buyTradeGoods.hireGuideForSupplier()">Hire Guide</button>
+      </div>
+      <div ng-if="shipMan.buyTradeGoods.findSupplierResult">
+         Result: {{shipMan.buyTradeGoods.findSupplierResult.summary}}
       </div>
     </div>
   </script>
@@ -569,21 +579,6 @@ Pilot: -1 DM
       </ui-select>
       <table style="margin-bottom:10px">
         <tr>
-          <td>
-            <ui-select multiple on-select="updateCharList()" on-remove="updateCharList()" theme="bootstrap" ng-model="selected.extFactors" style="width:359px;margin-right:5px">
-              <ui-select-match ui-lock-choice="extFactorLocked($item)" placeholder="Select external factors...">{{$item.externalFactor}}: {{$item.value}}</ui-select-match>
-              <ui-select-choices repeat="factor in externalFactors[selected.skill.name] | filter: {externalFactor: $select.search}">
-                <span ng-bind-html="factor.externalFactor | highlight: $select.search"></span>: {{factor.value}}
-              </ui-select-choices>
-            </ui-select>
-          </td>
-          <td>
-            <button type="button" ng-disabled="!selected.skill" class="btn btn-sm" ng-click="openAddExtFactorModal(selected.skill)" style="margin-right:5px"><span class="glyphicon glyphicon-plus"></span></button>
-          </td>
-        </tr>
-      </table>
-      <table>
-        <tr>
           <td style="padding-right:5px">
             <ui-select multiple on-select="updateCharList()" on-remove="updateCharList()" theme="bootstrap" ng-model="selected.characteristics" ng-disabled="locked.characteristics" style="width:250px;margin-right:5px">
               <ui-select-match placeholder="Select characteristics...">{{$item.name}}</ui-select-match>
@@ -599,6 +594,21 @@ Pilot: -1 DM
                 <span ng-bind-html="difficulty.name | highlight: $select.search"></span>
               </ui-select-choices>
             </ui-select>
+          </td>
+        </tr>
+      </table>
+      <table>
+        <tr>
+          <td>
+            <ui-select multiple on-select="updateCharList()" on-remove="updateCharList()" theme="bootstrap" ng-model="selected.extFactors" style="width:359px;margin-right:5px">
+              <ui-select-match ui-lock-choice="extFactorLocked($item)" placeholder="Select external factors...">{{$item.externalFactor}}: {{$item.value}}</ui-select-match>
+              <ui-select-choices repeat="factor in externalFactors[selected.skill.name] | filter: {externalFactor: $select.search}">
+                <span ng-bind-html="factor.externalFactor | highlight: $select.search"></span>: {{factor.value}}
+              </ui-select-choices>
+            </ui-select>
+          </td>
+          <td>
+            <button type="button" ng-disabled="!selected.skill" class="btn btn-sm" ng-click="openAddExtFactorModal(selected.skill)" style="margin-right:5px"><span class="glyphicon glyphicon-plus"></span></button>
           </td>
         </tr>
       </table>
