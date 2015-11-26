@@ -173,10 +173,13 @@
                              ng-attr-require-all="true">
         </trav-skill-check-dm>
       </div>
-      <div>
+      <div style="margin-bottom:10px">
         <button ng-disabled="!shipMan.buyTradeGoods.supplierFinder" class="btn btn-primary" type="button" ng-click="shipMan.buyTradeGoods.rollForSupplier()">Roll to Find Supplier</button>
         <strong style="margin-left:5px;margin-right:5px">OR</strong>
         <button ng-disabled="!shipMan.buyTradeGoods.supplier.guideCanFind" class="btn btn-primary" type="button" ng-click="shipMan.buyTradeGoods.hireGuideForSupplier()">Hire Guide</button>
+      </div>
+      <div ng-if="shipMan.buyTradeGoods.findSupplierResult">
+         Result: {{shipMan.buyTradeGoods.findSupplierResult.summary}}
       </div>
     </div>
   </script>

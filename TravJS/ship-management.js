@@ -137,7 +137,12 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
             smm.tripData.departureWorldSearchResults = json.tripData.departureWorldSearchResults;
             if (json.tripData.departureWorldSearchResults)
             {
-               smm.tripData.arrivalWorlds = json.tripData.arrivalWorlds;
+               if (!smm.tripData.arrivalWorlds)
+               {
+                  smm.tripData.arrivalWorlds = [];
+               }
+               smm.tripData.arrivalWorlds.length = 0;
+               Array.prototype.push.apply(smm.tripData.arrivalWorlds, json.tripData.arrivalWorlds);
                smm.tripData.arrivalWorld = {};
                if (json.tripData.arrivalWorlds && json.tripData.arrivalWorld)
                {
@@ -214,7 +219,6 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       });
    };
 
-   smm.tripData.arrivalWorlds = [];
    smm.refreshArrivalWorlds = function() {
       smm.tripData.arrivalWorld = {};
       if (smm.tripData.departureWorldSearchResults)
@@ -223,7 +227,12 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
          var params = {sx:dw.SectorX, sy:dw.SectorY, hx:dw.HexX, hy:dw.HexY, jump:smm.partyShip.Jump};
          return $http.get('http://travellermap.com/api/jumpworlds', {params: params})
          .then(function(response) {
-            smm.tripData.arrivalWorlds = response.data.Worlds;
+            if (!smm.tripData.arrivalWorlds)
+            {
+               smm.tripData.arrivalWorlds = [];
+            }
+            smm.tripData.arrivalWorlds.length = 0;
+            Array.prototype.push.apply(smm.tripData.arrivalWorlds, response.data.Worlds);
             var indexToSplice;
             for (var i = 0; i < smm.tripData.arrivalWorlds.length; i++)
             {
@@ -274,9 +283,13 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
    //Set the default supplier
    smm.buyTradeGoods.supplier = smm.buyTradeGoods.suppliers['standard'];
 
-smm.generateAvailablePassengers=function() {
-		smm.availablePassengers = calculatePassengers(smm.tripData.departureWorld,smm.tripData.arrivalWorld);
-		}
+   smm.buyTradeGoods.rollForSupplier = function() {
+      smm.buyTradeGoods.findSupplierResult = dicethrow(0, [smm.buyTradeGoods.supplierFinder.dm]);
+   }
+
+   smm.generateAvailablePassengers=function() {
+      smm.availablePassengers = calculatePassengers(smm.tripData.departureWorld,smm.tripData.arrivalWorld);
+   }
 
 }]);
 

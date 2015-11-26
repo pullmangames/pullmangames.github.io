@@ -411,7 +411,11 @@ function dicethrow(difficulty, DMs){
 	if (rollresult.effect ==0)  							{rollresult.pass=P_SUCCESS; rollresult.magnitude=M_MARGINAL;}
 	if (rollresult.effect >=1 && rollresult.effect <= 5) 	{rollresult.pass=P_SUCCESS; rollresult.magnitude=M_AVERAGE;}
 	if (rollresult.effect >= 6) 							{rollresult.pass=P_SUCCESS; rollresult.magnitude=M_EXCEPTIONAL;}
-	
+
+   rollresult.passString = PASS_STRINGS[rollresult.pass];
+   rollresult.magnitudeString = MAGNITUDE_STRINGS[rollresult.magnitude];
+   rollresult.summary = rollresult.magnitudeString + " " + rollresult.passString;
+
 	rollresult.timing=rawroll(1,6).total;
 	return rollresult;
 	
