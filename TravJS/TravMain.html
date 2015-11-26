@@ -135,6 +135,40 @@
     </div>
   </script>
   
+ <!---------- Accordion: Jump -> Astrogation ----------->
+  <script type="text/ng-template" id="shipman.accordion.jump.astrogation.view">
+	       TODO: ext-factor of jump distance
+	        <trav-skill-check-dm ng-model="shipman.AstrogationDM"
+                             ng-attr-skills="['Astrogation']"
+                             ng-attr-characteristics="['Edu']"
+                             ng-attr-difficulty="'Easy'"
+                             ng-attr-ext-factors="[]">
+        </trav-skill-check-dm>
+  </script>
+  
+   <!---------- Accordion: Jump -> Divert Power ----------->
+  <script type="text/ng-template" id="shipman.accordion.jump.divertpower.view">
+
+	        <trav-skill-check-dm ng-model="shipman.divertpowerDM"
+                             ng-attr-skills="['Jump Drive (J-Drive)']"
+                             ng-attr-characteristics="['Edu']"
+                             ng-attr-difficulty="'Average'"
+                             ng-attr-ext-factors="[]">
+        </trav-skill-check-dm>
+  </script>
+
+   <!---------- Accordion: Visit Gas Giant -> Skim ----------->
+  <script type="text/ng-template" id="shipman.accordion.visitGasGiant.skim.view">
+
+	        <trav-skill-check-dm ng-model="shipman.skimDM"
+                             ng-attr-skills="['Small Craft','Spacecraft']"
+                             ng-attr-characteristics="['Dex']"
+                             ng-attr-difficulty="'Average'"
+                             ng-attr-ext-factors="[]">
+        </trav-skill-check-dm>
+  </script>
+
+
   <!---------- Accordion: Destinations -> Passengers ----------->
   <script type="text/ng-template" id="shipman.accordion.destinations.passengers.view">
 	 <form ng-submit="shipMan.generateAvailablePassengers()" class="form-inline">
@@ -195,6 +229,8 @@
     Time taken in jump?
   </script>
 
+
+  <!---------- Ship manager main view ----------->
   <script type="text/ng-template" id="shipMan.view">
     <br><br>
 

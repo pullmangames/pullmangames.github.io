@@ -6,36 +6,35 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
    smm.accordionData = [
       { name: "Manual Log Entry/Adjustment",                htmlTemplate: "shipman.accordion.manualOps.view" },
       { name: "Hunt for jobs/patrons/rumors/etc.",          htmlTemplate: "shipman.accordion.TBD.view" },
-      { name: "Enter Destination(s)",                       subSteps: [
-         { name: "Freight for Destination 1",               htmlTemplate: "shipman.accordion.TBD.view" },
-         { name: "Mail for Destination 1",                  htmlTemplate: "shipman.accordion.TBD.view" },
-         { name: "Passengers for Destination 1",            htmlTemplate: "shipman.accordion.destinations.passengers.view" },
-         { name: "Other for Destination 1",                 htmlTemplate: "shipman.accordion.TBD.view" }]},
+      { name: "Find cargos",                       subSteps: [
+         { name: "Freight",               						htmlTemplate: "shipman.accordion.TBD.view" },
+         { name: "Mail",                 						htmlTemplate: "shipman.accordion.TBD.view" },
+         { name: "Passengers",            						htmlTemplate: "shipman.accordion.destinations.passengers.view" },
+         { name: "Other",                 						htmlTemplate: "shipman.accordion.TBD.view" }]},
       { name: "Buy Trade Goods",                            htmlTemplate: "shipman.accordion.buyTradeGoods.view" },
       { name: "Finalize ship loadout",                      htmlTemplate: "shipman.accordion.finalizeLoadout.view" },
       { name: "Buy life support, fuel, pay berthing costs", htmlTemplate: "shipman.accordion.TBD.view" },
       { name: "Depart Port",                                htmlTemplate: "shipman.accordion.TBD.view" },
       { name: "Port Encounter",                             htmlTemplate: "shipman.accordion.TBD.view" },
       { name: "Visit Gas Giant",                            subSteps: [
-         { name: "Gas Giant Encounter",                     htmlTemplate: "shipman.accordion.TBD.view" },
-         { name: "Skimming",                                htmlTemplate: "shipman.accordion.TBD.view" }]},
+         { name: "Gas Giant Encounter",                     	htmlTemplate: "shipman.accordion.TBD.view" },
+         { name: "Skimming",                                	htmlTemplate: "shipman.accordion.visitGasGiant.skim.view" }]},
       { name: "Jump Point Encounter",                       htmlTemplate: "shipman.accordion.TBD.view" },
       { name: "Jump",                                       subSteps: [
-         { name: "Astrogation check",                       htmlTemplate: "shipman.accordion.TBD.view" },
-         { name: "Engine power check",                      htmlTemplate: "shipman.accordion.TBD.view" },
-         { name: "Jump check",                              htmlTemplate: "shipman.accordion.TBD.view" }]},
+         { name: "Astrogation check",                       	htmlTemplate: "shipman.accordion.jump.astrogation.view" },
+         { name: "Engine power check",                      	htmlTemplate: "shipman.accordion.jump.divertpower.view" },
+         { name: "Jump check",                              	htmlTemplate: "shipman.accordion.TBD.view" }]},
       { name: "JumpSpace",                                  htmlTemplate: "shipman.accordion.jumpSpace.view" },
       { name: "Exit Jump - Encounter",                      htmlTemplate: "shipman.accordion.TBD.view" },
       { name: "Visit Gas Giant",                            subSteps: [
-         { name: "Gas Giant Encounter",                     htmlTemplate: "shipman.accordion.TBD.view" },
-         { name: "Skimming",                                htmlTemplate: "shipman.accordion.TBD.view" }]},
-      { name: "Port Arrival - Encounter",                   htmlTemplate: "shipman.accordion.TBD.view" },
+         { name: "Gas Giant Encounter",                     	htmlTemplate: "shipman.accordion.TBD.view" },
+         { name: "Skimming",                                	htmlTemplate: "shipman.accordion.visitGasGiant.skim.view" }]},      { name: "Port Arrival - Encounter",                   htmlTemplate: "shipman.accordion.TBD.view" },
       { name: "Land/Dock",                                  htmlTemplate: "shipman.accordion.TBD.view" },
       { name: "Unload",                                     subSteps: [
-         { name: "Freight",                                 htmlTemplate: "shipman.accordion.TBD.view" },
-         { name: "Mail",                                    htmlTemplate: "shipman.accordion.TBD.view" },
-         { name: "Passengers",                              htmlTemplate: "shipman.accordion.TBD.view" },
-         { name: "Other",                                   htmlTemplate: "shipman.accordion.TBD.view" }]},
+         { name: "Freight",                                 	htmlTemplate: "shipman.accordion.TBD.view" },
+         { name: "Mail",                                    	htmlTemplate: "shipman.accordion.TBD.view" },
+         { name: "Passengers",                              	htmlTemplate: "shipman.accordion.TBD.view" },
+         { name: "Other",                                   	htmlTemplate: "shipman.accordion.TBD.view" }]},
       { name: "Find a trade goods buyer",                   htmlTemplate: "shipman.accordion.TBD.view" },
       { name: "Tax",                                        htmlTemplate: "shipman.accordion.TBD.view" },
    ];
@@ -309,26 +308,23 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       }
    };
 
-   smm.generateAvailablePassengers=function() {
-      smm.availablePassengers = calculatePassengers(smm.tripData.departureWorld,smm.tripData.arrivalWorld);
-   };
+smm.generateAvailablePassengers=function() {
+		/*
+		 Roll on the Available Passengers table
+			   TODO: modified by events
+			   done: modified by source population
+			   done: modified by trade code table
+			   done: modified by TL difference (max 5)
+			   TODO: modified by rounding up passengers (Carouse/Streetwise, int/soc, average, days)
+			TODO: Every group of 6 passengers taken, 4+ means one is special, roll on passenger table
+		*/
+		smm.availablePassengers = calculatePassengers(smm.tripData.departureWorld,smm.tripData.arrivalWorld);
+		}
+
 
 }]);
 
 var calculatePassengers=function(departureWorld,arrivalWorld){
-/*
-
-
- Roll on the Available Passengers table
-       modified by events
-       modified by source population
-       modified by trade code table
-       modified by TL difference (max 5)
-       modified by rounding up passengers (Carouse/Streetwise, int/soc, average, days)
-    Every group of 6 passengers taken, 4+ means one is special, roll on passenger table
-    {{shipMan.tripData.departureWorld.UWPsplit}}
-  
-*/
 
 var departremarksmod=modifiersPerTradeCode(PassengersByTradeType.departure, departureWorld.Remarks);
 var arrivalremarksmod=modifiersPerTradeCode(PassengersByTradeType.arrival, arrivalWorld.Remarks);
@@ -336,7 +332,7 @@ var arrivalremarksmod=modifiersPerTradeCode(PassengersByTradeType.arrival, arriv
 var AvailablePassengersEntry = departureWorld.UWPsplit["population"]
 								+ departremarksmod + arrivalremarksmod
 								+ Math.min(Math.abs(departureWorld.UWPsplit["TL"]-arrivalWorld.UWPsplit["TL"]),5)
-								//TODO + events table + rounding up passengers
+								//TODO + events table + rounding up passengers (Carouse/Streetwise, int/soc, average, days)
 
 var passengers=0;								
 var passengers={"low":AvailablePassengers.low[AvailablePassengersEntry](),
