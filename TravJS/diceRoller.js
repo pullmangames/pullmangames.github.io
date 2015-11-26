@@ -63,15 +63,19 @@ rollModule.controller('RollController', ['$scope', 'travRollService', 'character
 //  dm:        selected character's dice modifier
 rollModule.directive('travSkillCheckDm', [function() {
    var controller = ['$scope', '$uibModal', 'charactersService', 'skillsService', 'travRollService', function($scope, $uibModal, charactersService, skillsService, travRollService) {
-      $scope.updateCharList = function() {
-         $scope.results = [];
+
+      var clearSelectedResults = function() {
          $scope.selectedResultIndex = -1;
          $scope.ngModel = undefined;
+      }
+
+      $scope.updateCharList = function() {
+         $scope.results = [];
+         clearSelectedResults();
          if ($scope.requireAll && !allSelected())
          {
             return;
          }
-         $scope.selectedResultIndex = -1;
          var characters = charactersService.characters;
          var selectedSkill = $scope.selected.skill;
          var selectedStats = $scope.selected.characteristics;
@@ -324,6 +328,15 @@ rollModule.directive('travSkillCheckDm', [function() {
             }
          );
       }
+
+      var ngModelChanged = function() {
+         if ($scope.ngModel === undefined)
+         {
+            clearSelectedResults();
+         }
+      }
+
+      $scope.$watch('ngModel', ngModelChanged);
    }];
 
    return {

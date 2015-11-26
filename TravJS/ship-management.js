@@ -116,6 +116,10 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
    $scope.smmPersistent.shipLog = smm.log;
    smm.tripData = {};
    $scope.smmPersistent.tripData = smm.tripData;
+   smm.buyTradeGoods = {};
+   smm.buyTradeGoods.persistent = {};
+   smm.buyTradeGoods.persistent.suppliersFound = {};
+   $scope.smmPersistent.buyTradeGoods = smm.buyTradeGoods.persistent;
    
    var _buildSmmPersistentDataFromJson = angular.bind(this, function(json)
    {
@@ -162,8 +166,8 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
 
    dataStorageService.register($scope, 'smmPersistent', _buildSmmPersistentDataFromJson);
    
-   smm.inputYear=smm.log.status.year;
-   smm.inputDate=smm.log.status.today;
+   smm.inputYear = smm.log.status.date.year;
+   smm.inputDate = smm.log.status.date.day;
    
    
    //cargo on the ship looks like this:
@@ -257,8 +261,6 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       }
    };
    
-   smm.buyTradeGoods = {};
-
    smm.buyTradeGoods.externalFactors = {};
    smm.buyTradeGoods.externalFactors.findSupplier = {};
    smm.buyTradeGoods.externalFactors.findSupplier.starport = {
@@ -270,6 +272,7 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       contact:{externalFactor:"Contact in Local Area", value:1},
       ally:   {externalFactor:"Ally in Local Area",    value:2}
    };
+   smm.buyTradeGoods.externalFactors.findSupplier.suppliersFound = {};
 
    smm.buyTradeGoods.supplier = {};
    smm.buyTradeGoods.suppliers = {
@@ -280,16 +283,35 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       online:        {name:"Online Supplier",          skillCheck:{skills:['Computers'],                 characteristics:['edu'],        difficulty: 'Average'   },  goods:['common', 'legal           '], guideCanFind:false, timeDice:1, timeScale:'h'}
    };
 
-   //Set the default supplier
+   //Set the default supplier type
    smm.buyTradeGoods.supplier = smm.buyTradeGoods.suppliers['standard'];
 
-   smm.buyTradeGoods.rollForSupplier = function() {
-      smm.buyTradeGoods.findSupplierResult = dicethrow(0, [smm.buyTradeGoods.supplierFinder.dm]);
-   }
+   smm.buyTradeGoods.rollToFindSupplier = function() {
+      var result = dicethrow(0, [smm.buyTradeGoods.supplierFinder.dm]);
+      smm.buyTradeGoods.findSupplierResult = result;
+      smm.buyTradeGoods.supplierFinder = undefined;
+      if (result.pass)
+      {
+         //Record a successful supplier search on this world: -1 for additional searches in the next 30 days
+         var suppliersFound = smm.buyTradeGoods.persistent.suppliersFound[smm.tripData.departureWorld.Hex];
+         if (!suppliersFound)
+         {
+            suppliersFound = [];
+            smm.buyTradeGoods.persistent.suppliersFound[smm.tripData.departureWorld.Hex] = suppliersFound;
+         }
+         suppliersFound.push(smm.log.status.date);
+         var len = suppliersFound.length;
+         var plural = len > 1 ? "s" : "";
+         smm.buyTradeGoods.externalFactors.findSupplier.suppliersFound = {
+            externalFactor:len + " supplier" + plural + " found in past month",
+            value:len * -1
+         };
+      }
+   };
 
    smm.generateAvailablePassengers=function() {
       smm.availablePassengers = calculatePassengers(smm.tripData.departureWorld,smm.tripData.arrivalWorld);
-   }
+   };
 
 }]);
 
