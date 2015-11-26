@@ -247,8 +247,17 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
    }
    
    dataStorageService.register(smm, 'tripData', _buildTripDataFromJsonTrip);
-   
+
    smm.buyTradeGoods = {};
+
+   smm.buyTradeGoods.externalFactors = {};
+   smm.buyTradeGoods.externalFactors.findSupplier = {};
+   smm.buyTradeGoods.externalFactors.findSupplier.starport = {
+      a:{externalFactor:"Class A Starport", value:6},
+      b:{externalFactor:"Class B Starport", value:4},
+      c:{externalFactor:"Class C Starport", value:2}
+   };
+
    smm.buyTradeGoods.supplier = {};
    smm.buyTradeGoods.suppliers = {
       standard:      {name:"Supplier",                 skillCheck:{skills:['Broker'],                    characteristics:['edu', 'soc'], difficulty: 'Average'   },  goods:['common', 'legal'           ], timeDice:1, timeScale:'d'},
@@ -355,7 +364,7 @@ var calculateDueDate = function(monthly, currentpaid, purchasedate){
 var uwpsplit = function(uwp) {
    var splituwp=uwp.split("");
    return {
-      'starport':   splituwp[0],
+      'starport':   splituwp[0].toLowerCase(),
       'size':       parseInt(splituwp[1], 36),
       'atmosphere': parseInt(splituwp[2], 36),
       'hydrosphere':parseInt(splituwp[3], 36),
