@@ -120,6 +120,10 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
    smm.buyTradeGoods.persistent.suppliersFound = {};
    $scope.smmPersistent.buyTradeGoods = smm.buyTradeGoods.persistent;
    
+   smm.buyTradeGoods.externalFactors = {};
+   smm.buyTradeGoods.externalFactors.findSupplier = {};
+   smm.buyTradeGoods.externalFactors.findSupplier.suppliersFound = {};
+
    var _buildSmmPersistentDataFromJson = angular.bind(this, function(json)
    {
       if (json)
@@ -160,8 +164,73 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
                }
             }
          }
+         if (json.buyTradeGoods)
+         {
+            if (json.buyTradeGoods.suppliersFound)
+            {
+               for (var name in json.buyTradeGoods.suppliersFound)
+               {
+                   if (json.buyTradeGoods.suppliersFound.hasOwnProperty(name))
+                   {
+                      var len = json.buyTradeGoods.suppliersFound[name].length;
+                      for (var i = 0; i < len; i++)
+                      {
+                         json.buyTradeGoods.suppliersFound[name][i] = dateFactory(json.buyTradeGoods.suppliersFound[name][i].year, json.buyTradeGoods.suppliersFound[name][i].day);
+                      }
+                   }
+               }
+            }
+            angular.merge(smm.buyTradeGoods.persistent, json.buyTradeGoods);
+            smm.buyTradeGoods.setFoundSuppliersExtFactor();
+         }
       }
    });
+
+   var cleanUpFoundSuppliers = function() {
+      for (var name in smm.buyTradeGoods.persistent.suppliersFound)
+      {
+          if (smm.buyTradeGoods.persistent.suppliersFound.hasOwnProperty(name))
+          {
+             var len = smm.buyTradeGoods.persistent.suppliersFound[name].length;
+             for (var i = len - 1; i >= 0; i--)
+             {
+                if (smm.buyTradeGoods.persistent.suppliersFound[name][i].diffdays(smm.log.status.date) > 30)
+                {
+                   smm.buyTradeGoods.persistent.suppliersFound[name].splice(i, 1);
+                }
+             }
+             if (!smm.buyTradeGoods.persistent.suppliersFound[name].length)
+             {
+                delete smm.buyTradeGoods.persistent.suppliersFound[name];
+             }
+          }
+      }
+   };
+
+   smm.buyTradeGoods.setFoundSuppliersExtFactor = function()
+   {
+      if (smm.tripData.departureWorld && smm.buyTradeGoods.persistent.suppliersFound)
+      {
+         cleanUpFoundSuppliers();
+         if (smm.buyTradeGoods.persistent.suppliersFound[smm.tripData.departureWorld.Hex])
+         {
+            var len = smm.buyTradeGoods.persistent.suppliersFound[smm.tripData.departureWorld.Hex].length;
+            if (!smm.buyTradeGoods.externalFactors.findSupplier)
+            {
+               smm.buyTradeGoods.externalFactors.findSupplier = {};
+            }
+            var plural = len > 1 ? "s" : "";
+            smm.buyTradeGoods.externalFactors.findSupplier.suppliersFound = {
+               externalFactor:len + " supplier" + plural + " found in past month",
+               value:len * -1
+            };
+         }
+         else
+         {
+            smm.buyTradeGoods.externalFactors.findSupplier.suppliersFound = {};
+         }
+      }
+   }
 
    dataStorageService.register($scope, 'smmPersistent', _buildSmmPersistentDataFromJson);
    
@@ -211,6 +280,8 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
    
    smm.manualSetDate=function(){
        smm.log.status.date=dateFactory(smm.inputYear,smm.inputDate);
+       //The date has changed - some suppliers we found may now have been > 30 days ago
+       smm.buyTradeGoods.setFoundSuppliersExtFactor();
    };
 
    smm.departureWorlds = [];
@@ -252,6 +323,8 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
             {
                 smm.tripData.arrivalWorlds.splice(indexToSplice, 1);
             }
+            //Refresh number of suppliers found in past month for the new world we're on
+            smm.buyTradeGoods.setFoundSuppliersExtFactor();
          });
       }
       else
@@ -260,8 +333,6 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       }
    };
    
-   smm.buyTradeGoods.externalFactors = {};
-   smm.buyTradeGoods.externalFactors.findSupplier = {};
    smm.buyTradeGoods.externalFactors.findSupplier.starport = {
       a:{externalFactor:"Class A Starport", value:6},
       b:{externalFactor:"Class B Starport", value:4},
@@ -271,7 +342,6 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       contact:{externalFactor:"Contact in Local Area", value:1},
       ally:   {externalFactor:"Ally in Local Area",    value:2}
    };
-   smm.buyTradeGoods.externalFactors.findSupplier.suppliersFound = {};
 
    smm.buyTradeGoods.supplier = {};
    smm.buyTradeGoods.suppliers = {
@@ -299,12 +369,7 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
             smm.buyTradeGoods.persistent.suppliersFound[smm.tripData.departureWorld.Hex] = suppliersFound;
          }
          suppliersFound.push(smm.log.status.date);
-         var len = suppliersFound.length;
-         var plural = len > 1 ? "s" : "";
-         smm.buyTradeGoods.externalFactors.findSupplier.suppliersFound = {
-            externalFactor:len + " supplier" + plural + " found in past month",
-            value:len * -1
-         };
+         smm.buyTradeGoods.setFoundSuppliersExtFactor();
       }
    };
 
