@@ -821,8 +821,8 @@ Left alone, the scout and its heroic crew settled into the vacuous night and die
 <!-------------------------------- Config View -------------------------------->
   <script type="text/ng-template" id="config.view">
     <br><br>
-    <button class="btn btn-primary" type="button" ng-click="exportAll()">Export All</button>
-    <button class="btn btn-primary fileChooser" type="button">Import All<input type="file" onchange="angular.element(this).scope().importAll(angular.element(this))" style="cursor:pointer"></button>
+    <span class="btn btn-primary" type="button" ng-click="exportAll()">Export All</span>
+    <span class="btn btn-primary fileChooser">Import All<input type="file" onchange="angular.element(this).scope().importAll(angular.element(this))"></span>
   </script>
 </html>
 
