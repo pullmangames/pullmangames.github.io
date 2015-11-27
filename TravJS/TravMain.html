@@ -198,23 +198,24 @@
         <label class="btn btn-primary" ng-model="shipMan.buyTradeGoods.assistant" uncheckable uib-btn-radio="'ally'">Ally</label>
       </div>
       <div style="margin-bottom:10px">
-        <trav-skill-check-dm ng-model="shipMan.buyTradeGoods.supplierFinder"
+        <button class="btn btn-primary" type="button" ng-click="showFindSupplierBox=!showFindSupplierBox">Roll to Find Supplier</button>
+        <strong style="margin-left:5px;margin-right:5px">OR</strong>
+        <button ng-disabled="!shipMan.buyTradeGoods.supplier.guideCanFind" class="btn btn-primary" type="button" ng-click="shipMan.buyTradeGoods.hireGuideForSupplier()">Hire Guide</button>
+      </div>
+      <div ng-show="showFindSupplierBox" style="margin-bottom:10px">
+        <trav-skill-check-dm ng-model="shipMan.buyTradeGoods.findSupplierResult"
                              ng-attr-skills="shipMan.buyTradeGoods.supplier.skillCheck.skills"
                              ng-attr-characteristics="shipMan.buyTradeGoods.supplier.skillCheck.characteristics"
                              ng-attr-difficulty="shipMan.buyTradeGoods.supplier.skillCheck.difficulty"
                              ng-attr-ext-factors="[shipMan.buyTradeGoods.externalFactors.findSupplier.starport[shipMan.tripData.departureWorld.UWPsplit.starport],
                                                    shipMan.buyTradeGoods.externalFactors.findSupplier.assistant[shipMan.buyTradeGoods.assistant],
                                                    shipMan.buyTradeGoods.externalFactors.findSupplier.suppliersFound]"
-                             ng-attr-require-all="true">
+                             ng-attr-require-all="true"
+                             ng-attr-on-roll="shipMan.buyTradeGoods.onFindSupplierRoll()">
         </trav-skill-check-dm>
       </div>
-      <div style="margin-bottom:10px">
-        <button ng-disabled="!shipMan.buyTradeGoods.supplierFinder" class="btn btn-primary" type="button" ng-click="shipMan.buyTradeGoods.rollToFindSupplier()">Roll to Find Supplier</button>
-        <strong style="margin-left:5px;margin-right:5px">OR</strong>
-        <button ng-disabled="!shipMan.buyTradeGoods.supplier.guideCanFind" class="btn btn-primary" type="button" ng-click="shipMan.buyTradeGoods.hireGuideForSupplier()">Hire Guide</button>
-      </div>
       <div ng-if="shipMan.buyTradeGoods.findSupplierResult">
-         Result: {{shipMan.buyTradeGoods.findSupplierResult.summary}}
+         Result: {{shipMan.buyTradeGoods.findSupplierResult.roll.summary}}
       </div>
     </div>
   </script>
@@ -601,7 +602,7 @@ Pilot: -1 DM
     <br><br>
     <trav-skill-check-dm ng-model="dmResult"></trav-skill-check-dm>
     <br>
-    <span ng-if="dmResult.character">You selected {{dmResult.character.name}}, who has a dice modifier of {{dmResult.dm}}.</span>
+    <span ng-if="dmResult && dmResult.character && dmResult.roll">{{dmResult.character.name}} rolled a {{dmResult.roll.summary}}.</span>
   </script>
 
 <!-------------------------- Skill Check DM Template -------------------------->
@@ -657,19 +658,22 @@ Pilot: -1 DM
            background-color:WhiteSmoke;
         }
       </style>
-      <table style="margin-top:10px"">
+      <table style="margin-top:10px">
         <tr>
           <td width=100%>
             <table ng-if="results && results.length" class="resultsTable">
               <tr><th colspan="3" style="padding-bottom:2px">Select a character:</th></tr>
-              <tr ng-repeat="result in results" ng-click="selectResult($index)" >
+              <tr ng-repeat="result in results" ng-click="selectCharToRoll($index)">
                 <td style="padding-left:20px;padding-right:10px">{{result.character.name}}</td>
                 <td style="padding-right:10px;text-align:right">{{result.dm}}</td>
-                <td><span ng-if="$index === selectedResultIndex" class="glyphicon glyphicon-arrow-left" aria-hidden="true" style="color:green"></span></td>
+                <td><span ng-if="$index === selectedCharacterIndex" class="glyphicon glyphicon-arrow-left" aria-hidden="true" style="color:green"></span></td>
               </tr>
             </table>
           </td>
-          <td style="vertical-align:top"><button type="button" class="btn btn-danger" ng-click="clearSelections()">Clear Selections</button></td>
+          <td style="vertical-align:top;text-align:right">
+            <button ng-disabled="!allowRoll()" type="button" class="btn btn-primary" style="margin-bottom:5px" ng-click="roll()">Roll</button>
+            <button type="button" class="btn btn-danger" ng-click="clearSelections()">Clear</button>
+          </td>
         </tr>
       </table>
     </div>
