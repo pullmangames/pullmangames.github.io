@@ -355,11 +355,8 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
    //Set the default supplier type
    smm.buyTradeGoods.supplier = smm.buyTradeGoods.suppliers['standard'];
 
-   smm.buyTradeGoods.rollToFindSupplier = function() {
-      var result = dicethrow(0, [smm.buyTradeGoods.supplierFinder.dm]);
-      smm.buyTradeGoods.findSupplierResult = result;
-      smm.buyTradeGoods.supplierFinder = undefined;
-      if (result.pass)
+   smm.buyTradeGoods.onFindSupplierRoll = function() {
+      if (smm.buyTradeGoods.findSupplierResult.roll.pass)
       {
          //Record a successful supplier search on this world: -1 for additional searches in the next 30 days
          var suppliersFound = smm.buyTradeGoods.persistent.suppliersFound[smm.tripData.departureWorld.Hex];

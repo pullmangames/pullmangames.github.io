@@ -62,16 +62,11 @@ rollModule.controller('RollController', ['$scope', 'travRollService', 'character
 //  character: the selected character
 //  dm:        selected character's dice modifier
 rollModule.directive('travSkillCheckDm', [function() {
-   var controller = ['$scope', '$uibModal', 'charactersService', 'skillsService', 'travRollService', function($scope, $uibModal, charactersService, skillsService, travRollService) {
-
-      var clearSelectedResults = function() {
-         $scope.selectedResultIndex = -1;
-         $scope.ngModel = undefined;
-      }
+   var controller = ['$scope', '$timeout', '$uibModal', 'charactersService', 'skillsService', 'travRollService', function($scope, $timeout, $uibModal, charactersService, skillsService, travRollService) {
 
       $scope.updateCharList = function() {
          $scope.results = [];
-         clearSelectedResults();
+         $scope.selectedCharacterIndex = -1;
          if ($scope.requireAll && !allSelected())
          {
             return;
@@ -150,12 +145,31 @@ rollModule.directive('travSkillCheckDm', [function() {
          $scope.results.sort(function(a,b){return b.dm-a.dm});
       };
 
-      $scope.selectResult = function(index)
+      $scope.selectCharToRoll = function(index)
       {
-         $scope.selectedResultIndex = index;
-         $scope.ngModel = $scope.results[index];
+         $scope.selectedCharacterIndex = index;
       };
       
+      $scope.allowRoll = function() {
+         return ($scope.results && $scope.results.length && $scope.selectedCharacterIndex >= 0 && $scope.selectedCharacterIndex < $scope.results.length)
+      }
+
+      $scope.roll = function()
+      {
+         var roll = dicethrow(0, [$scope.results[$scope.selectedCharacterIndex].dm]);
+         $scope.ngModel = {
+            roll:roll,
+            character:$scope.results[$scope.selectedCharacterIndex].character
+         };
+         $scope.selectedCharacterIndex = -1;
+         if ($scope.onRoll)
+         {
+            $timeout(function() {
+               $scope.onRoll({});
+            });
+         }
+      }
+
       $scope.clearSelections = function()
       {
          if (!$scope.locked.skills)
@@ -287,7 +301,7 @@ rollModule.directive('travSkillCheckDm', [function() {
       $scope.selected = {};
       $scope.selected.extFactors = [];
       $scope.results = [];
-      $scope.selectedResultIndex = -1;
+      $scope.selectedCharacterIndex = -1;
       $scope.locked = {};
       updateSkillList();
       updateCharacteristicsList();
@@ -328,15 +342,6 @@ rollModule.directive('travSkillCheckDm', [function() {
             }
          );
       }
-
-      var ngModelChanged = function() {
-         if ($scope.ngModel === undefined)
-         {
-            clearSelectedResults();
-         }
-      }
-
-      $scope.$watch('ngModel', ngModelChanged);
    }];
 
    return {
@@ -347,7 +352,8 @@ rollModule.directive('travSkillCheckDm', [function() {
          characteristics: "=",
          difficulty: "=",
          extFactors: "=",
-         requireAll: "@"
+         requireAll: "@",
+         onRoll: "&"
       },
       templateUrl: 'travellerSkillDm.view',
       controller: controller
