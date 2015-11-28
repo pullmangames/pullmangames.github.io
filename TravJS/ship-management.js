@@ -318,6 +318,7 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
                   smm.tripData.departureWorld = smm.tripData.arrivalWorlds[i];
                   indexToSplice = i;
                }
+               smm.tripData.arrivalWorlds[i].distance = parsecDistance(smm.tripData.departureWorld, smm.tripData.arrivalWorlds[i]);
             }
             if (indexToSplice !== undefined)
             {
@@ -559,4 +560,35 @@ Ongoing: Encounters for time spent at port
    //get paid, reduce fee by late table
    //tax?
 
+//IMPORTANT NOTE: This only works within sectors! Crossing a sector boundary will break this!
+var parsecDistance = function(world1, world2)
+{
+   if (world1.Sector !== world2.Sector)
+   {
+      throw "Worlds must be in same sector to calculate parsec disatnce!";
+   }
+   coords1 = hexToCoords(world1.Hex);
+   coords2 = hexToCoords(world2.Hex);
 
+   var func;
+   if (   (coords1.x % 2 === 0 && coords2.y < coords1.y)
+       || (coords1.x % 2 === 1 && coords1.y < coords2.y))
+   {
+      func = Math.floor;
+   }
+   else
+   {
+      func = Math.ceil;
+   }
+
+   return (  Math.abs(coords1.x - coords2.x)
+           + Math.max(Math.abs(coords1.y - coords2.y) - func(Math.abs(coords1.x - coords2.x) / 2),
+                      0));
+}
+
+var hexToCoords = function(hex)
+{
+   var x = (parseInt(hex.charAt(0)) * 10) + parseInt(hex.charAt(1));
+   var y = (parseInt(hex.charAt(2)) * 10) + parseInt(hex.charAt(3));
+   return {x:x, y:y};
+}
