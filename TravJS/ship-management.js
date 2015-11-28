@@ -6,7 +6,7 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
    smm.accordionData = [
       { name: "Manual Log Entry/Adjustment",                htmlTemplate: "shipman.accordion.manualOps.view" },
       { name: "Hunt for jobs/patrons/rumors/etc.",          htmlTemplate: "shipman.accordion.TBD.view" },
-      { name: "Find cargos",                       subSteps: [
+      { name: "Find cargos and passengers",                       subSteps: [
          { name: "Freight",               						htmlTemplate: "shipman.accordion.TBD.view" },
          { name: "Mail",                 						htmlTemplate: "shipman.accordion.TBD.view" },
          { name: "Passengers",            						htmlTemplate: "shipman.accordion.destinations.passengers.view" },
@@ -389,22 +389,20 @@ smm.generateAvailablePassengers=function() {
 
 var calculatePassengers=function(departureWorld,arrivalWorld){
 
-var departremarksmod=modifiersPerTradeCode(PassengersByTradeType.departure, departureWorld.Remarks);
-var arrivalremarksmod=modifiersPerTradeCode(PassengersByTradeType.arrival, arrivalWorld.Remarks);
+	var departremarksmod=modifiersPerTradeCode(PassengersByTradeType.departure, departureWorld.Remarks);
+	var arrivalremarksmod=modifiersPerTradeCode(PassengersByTradeType.arrival, arrivalWorld.Remarks);
 
-var AvailablePassengersEntry = departureWorld.UWPsplit["population"]
-								+ departremarksmod + arrivalremarksmod
-								+ Math.min(Math.abs(departureWorld.UWPsplit["TL"]-arrivalWorld.UWPsplit["TL"]),5)
-								//TODO + events table + rounding up passengers (Carouse/Streetwise, int/soc, average, days)
+	var AvailablePassengersEntry = departureWorld.UWPsplit["population"]
+									+ departremarksmod + arrivalremarksmod
+									+ Math.min(Math.abs(departureWorld.UWPsplit["TL"]-arrivalWorld.UWPsplit["TL"]),5)
+									//TODO + events table + rounding up passengers (Carouse/Streetwise, int/soc, average, days)
 
-var passengers=0;								
-var passengers={"low":AvailablePassengers.low[AvailablePassengersEntry](),
-				"mid":AvailablePassengers.mid[AvailablePassengersEntry](),
-				"high":AvailablePassengers.high[AvailablePassengersEntry]()}
+	var passengers=0;								
+	var passengers={"low":AvailablePassengers.low[AvailablePassengersEntry](),
+					"mid":AvailablePassengers.mid[AvailablePassengersEntry](),
+					"high":AvailablePassengers.high[AvailablePassengersEntry]()}
 
-return passengers;
-
-
+	return passengers;
 };
 
 

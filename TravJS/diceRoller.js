@@ -416,14 +416,7 @@ function dicethrow(difficulty, DMs){
 	rollresult.effect = rollresult.total+difficulty+dmtotal-8;
 	
 	//sure would be nice if I could use an object and a loop for the below
-	/*
-	if (rollresult.effect <= -6) rollresult.desc="Failure: Exceptional";
-	if (rollresult.effect >-6 && rollresult.effect <= -2) rollresult.desc="Failure: Average";
-	if (rollresult.effect ==-1) rollresult.desc="Failure: Marginal";
-	if (rollresult.effect ==0)  rollresult.desc="Success: Marginal";
-	if (rollresult.effect >=1 && rollresult.effect <= 5) rollresult.desc="Success: Average";
-	if (rollresult.effect >= 6) rollresult.desc="Success: Exceptional";
-	*/
+
 	if (rollresult.effect <= -6) 							{rollresult.pass=P_FAILURE; rollresult.magnitude=M_EXCEPTIONAL;}
 	if (rollresult.effect >-6 && rollresult.effect <= -2) 	{rollresult.pass=P_FAILURE; rollresult.magnitude=M_AVERAGE;}
 	if (rollresult.effect ==-1) 							{rollresult.pass=P_FAILURE; rollresult.magnitude=M_MARGINAL;}

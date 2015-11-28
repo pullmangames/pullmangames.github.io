@@ -160,8 +160,8 @@
    <!---------- Accordion: Visit Gas Giant -> Skim ----------->
   <script type="text/ng-template" id="shipman.accordion.visitGasGiant.skim.view">
 
-	        <trav-skill-check-dm ng-model="shipman.skimDM"
-                             ng-attr-skills="['Small Craft','Spacecraft']"
+	     <trav-skill-check-dm ng-model="shipman.skimDM"
+ 							 ng-attr-skills="['Small Craft','Spacecraft']"
                              ng-attr-characteristics="['Dex']"
                              ng-attr-difficulty="'Average'"
                              ng-attr-ext-factors="[]">
@@ -171,8 +171,20 @@
 
   <!---------- Accordion: Destinations -> Passengers ----------->
   <script type="text/ng-template" id="shipman.accordion.destinations.passengers.view">
+	
+	
+	<button class="btn btn-primary" type="button" ng-click="shipMan.shipManshowHuntForPassengersBox=!shipMan.shipManshowHuntForPassengersBox">Roll to round up extra passengers</button>
+	<div ng-show="shipManshowHuntForPassengersBox" style="margin-bottom:10px">
+	  <trav-skill-check-dm ng-model="shipman.skimDM"
+                            ng-attr-skills="['Carouse','Streetwise']"
+                             ng-attr-characteristics="['Int','Soc']"
+                             ng-attr-difficulty="'Average'"
+                             ng-attr-ext-factors="[]">
+        </trav-skill-check-dm>
+	</div>
 	 <form ng-submit="shipMan.generateAvailablePassengers()" class="form-inline">
         <input class="btn btn-default btn-primary" type="submit" value="Generate">
+        
     {{shipMan.availablePassengers}}
   </script>
 
