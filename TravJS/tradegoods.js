@@ -382,32 +382,139 @@
 		},
 12:{
 		2:{
-			"definedTradeGood":"",
-			"tons":function(){return rawroll(,).total * },
-			"basePrice":
+			"definedTradeGood":"stamped/poured cogs and sprockets",
+			"tons":function(){return rawroll(1,6).total * 12},
+			"basePrice":8000
 			},
 		5:{
-			"definedTradeGood":"",
-			"tons":function(){return rawroll(,).total * },
-			"basePrice":
+			"definedTradeGood":"piping and attachment pieces",
+			"tons":function(){return rawroll(1,6).total * 10},
+			"basePrice":9000
 			},
 		8:{
-			"definedTradeGood":"",
-			"tons":function(){return rawroll(,).total * },
-			"basePrice":
+			"definedTradeGood":"engine components",
+			"tons":function(){return rawroll(1,6).total * 10},
+			"basePrice":10000
 			},
 		11:{
-			"definedTradeGood":"",
-			"tons":function(){return rawroll(,).total * },
-			"basePrice":
+			"definedTradeGood":"pneumatics and hydraulics",
+			"tons":function(){return rawroll(1,6).total * 6},
+			"basePrice":11000
 			},
 		12:{
-			"definedTradeGood":"",
-			"tons":function(){return rawroll(,).total * },
-			"basePrice":
+			"definedTradeGood":"starship-quality components",
+			"tons":function(){return rawroll(1,6).total * 4},
+			"basePrice":12000
 			}
 		},
-		
-		
+13:{
+		2:{
+			"definedTradeGood":"second stage components",
+			"tons":function(){return rawroll(1,6).total * 12},
+			"basePrice":8000
+			},
+		5:{
+			"definedTradeGood":"uniforms/clothing products",
+			"tons":function(){return rawroll(1,6).total * 10},
+			"basePrice":9000
+			},
+		8:{
+			"definedTradeGood":"residential appliances",
+			"tons":function(){return rawroll(1,6).total * 10},
+			"basePrice":10000
+			},
+		11:{
+			"definedTradeGood":"furniture/storage systems/tools",
+			"tons":function(){return rawroll(1,6).total * 5},
+			"basePrice":11000
+			},
+		12:{
+			"definedTradeGood":"vehicle/survival accessories",
+			"tons":function(){return rawroll(1,6).total * 3},
+			"basePrice":12000
+			}
+		},
+14:{
+		2:{
+			"definedTradeGood":"foudnation stones and base elements",
+			"tons":function(){return rawroll(1,6).total * 14},
+			"basePrice":1000
+			},
+		5:{
+			"definedTradeGood":"workable metals",
+			"tons":function(){return rawroll(1,6).total * 12},
+			"basePrice":3000
+			},
+		8:{
+			"definedTradeGood":"workable alloys",
+			"tons":function(){return rawroll(1,6).total * 10},
+			"basePrice":5000
+			},
+		11:{
+			"definedTradeGood":"fabricated plastics",
+			"tons":function(){return rawroll(1,6).total * 5},
+			"basePrice":7000
+			},
+		12:{
+			"definedTradeGood":"chemical solutions or compounds",
+			"tons":function(){return rawroll(1,6).total * 3},
+			"basePrice":9000
+			}
+		},
+15:{
+		2:{
+			"definedTradeGood":"feed-grade vegetation",
+			"tons":function(){return rawroll(1,6).total * 12},
+			"basePrice":500
+			},
+		5:{
+			"definedTradeGood":"food-grade vegetation",
+			"tons":function(){return rawroll(1,6).total * 10},
+			"basePrice":1000
+			},
+		8:{
+			"definedTradeGood":"pre-packaged food and drink",
+			"tons":function(){return rawroll(1,6).total * 10},
+			"basePrice":2000
+			},
+		11:{
+			"definedTradeGood":"survival rations and storage-packed liquids",
+			"tons":function(){return rawroll(1,6).total * 8},
+			"basePrice":3000
+			},
+		12:{
+			"definedTradeGood":"junk food/soda/beer",
+			"tons":function(){return rawroll(1,6).total * 4},
+			"basePrice":5000
+			}
+		},
+16:{
+		2:{
+			"definedTradeGood":"bornite or galena or sedimentary stone",
+			"tons":function(){return rawroll(1,6).total * 14},
+			"basePrice":250
+			},
+		5:{
+			"definedTradeGood":"chalcocite or talc",
+			"tons":function(){return rawroll(1,6).total * 12},
+			"basePrice":500
+			},
+		8:{
+			"definedTradeGood":"bauxite, coltan and wolframite",
+			"tons":function(){return rawroll(1,6).total * 10},
+			"basePrice":1000
+			},
+		11:{
+			"definedTradeGood":"acanthite, cobalitite or magnetite",
+			"tons":function(){return rawroll(1,6).total * 8},
+			"basePrice":1500
+			},
+		12:{
+			"definedTradeGood":"chromite or cinnabar",
+			"tons":function(){return rawroll(1,6).total * 4},
+			"basePrice":2000
+			}
+		},
+
 }
 
