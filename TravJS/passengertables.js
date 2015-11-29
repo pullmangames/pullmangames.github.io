@@ -8,9 +8,9 @@ var PassengersByTradeType={
 		Ic:1,
 		In:2,
 		Po:-2,
-		Ri:-1//,
-		//Az:2 How to see if it's amber?
-		//Rd:4 how to see if it's red?
+		Ri:-1,//,
+		Az:2,//Injected by modifiersPerTradeCode, if not using that, inject yourself
+		Rd:4 //Injected by modifiersPerTradeCode, if not using that, inject yourself
 	},
 	arrival:{
 		As:-1,
@@ -23,9 +23,9 @@ var PassengersByTradeType={
 		Lo:-4,
 		Ni:-1,
 		Po:-1,
-		Ri:+2//,
-		//Az:-2, How to see if it's amber?
-		//Rd:-4 How to see if it's red?
+		Ri:2,
+		Az:-2, //Injected by modifiersPerTradeCode, if not using that, inject yourself
+		Rd:-4 //Injected by modifiersPerTradeCode, if not using that, inject yourself
 	}
 	};
 

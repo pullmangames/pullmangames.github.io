@@ -174,7 +174,8 @@
 	
 	
 	 <button class="btn btn-primary" type="button" ng-click="shipMan.passengers.showHuntForPassengersBox=!shipMan.passengers.showHuntForPassengersBox">Roll to round up extra passengers</button>
-	 <div ng-if="shipMan.passengers.showHuntForPassengersBox" style="margin-bottom:10px">
+	 <!--<div ng-if="shipMan.passengers.showHuntForPassengersBox" style="margin-bottom:10px">-->
+	 <div uib-collapse="shipMan.passengers.showHuntForPassengersBox">
 	   <trav-skill-check-dm ng-model="shipMan.passengers.roundupResult"
                            ng-attr-skills="['Carouse','Streetwise']"
                            ng-attr-characteristics="['Int','Soc']"
@@ -183,9 +184,11 @@
                            ng-attr-on-roll="shipMan.passengers.roundupCallback()"
                            ng-attr-require-all="true">
       </trav-skill-check-dm>
+      Result of the search: {{shipMan.passengers.roundupResult.roll.summary +" ("+shipMan.passengers.roundupResult.roll.effect+")"}}
     </div>
 	 <form ng-submit="shipMan.passengers.generateAvailable()" class="form-inline">
         <input class="btn btn-default btn-primary" type="submit" value="Generate">
+        Roundup bonus: {{shipMan.passengers.roundupModifier}}
     </form>
     {{shipMan.availablePassengers}}
   </script>
@@ -254,6 +257,14 @@
       <div class="row">
 
         <div class="col-md-3">{{shipMan.partyShip.name}} current status <br> current / total (open):
+        
+		<uib-progressbar max="shipMan.partyShip.maxcargo" value="shipMan.log.status.totalCargo()"><span style="color:DarkGray; white-space:nowrap;">Cargo: {{shipMan.log.status.totalCargo()}} / {{shipMan.partyShip.maxcargo}} ({{shipMan.partyShip.maxcargo - shipMan.log.status.totalCargo()}})</span></uib-progressbar>
+        <uib-progressbar max="shipMan.partyShip.maxfuel" value="shipMan.log.status.fuel"><span style="color:DarkGray; white-space:nowrap;">Fuel: {{shipMan.log.status.fuel}} / {{shipMan.partyShip.maxfuel}} ({{shipMan.partyShip.maxfuel - shipMan.log.status.fuel}})</span></uib-progressbar>
+        <uib-progressbar max="28" value="shipMan.log.status.daysUntilMortgage()"><span style="color:DarkGray; white-space:nowrap;">{{shipMan.log.status.daysUntilMortgage()}} days until Cr. {{shipMan.partyShip.monthlypayment}} payment</span></uib-progressbar>
+		<uib-progressbar max="365" value="shipMan.log.status.daysUntilMaint()"><span style="color:DarkGray; white-space:nowrap;">Maint: {{shipMan.log.status.daysUntilMaint()}} ({{shipMan.log.status.maintDate().toString()}})</span></uib-progressbar>
+
+  
+          
           <pre>
 Cargo: {{shipMan.log.status.totalCargo()}} / {{shipMan.partyShip.maxcargo}} ({{shipMan.partyShip.maxcargo - shipMan.log.status.totalCargo()}})
 Smuggle: TODO?
@@ -267,7 +278,7 @@ Cash: {{shipMan.log.status.cash}} Cr.
 Cargo Value:{{shipMan.log.status.totalCargoValue()}} Cr.
 Maint holdback: {{shipMan.partyShip.monthlymaint}} Cr. per 28 days
 Maint fund: {{shipMan.log.status.maintFund}} Cr. / {{shipMan.partyShip.annualmaint}} Cr. ({{shipMan.partyShip.annualmaint - shipMan.log.status.maintFund}} Cr.)
-Maint date: 1106:001 ({{shipMan.log.status.daysUntilMaint()}})
+Maint date: {{shipMan.log.status.maintDate().toString()}} ({{shipMan.log.status.daysUntilMaint()}})
 
 Turret:BL,BL,S
 Turret:BL,BL,S

@@ -60,7 +60,7 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
    theShip.annualmaint=Math.ceil(theShip.newprice*.001);
    theShip.monthlymaint=Math.ceil(theShip.annualmaint/12);
    theShip.purchasedate=dateFactory(1105,001);
-   theShip.lastmaint=theShip.purchasedate;
+   //theShip.lastmaint=theShip.purchasedate;
 
    smm.partyShip=theShip;
 
@@ -77,6 +77,7 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       this.status.cash=0;
       this.status.totalpayments=0;
       this.status.maintFund=0;
+      this.status.lastmaint=smm.partyShip.purchasedate;
       this.status.totalCargo = function(){
          var total=0;
          for (var i=0;i<this.cargo.length;i++)
@@ -101,7 +102,7 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       };
       
       this.status.maintDate = function(){
-         return smm.partyShip.lastmaint.cloneandincrement(365);
+         return  this.lastmaint.cloneandincrement(365);
       };
       this.status.daysUntilMaint = function(){
          return this.date.daysaway(this.maintDate());
@@ -379,10 +380,8 @@ smm.passengers={};
 smm.passengers.roundupModifier=0;
 
 smm.passengers.roundupCallback = function() {
-	//console.log(smm.passengers.roundupResult.roll);
-	//console.log(smm.passengers.roundupResult.character);
 	smm.passengers.roundupModifier=Math.trunc(smm.passengers.roundupResult.roll.effect/2);
-	 smm.logNow(smm.passengers.roundupResult.roll.timing, ""+smm.passengers.roundupResult.character.name+" searched for passengers (SKILL, "+smm.passengers.roundupModifier+")");
+	 smm.logNow(smm.passengers.roundupResult.roll.timing, ""+smm.passengers.roundupResult.character.name+" searched for passengers ("+ smm.passengers.roundupResult.skill.name +", "+smm.passengers.roundupModifier+")");
 };
 
 smm.passengers.generateAvailable=function() {
@@ -394,24 +393,24 @@ smm.passengers.generateAvailable=function() {
 			   done: modified by TL difference (max 5)
 			TODO: Every group of 6 passengers taken, 4+ means one is special, roll on passenger table
 		*/
+		if (!smm.passengers.showHuntForPassengersBox) smm.passengers.roundupModifier = 0;
 		smm.availablePassengers = calculatePassengers(smm.tripData.departureWorld,smm.tripData.arrivalWorld, smm.passengers.roundupModifier);
-		
 		}
-
-
 }]);
 
 var calculatePassengers=function(departureWorld,arrivalWorld,roundupModifier){
 
-	var departremarksmod=modifiersPerTradeCode(PassengersByTradeType.departure, departureWorld.Remarks);
-	var arrivalremarksmod=modifiersPerTradeCode(PassengersByTradeType.arrival, arrivalWorld.Remarks);
+	
+	var departremarksmod=modifiersPerTradeCode(PassengersByTradeType.departure, departureWorld.Remarks, departureWorld.Zone);
+	var arrivalremarksmod=modifiersPerTradeCode(PassengersByTradeType.arrival, arrivalWorld.Remarks, departureWorld.Zone);
 
 	var AvailablePassengersEntry = departureWorld.UWPsplit["population"]
 									+ departremarksmod + arrivalremarksmod
-									+ Math.min(Math.abs(departureWorld.UWPsplit["TL"]-arrivalWorld.UWPsplit["TL"]),5)
+									- Math.min(Math.abs(departureWorld.UWPsplit["TL"]-arrivalWorld.UWPsplit["TL"]),5)
 									+ roundupModifier;
 									//TODO + events table 
-							
+
+	AvailablePassengersEntry=Math.min(16,Math.max(0,AvailablePassengersEntry)); //values to 0-16 only
 	var passengers={"low":AvailablePassengers.low[AvailablePassengersEntry](),
 					"mid":AvailablePassengers.mid[AvailablePassengersEntry](),
 					"high":AvailablePassengers.high[AvailablePassengersEntry]()}
@@ -488,9 +487,13 @@ var uwpsplit = function(uwp) {
    };
 }
 
-var modifiersPerTradeCode = function(table, remarks){
+var modifiersPerTradeCode = function(table, remarks, zone){
    var total=0;
    var remarklist=remarks.split(" ");
+   
+   if (zone=='R') remarklist.push("Rz");
+   if (zone=='A') remarklist.push("Az");
+   
    for (var i=0;i<remarklist.length;i++){
       if (remarklist[i] in table)
          total+=table[remarklist[i]];
