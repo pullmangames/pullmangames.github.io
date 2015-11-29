@@ -351,3 +351,63 @@
 
 		
 }
+
+{
+ 11:{
+		2:{
+			"definedTradeGood":"Calculators/Adding Machines",
+			"tons":function(){return rawroll(1,6).total * 12},
+			"basePrice":6000
+			},
+		5:{
+			"definedTradeGood":"Video Game and Entertainment Systems",
+			"tons":function(){return rawroll(1,6).total * 10},
+			"basePrice":8000
+			},
+		8:{
+			"definedTradeGood":"Personal and Commercial Computers",
+			"tons":function(){return rawroll(1,6).total * 10},
+			"basePrice":10000
+			},
+		11:{
+			"definedTradeGood":"Banking Machines and Security Systems",
+			"tons":function(){return rawroll(1,6).total * 4},
+			"basePrice":12000
+			},
+		12:{
+			"definedTradeGood":"Microprocessor Assemblies",
+			"tons":function(){return rawroll(1,6).total * 2},
+			"basePrice":14000
+			}
+		},
+12:{
+		2:{
+			"definedTradeGood":"",
+			"tons":function(){return rawroll(,).total * },
+			"basePrice":
+			},
+		5:{
+			"definedTradeGood":"",
+			"tons":function(){return rawroll(,).total * },
+			"basePrice":
+			},
+		8:{
+			"definedTradeGood":"",
+			"tons":function(){return rawroll(,).total * },
+			"basePrice":
+			},
+		11:{
+			"definedTradeGood":"",
+			"tons":function(){return rawroll(,).total * },
+			"basePrice":
+			},
+		12:{
+			"definedTradeGood":"",
+			"tons":function(){return rawroll(,).total * },
+			"basePrice":
+			}
+		},
+		
+		
+}
+
