@@ -58,6 +58,8 @@
     Da: 'Danger',
     Ab: 'Data Repository',
     An: 'Ancient Site',
+    Az: 'Amber Zone',
+    Rz: 'Red Zone',
 
     Rs: 'Research Station',
     RsA: 'Research Station Alpha',
