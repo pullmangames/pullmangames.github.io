@@ -278,6 +278,10 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       smm.log.entries.push(newEntry);
    };
    
+   smm.logNow=function(newelapsed, newtext) {
+   	 smm.logEntry(smm.log.status.date.year, smm.log.status.date.day, newelapsed, newtext);
+   };
+   
    smm.manualSetDate=function(){
        smm.log.status.date=dateFactory(smm.inputYear,smm.inputDate);
        //The date has changed - some suppliers we found may now have been > 30 days ago
@@ -371,23 +375,33 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       }
    };
 
-smm.generateAvailablePassengers=function() {
+smm.passengers={};
+smm.passengers.roundupModifier=0;
+
+smm.passengers.roundupCallback = function() {
+	//console.log(smm.passengers.roundupResult.roll);
+	//console.log(smm.passengers.roundupResult.character);
+	smm.passengers.roundupModifier=Math.trunc(smm.passengers.roundupResult.roll.effect/2);
+	 smm.logNow(smm.passengers.roundupResult.roll.timing, ""+smm.passengers.roundupResult.character.name+" searched for passengers (SKILL, "+smm.passengers.roundupModifier+")");
+};
+
+smm.passengers.generateAvailable=function() {
 		/*
 		 Roll on the Available Passengers table
 			   TODO: modified by events
 			   done: modified by source population
 			   done: modified by trade code table
 			   done: modified by TL difference (max 5)
-			   TODO: modified by rounding up passengers (Carouse/Streetwise, int/soc, average, days)
 			TODO: Every group of 6 passengers taken, 4+ means one is special, roll on passenger table
 		*/
-		smm.availablePassengers = calculatePassengers(smm.tripData.departureWorld,smm.tripData.arrivalWorld);
+		smm.availablePassengers = calculatePassengers(smm.tripData.departureWorld,smm.tripData.arrivalWorld, smm.passengers.roundupModifier);
+		
 		}
 
 
 }]);
 
-var calculatePassengers=function(departureWorld,arrivalWorld){
+var calculatePassengers=function(departureWorld,arrivalWorld,roundupModifier){
 
 	var departremarksmod=modifiersPerTradeCode(PassengersByTradeType.departure, departureWorld.Remarks);
 	var arrivalremarksmod=modifiersPerTradeCode(PassengersByTradeType.arrival, arrivalWorld.Remarks);
@@ -395,9 +409,9 @@ var calculatePassengers=function(departureWorld,arrivalWorld){
 	var AvailablePassengersEntry = departureWorld.UWPsplit["population"]
 									+ departremarksmod + arrivalremarksmod
 									+ Math.min(Math.abs(departureWorld.UWPsplit["TL"]-arrivalWorld.UWPsplit["TL"]),5)
-									//TODO + events table + rounding up passengers (Carouse/Streetwise, int/soc, average, days)
-
-	var passengers=0;								
+									+ roundupModifier;
+									//TODO + events table 
+							
 	var passengers={"low":AvailablePassengers.low[AvailablePassengersEntry](),
 					"mid":AvailablePassengers.mid[AvailablePassengersEntry](),
 					"high":AvailablePassengers.high[AvailablePassengersEntry]()}

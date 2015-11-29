@@ -173,16 +173,17 @@
   <script type="text/ng-template" id="shipman.accordion.destinations.passengers.view">
 	
 	
-	<button class="btn btn-primary" type="button" ng-click="shipMan.shipManshowHuntForPassengersBox=!shipMan.shipManshowHuntForPassengersBox">Roll to round up extra passengers</button>
-	<div ng-show="shipManshowHuntForPassengersBox" style="margin-bottom:10px">
-	  <trav-skill-check-dm ng-model="shipman.skimDM"
+	<button class="btn btn-primary" type="button" ng-click="shipMan.passengers.showHuntForPassengersBox=!shipMan.passengers.showHuntForPassengersBox">Roll to round up extra passengers</button>
+	<div ng-show="shipMan.passengers.showHuntForPassengersBox" style="margin-bottom:10px">
+	  <trav-skill-check-dm ng-model="shipMan.passengers.roundupResult"
                             ng-attr-skills="['Carouse','Streetwise']"
                              ng-attr-characteristics="['Int','Soc']"
                              ng-attr-difficulty="'Average'"
-                             ng-attr-ext-factors="[]">
+                             ng-attr-ext-factors="[]"
+                             ng-attr-on-roll="shipMan.passengers.roundupCallback()">
         </trav-skill-check-dm>
 	</div>
-	 <form ng-submit="shipMan.generateAvailablePassengers()" class="form-inline">
+	 <form ng-submit="shipMan.passengers.generateAvailable()" class="form-inline">
         <input class="btn btn-default btn-primary" type="submit" value="Generate">
         
     {{shipMan.availablePassengers}}
