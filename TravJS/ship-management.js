@@ -325,11 +325,14 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
                   smm.tripData.departureWorld = smm.tripData.arrivalWorlds[i];
                   indexToSplice = i;
                }
-               smm.tripData.arrivalWorlds[i].distance = parsecDistance(smm.tripData.departureWorld, smm.tripData.arrivalWorlds[i]);
             }
             if (indexToSplice !== undefined)
             {
                 smm.tripData.arrivalWorlds.splice(indexToSplice, 1);
+            }
+            for (var i = 0; i < smm.tripData.arrivalWorlds.length; i++)
+            {
+               smm.tripData.arrivalWorlds[i].distance = parsecDistance(smm.tripData.departureWorld, smm.tripData.arrivalWorlds[i]);
             }
             //Refresh number of suppliers found in past month for the new world we're on
             smm.buyTradeGoods.setFoundSuppliersExtFactor();
