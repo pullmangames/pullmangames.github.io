@@ -173,19 +173,20 @@
   <script type="text/ng-template" id="shipman.accordion.destinations.passengers.view">
 	
 	
-	<button class="btn btn-primary" type="button" ng-click="shipMan.passengers.showHuntForPassengersBox=!shipMan.passengers.showHuntForPassengersBox">Roll to round up extra passengers</button>
-	<div ng-show="shipMan.passengers.showHuntForPassengersBox" style="margin-bottom:10px">
-	  <trav-skill-check-dm ng-model="shipMan.passengers.roundupResult"
-                            ng-attr-skills="['Carouse','Streetwise']"
-                             ng-attr-characteristics="['Int','Soc']"
-                             ng-attr-difficulty="'Average'"
-                             ng-attr-ext-factors="[]"
-                             ng-attr-on-roll="shipMan.passengers.roundupCallback()">
-        </trav-skill-check-dm>
-	</div>
+	 <button class="btn btn-primary" type="button" ng-click="shipMan.passengers.showHuntForPassengersBox=!shipMan.passengers.showHuntForPassengersBox">Roll to round up extra passengers</button>
+	 <div ng-if="shipMan.passengers.showHuntForPassengersBox" style="margin-bottom:10px">
+	   <trav-skill-check-dm ng-model="shipMan.passengers.roundupResult"
+                           ng-attr-skills="['Carouse','Streetwise']"
+                           ng-attr-characteristics="['Int','Soc']"
+                           ng-attr-difficulty="'Average'"
+                           ng-attr-ext-factors="[]"
+                           ng-attr-on-roll="shipMan.passengers.roundupCallback()"
+                           ng-attr-require-all="true">
+      </trav-skill-check-dm>
+    </div>
 	 <form ng-submit="shipMan.passengers.generateAvailable()" class="form-inline">
         <input class="btn btn-default btn-primary" type="submit" value="Generate">
-        
+    </form>
     {{shipMan.availablePassengers}}
   </script>
 
@@ -215,7 +216,7 @@
         <strong style="margin-left:5px;margin-right:5px">OR</strong>
         <button ng-disabled="!shipMan.buyTradeGoods.supplier.guideCanFind" class="btn btn-primary" type="button" ng-click="shipMan.buyTradeGoods.hireGuideForSupplier()">Hire Guide</button>
       </div>
-      <div ng-show="showFindSupplierBox" style="margin-bottom:10px">
+      <div ng-if="showFindSupplierBox" style="margin-bottom:10px">
         <trav-skill-check-dm ng-model="shipMan.buyTradeGoods.findSupplierResult"
                              ng-attr-skills="shipMan.buyTradeGoods.supplier.skillCheck.skills"
                              ng-attr-characteristics="shipMan.buyTradeGoods.supplier.skillCheck.characteristics"
