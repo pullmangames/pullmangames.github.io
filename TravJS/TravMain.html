@@ -174,8 +174,8 @@
 	
 	
 	 <button class="btn btn-primary" type="button" ng-click="shipMan.passengers.showHuntForPassengersBox=!shipMan.passengers.showHuntForPassengersBox">Roll to round up extra passengers</button>
-	 <!--<div ng-if="shipMan.passengers.showHuntForPassengersBox" style="margin-bottom:10px">-->
-	 <div uib-collapse="shipMan.passengers.showHuntForPassengersBox">
+	 <div ng-if="shipMan.passengers.showHuntForPassengersBox" style="margin-bottom:10px">
+	
 	   <trav-skill-check-dm ng-model="shipMan.passengers.roundupResult"
                            ng-attr-skills="['Carouse','Streetwise']"
                            ng-attr-characteristics="['Int','Soc']"
@@ -256,29 +256,38 @@
 
       <div class="row">
 
-        <div class="col-md-3">{{shipMan.partyShip.name}} current status <br> current / total (open):
+        <div class="col-md-3">{{shipMan.partyShip.name}} Status 
         
 		<uib-progressbar max="shipMan.partyShip.maxcargo" value="shipMan.log.status.totalCargo()"><span style="color:DarkGray; white-space:nowrap;">Cargo: {{shipMan.log.status.totalCargo()}} / {{shipMan.partyShip.maxcargo}} ({{shipMan.partyShip.maxcargo - shipMan.log.status.totalCargo()}})</span></uib-progressbar>
         <uib-progressbar max="shipMan.partyShip.maxfuel" value="shipMan.log.status.fuel"><span style="color:DarkGray; white-space:nowrap;">Fuel: {{shipMan.log.status.fuel}} / {{shipMan.partyShip.maxfuel}} ({{shipMan.partyShip.maxfuel - shipMan.log.status.fuel}})</span></uib-progressbar>
         <uib-progressbar max="28" value="shipMan.log.status.daysUntilMortgage()"><span style="color:DarkGray; white-space:nowrap;">{{shipMan.log.status.daysUntilMortgage()}} days until Cr. {{shipMan.partyShip.monthlypayment}} payment</span></uib-progressbar>
 		<uib-progressbar max="365" value="shipMan.log.status.daysUntilMaint()"><span style="color:DarkGray; white-space:nowrap;">Maint: {{shipMan.log.status.daysUntilMaint()}} ({{shipMan.log.status.maintDate().toString()}})</span></uib-progressbar>
+		<uib-progressbar max="shipMan.partyShip.annualmaint" value="shipMan.log.status.maintFund"><span style="color:DarkGray; white-space:nowrap;">Maint Fund: {{shipMan.log.status.maintFund}} Cr. / {{shipMan.partyShip.annualmaint}} Cr. ({{shipMan.partyShip.annualmaint - shipMan.log.status.maintFund}} Cr.)</span></uib-progressbar>
 
+Staterooms: <!--Staterooms and low berths are a bit hacky.  Fix.-->
+		<uib-rating readonly="true" ng-model="shipMan.log.status.stateroomsused" max="shipMan.partyShip.staterooms" state-on="'glyphicon-check'" state-off="'glyphicon-unchecked'" ></uib-rating>
+<br>Low Berths:
+		<uib-rating readonly="true" ng-model="shipMan.log.status.lowpass" max="shipMan.partyShip.maxlow" state-on="'glyphicon-hdd'" state-off="'glyphicon-inbox'" ></uib-rating>
   
-          
-          <pre>
-Cargo: {{shipMan.log.status.totalCargo()}} / {{shipMan.partyShip.maxcargo}} ({{shipMan.partyShip.maxcargo - shipMan.log.status.totalCargo()}})
+ <!-- removed from pre tag:
+ Cargo: {{shipMan.log.status.totalCargo()}} / {{shipMan.partyShip.maxcargo}} ({{shipMan.partyShip.maxcargo - shipMan.log.status.totalCargo()}})
 Smuggle: TODO?
 Fuel: {{shipMan.log.status.fuel}} / {{shipMan.partyShip.maxfuel}} ({{shipMan.partyShip.maxfuel - shipMan.log.status.fuel}})
+Maint date: {{shipMan.log.status.maintDate().toString()}} ({{shipMan.log.status.daysUntilMaint()}})
 Staterooms: {{shipMan.partyShip.crew/2 + shipMan.log.status.highpass + shipMan.log.status.midpass}} / {{shipMan.partyShip.staterooms}} ({{shipMan.partyShip.staterooms - (shipMan.partyShip.crew/2 + shipMan.log.status.highpass + shipMan.log.status.midpass)}})
-Crew: {{shipMan.partyShip.crew/2}}, High: {{shipMan.log.status.highpass}}, Mid: {{shipMan.log.status.midpass}}
 Low Berths: {{shipMan.log.status.lowpass}} / {{shipMan.partyShip.maxlow}} ({{shipMan.partyShip.maxlow - shipMan.log.status.lowpass}})
-Last Payment: {{shipMan.log.status.lastPayment}}
 Due: {{shipMan.partyShip.monthlypayment}} Cr on {{shipMan.log.status.dueDate().toString()}} ({{shipMan.log.status.daysUntilMortgage()}})
+Maint fund: {{shipMan.log.status.maintFund}} Cr. / {{shipMan.partyShip.annualmaint}} Cr. ({{shipMan.partyShip.annualmaint - shipMan.log.status.maintFund}} Cr.)
+
+-->         
+          <pre>
+Crew: {{shipMan.partyShip.crew/2}}, High: {{shipMan.log.status.highpass}}, Mid: {{shipMan.log.status.midpass}}
+
+Last Payment: {{shipMan.log.status.lastPayment}}
+
 Cash: {{shipMan.log.status.cash}} Cr.
 Cargo Value:{{shipMan.log.status.totalCargoValue()}} Cr.
 Maint holdback: {{shipMan.partyShip.monthlymaint}} Cr. per 28 days
-Maint fund: {{shipMan.log.status.maintFund}} Cr. / {{shipMan.partyShip.annualmaint}} Cr. ({{shipMan.partyShip.annualmaint - shipMan.log.status.maintFund}} Cr.)
-Maint date: {{shipMan.log.status.maintDate().toString()}} ({{shipMan.log.status.daysUntilMaint()}})
 
 Turret:BL,BL,S
 Turret:BL,BL,S

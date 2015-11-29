@@ -78,6 +78,8 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       this.status.totalpayments=0;
       this.status.maintFund=0;
       this.status.lastmaint=smm.partyShip.purchasedate;
+      this.status.stateroomsused=smm.partyShip.crew/2 + this.status.highpass + this.status.midpass;
+      
       this.status.totalCargo = function(){
          var total=0;
          for (var i=0;i<this.cargo.length;i++)
