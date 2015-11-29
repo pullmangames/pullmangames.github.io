@@ -577,10 +577,10 @@ var parsecDistance = function(world1, world2)
 {
    if (world1.Sector !== world2.Sector)
    {
-      throw "Worlds must be in same sector to calculate parsec disatnce!";
+      throw "Worlds must be in same sector to calculate parsec disatnce";
    }
-   coords1 = hexToCoords(world1.Hex);
-   coords2 = hexToCoords(world2.Hex);
+   var coords1 = hexToCoords(world1.Hex);
+   var coords2 = hexToCoords(world2.Hex);
 
    var func;
    if (   (coords1.x % 2 === 0 && coords2.y < coords1.y)
