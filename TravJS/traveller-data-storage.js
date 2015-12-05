@@ -109,7 +109,7 @@ dsModule.service('dataStorageService', ['$rootScope', 'alertsService', function(
       document.body.removeChild(element);
    }
 
-   //Import all of the settings from the given JSON file
+    //Import all of the settings from the given JSON file
    this.importAll = function(fileToRead)
    {
       var reader = new FileReader();
@@ -153,4 +153,48 @@ dsModule.service('dataStorageService', ['$rootScope', 'alertsService', function(
          alertsService.addAlert("danger", "Unable to read " + fileToRead.name)
       }
    }
+
+   //Export all of the settings as a javascript object that can be archived with the project, if people can't import game data the usual way
+   this.exportVersionControlledData = function () {
+      var vcData = {};
+      //Search the localScope for keys with the prefix dataStorageService_
+      //Any that match were saved by this service and need to be exported
+      for (var key in localStorage) {
+         if (key.substring(0, prefixLen) === prefix) {
+            //Get the object to be exported
+            vcData[key] = angular.fromJson(localStorage.getItem(key));
+         }
+      }
+      //Convert all the objects to be exported into JSON
+      var jsToExport = angular.toJson(vcData, false);
+      //Convert the JSON into actual javascript code
+      jsToExport = "travellerArchivedGameData = " + jsToExport + ";"
+      //Download the js "file"
+      var element = document.createElement('a');
+      element.setAttribute('href', 'data:application/json,' + encodeURIComponent(jsToExport));
+      //Note: You can't actually put ".js" on the end of the file. Browsers will block it as potentially malicious
+      element.setAttribute('download', 'traveller-version-controlled-data');
+      element.style.display = 'none';
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+   }
+
+   //Import all of the settings from the archived game data
+   this.useVersionControlledData = function () {
+      for (var key in travellerArchivedGameData) {
+         if (key.substring(0, prefixLen) === prefix) {
+            localStorage.setItem(key, angular.toJson(travellerArchivedGameData[key]));
+         }
+         //Search the list of registrations for any that match this key.
+         for (var i = 0; i < registeredData.length; i++) {
+            //If a match is found, call its onload() function to overwrite
+            //the existing object with the imported data.
+            if (registeredData[i].key === key) {
+               registeredData[i].onload(travellerArchivedGameData[key]);
+            }
+         }
+      }
+   }
+
 }]);

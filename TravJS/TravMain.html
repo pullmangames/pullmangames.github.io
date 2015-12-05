@@ -17,6 +17,7 @@
     <script src="traveller-alerts.js"></script>
     <script src="traveller-characters.js"></script>
     <script src="traveller-skills.js"></script>
+    <script src="traveller-archived-game-data.js"></script>
     <script src="traveller-data-storage.js"></script>
     <script src="traveller-app-config.js"></script>
     <script src="diceRoller.js"></script>
@@ -859,8 +860,11 @@ Left alone, the scout and its heroic crew settled into the vacuous night and die
 <!-------------------------------- Config View -------------------------------->
   <script type="text/ng-template" id="config.view">
     <br><br>
-    <span class="btn btn-primary" type="button" ng-click="exportAll()">Export All</span>
-    <span class="btn btn-primary fileChooser">Import All<input type="file" onchange="angular.element(this).scope().importAll(angular.element(this))"></span>
+    <span class="btn btn-primary" type="button" ng-click="exportAll()">Export All to JSON</span>
+    <span class="btn btn-primary fileChooser">Import All from JSON<input type="file" onchange="angular.element(this).scope().importAll(angular.element(this))"></span>
+    <br /><br />
+    <span class="btn btn-primary" type="button" ng-click="exportVersionControlledData()">Export Archivable Game Data</span>
+    <span class="btn btn-primary" type="button" ng-click="useVersionControlledData()">Use Archived Game Data</span>
   </script>
 </html>
 
