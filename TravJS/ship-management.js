@@ -28,7 +28,8 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       { name: "Exit Jump - Encounter",                      htmlTemplate: "shipman.accordion.TBD.view" },
       { name: "Visit Gas Giant",                            subSteps: [
          { name: "Gas Giant Encounter",                     	htmlTemplate: "shipman.accordion.TBD.view" },
-         { name: "Skimming",                                	htmlTemplate: "shipman.accordion.visitGasGiant.skim.view" }]},      { name: "Port Arrival - Encounter",                   htmlTemplate: "shipman.accordion.TBD.view" },
+         { name: "Skimming",                                   htmlTemplate: "shipman.accordion.visitGasGiant.skim.view" }]},
+      { name: "Port Arrival - Encounter",                   htmlTemplate: "shipman.accordion.TBD.view" },
       { name: "Land/Dock",                                  htmlTemplate: "shipman.accordion.TBD.view" },
       { name: "Unload",                                     subSteps: [
          { name: "Freight",                                 	htmlTemplate: "shipman.accordion.TBD.view" },

@@ -7,4 +7,10 @@ configModule.controller('configController', ['$scope', 'dataStorageService', fun
       dataStorageService.importAll(inputElement.files[0]);
       inputElement.value = '';
    };
+   $scope.exportVersionControlledData = function () {
+      dataStorageService.exportVersionControlledData();
+   }
+   $scope.useVersionControlledData = function () {
+      dataStorageService.useVersionControlledData();
+   }
 }]);
