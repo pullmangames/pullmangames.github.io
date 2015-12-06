@@ -139,23 +139,29 @@
  <!---------- Accordion: Jump -> Astrogation ----------->
   <script type="text/ng-template" id="shipman.accordion.jump.astrogation.view">
 	       TODO: ext-factor of jump distance
-	        <trav-skill-check-dm ng-model="shipman.AstrogationDM"
+	        <trav-skill-check-dm ng-model="shipMan.AstrogationDM"
                              ng-attr-skills="['Astrogation']"
                              ng-attr-characteristics="['Edu']"
                              ng-attr-difficulty="'Easy'"
                              ng-attr-ext-factors="[]">
         </trav-skill-check-dm>
+        <div ng-if="shipMan.AstrogationDM">
+        	Result: {{shipMan.AstrogationDM.roll.summary}} ({{shipMan.AstrogationDM.roll.effect}})
+	</div>
   </script>
   
    <!---------- Accordion: Jump -> Divert Power ----------->
   <script type="text/ng-template" id="shipman.accordion.jump.divertpower.view">
 
-	        <trav-skill-check-dm ng-model="shipman.divertpowerDM"
+	        <trav-skill-check-dm ng-model="shipMan.divertpowerDM"
                              ng-attr-skills="['Jump Drive (J-Drive)']"
                              ng-attr-characteristics="['Edu']"
                              ng-attr-difficulty="'Average'"
                              ng-attr-ext-factors="[]">
         </trav-skill-check-dm>
+        <div ng-if="shipMan.divertpowerDM">
+        	Result: {{shipMan.divertpowerDM.roll.summary}} ({{shipMan.divertpowerDM.roll.effect}})
+	</div>
   </script>
 
    <!---------- Accordion: Visit Gas Giant -> Skim ----------->
@@ -236,7 +242,7 @@
         </trav-skill-check-dm>
       </div>
       <div ng-if="shipMan.buyTradeGoods.findSupplierResult">
-         Result: {{shipMan.buyTradeGoods.findSupplierResult.roll.summary}}
+         Result: {{shipMan.buyTradeGoods.findSupplierResult.roll.summary}} ({{shipMan.buyTradeGoods.roll.effect}})
       </div>
     </div>
   </script>
