@@ -119,14 +119,108 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
    $scope.smmPersistent.shipLog = smm.log;
    smm.tripData = {};
    $scope.smmPersistent.tripData = smm.tripData;
-   smm.buyTradeGoods = {};
-   smm.buyTradeGoods.persistent = {};
-   smm.buyTradeGoods.persistent.suppliersFound = {};
+
+   var _initializeBuyTradeGoods = function() {
+      smm.buyTradeGoods = {};
+      if ($scope.smmPersistent.buyTradeGoods) {
+         smm.buyTradeGoods.persistent = $scope.smmPersistent.buyTradeGoods;
+      } else {
+         smm.buyTradeGoods.persistent = {};
+         smm.buyTradeGoods.persistent.suppliersFound = {};
+      }
+
+      smm.buyTradeGoods.externalFactors = {};
+      smm.buyTradeGoods.externalFactors.findSupplier = {};
+      smm.buyTradeGoods.externalFactors.findSupplier.suppliersFound = {};
+
+      smm.buyTradeGoods.setFoundSuppliersExtFactor = function() {
+         if (smm.tripData.departureWorld && smm.buyTradeGoods.persistent.suppliersFound) {
+            cleanUpFoundSuppliers();
+            if (smm.buyTradeGoods.persistent.suppliersFound[smm.tripData.departureWorld.Hex]) {
+               var len = smm.buyTradeGoods.persistent.suppliersFound[smm.tripData.departureWorld.Hex].length;
+               if (!smm.buyTradeGoods.externalFactors.findSupplier) {
+                  smm.buyTradeGoods.externalFactors.findSupplier = {};
+               }
+               var plural = len > 1 ? "s" : "";
+               smm.buyTradeGoods.externalFactors.findSupplier.suppliersFound = {
+                  externalFactor: len + " supplier" + plural + " found in past month",
+                  value: len * -1
+               };
+            } else {
+               smm.buyTradeGoods.externalFactors.findSupplier.suppliersFound = {};
+            }
+         }
+      }
+
+      smm.buyTradeGoods.externalFactors.findSupplier.starport = {
+         a:{externalFactor:"Class A Starport", value:6},
+         b:{externalFactor:"Class B Starport", value:4},
+         c:{externalFactor:"Class C Starport", value:2}
+      };
+      smm.buyTradeGoods.externalFactors.findSupplier.assistant = {
+         contact:{externalFactor:"Contact in Local Area", value:1},
+         ally:   {externalFactor:"Ally in Local Area",    value:2}
+      };
+
+      smm.buyTradeGoods.supplier = {};
+      smm.buyTradeGoods.suppliers = {
+         standard:      {name:"Standard Supplier",        skillCheck:{skills:['Broker'],                    characteristics:['edu', 'soc'], difficulty: 'Average'   },  goods:['common', 'legal'           ], guideCanFind:true,  guideBaseCost:100, timeDice:1, timeScale:'d'},
+         commonGoods:   {name:"Common-Goods Supplier",    skillCheck:{skills:['Broker'],                    characteristics:['edu', 'soc'], difficulty: 'Easy'      },  goods:['common'                    ], guideCanFind:true,  guideBaseCost:50,  timeDice:1, timeScale:'d'},
+         blackMarket:   {name:"Black Market Supplier",    skillCheck:{skills:['Streetwise'],                characteristics:['edu', 'soc'], difficulty: 'Average'   },  goods:[                   'illegal'], guideCanFind:true,  guideBaseCost:500, timeDice:1, timeScale:'d'},
+         morallyNeutral:{name:"Morally Neutral Supplier", skillCheck:{skills:['Streetwise', 'Investigate'], characteristics:['edu', 'soc'], difficulty: 'Difficult' },  goods:['common', 'legal', 'illegal'], guideCanFind:false, guideBaseCost:0,   timeDice:2, timeScale:'d'},
+         online:        {name:"Online Supplier",          skillCheck:{skills:['Computers'],                 characteristics:['edu'],        difficulty: 'Average'   },  goods:['common', 'legal           '], guideCanFind:false, guideBaseCost:0,   timeDice:1, timeScale:'h'}
+      };
+
+      //Set the default supplier type
+      smm.buyTradeGoods.supplier = smm.buyTradeGoods.suppliers['standard'];
+
+      smm.buyTradeGoods.changeSupplier = function() {
+         delete smm.buyTradeGoods.useGuideResult;
+         delete smm.buyTradeGoods.findSupplierResult;
+         smm.buyTradeGoods.supplierLocationMethod = null;
+      }
+
+      smm.buyTradeGoods.onFindSupplierRoll = function () {
+         if (smm.buyTradeGoods.findSupplierResult.roll.pass) {
+            //Record a successful supplier search on this world: -1 for additional searches in the next 30 days
+            var suppliersFound = smm.buyTradeGoods.persistent.suppliersFound[smm.tripData.departureWorld.Hex];
+            if (!suppliersFound)
+            {
+               suppliersFound = [];
+               smm.buyTradeGoods.persistent.suppliersFound[smm.tripData.departureWorld.Hex] = suppliersFound;
+            }
+            suppliersFound.push(smm.log.status.date);
+            smm.buyTradeGoods.setFoundSuppliersExtFactor();
+            smm.buyTradeGoods.generateGoods(smm.buyTradeGoods.supplier);
+         }
+      };
+
+      smm.buyTradeGoods.cachedGuideResults = {};
+
+      smm.buyTradeGoods.findGuideToFindSupplier = function() {
+         smm.buyTradeGoods.guideAccepted = false;
+
+         if (!smm.buyTradeGoods.cachedGuideResults[smm.buyTradeGoods.supplier.name]) {
+            smm.buyTradeGoods.cachedGuideResults[smm.buyTradeGoods.supplier.name] = {
+               cost: rawroll(1, 6).total * smm.buyTradeGoods.supplier.guideBaseCost
+            }
+         }
+         smm.buyTradeGoods.useGuideResult = smm.buyTradeGoods.cachedGuideResults[smm.buyTradeGoods.supplier.name];
+      };
+
+      smm.buyTradeGoods.acceptGuideToFindSupplier = function () {
+         smm.buyTradeGoods.guideAccepted = true;
+         smm.buyTradeGoods.cachedGuideResults = {};
+         smm.buyTradeGoods.generateGoods(smm.buyTradeGoods.supplier);
+      };
+
+      smm.buyTradeGoods.generateGoods = function(supplier) {
+
+      };
+   };
+
+   _initializeBuyTradeGoods();
    $scope.smmPersistent.buyTradeGoods = smm.buyTradeGoods.persistent;
-   
-   smm.buyTradeGoods.externalFactors = {};
-   smm.buyTradeGoods.externalFactors.findSupplier = {};
-   smm.buyTradeGoods.externalFactors.findSupplier.suppliersFound = {};
 
    var _buildSmmPersistentDataFromJson = angular.bind(this, function(json)
    {
@@ -211,31 +305,6 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       }
    };
 
-   smm.buyTradeGoods.setFoundSuppliersExtFactor = function()
-   {
-      if (smm.tripData.departureWorld && smm.buyTradeGoods.persistent.suppliersFound)
-      {
-         cleanUpFoundSuppliers();
-         if (smm.buyTradeGoods.persistent.suppliersFound[smm.tripData.departureWorld.Hex])
-         {
-            var len = smm.buyTradeGoods.persistent.suppliersFound[smm.tripData.departureWorld.Hex].length;
-            if (!smm.buyTradeGoods.externalFactors.findSupplier)
-            {
-               smm.buyTradeGoods.externalFactors.findSupplier = {};
-            }
-            var plural = len > 1 ? "s" : "";
-            smm.buyTradeGoods.externalFactors.findSupplier.suppliersFound = {
-               externalFactor:len + " supplier" + plural + " found in past month",
-               value:len * -1
-            };
-         }
-         else
-         {
-            smm.buyTradeGoods.externalFactors.findSupplier.suppliersFound = {};
-         }
-      }
-   }
-
    dataStorageService.register($scope, 'smmPersistent', _buildSmmPersistentDataFromJson);
    
    smm.inputYear = smm.log.status.date.year;
@@ -301,7 +370,8 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       });
    };
 
-   smm.refreshArrivalWorlds = function() {
+   smm.refreshArrivalWorlds = function () {
+      _initializeBuyTradeGoods();
       smm.tripData.arrivalWorld = {};
       if (smm.tripData.departureWorldSearchResults)
       {
@@ -345,63 +415,26 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       }
    };
    
-   smm.buyTradeGoods.externalFactors.findSupplier.starport = {
-      a:{externalFactor:"Class A Starport", value:6},
-      b:{externalFactor:"Class B Starport", value:4},
-      c:{externalFactor:"Class C Starport", value:2}
-   };
-   smm.buyTradeGoods.externalFactors.findSupplier.assistant = {
-      contact:{externalFactor:"Contact in Local Area", value:1},
-      ally:   {externalFactor:"Ally in Local Area",    value:2}
+   smm.passengers = {};
+   smm.passengers.roundupModifier = 0;
+
+   smm.passengers.roundupCallback = function() {
+	   smm.passengers.roundupModifier=Math.trunc(smm.passengers.roundupResult.roll.effect/2);
+	   smm.logNow(smm.passengers.roundupResult.roll.timing, ""+smm.passengers.roundupResult.character.name+" searched for passengers ("+ smm.passengers.roundupResult.skill.name +", "+smm.passengers.roundupModifier+")");
    };
 
-   smm.buyTradeGoods.supplier = {};
-   smm.buyTradeGoods.suppliers = {
-      standard:      {name:"Supplier",                 skillCheck:{skills:['Broker'],                    characteristics:['edu', 'soc'], difficulty: 'Average'   },  goods:['common', 'legal'           ], guideCanFind:true,  timeDice:1, timeScale:'d'},
-      commonGoods:   {name:"Common-Goods Supplier",    skillCheck:{skills:['Broker'],                    characteristics:['edu', 'soc'], difficulty: 'Easy'      },  goods:['common'                    ], guideCanFind:true,  timeDice:1, timeScale:'d'},
-      blackMarket:   {name:"Black Market Supplier",    skillCheck:{skills:['Streetwise'],                characteristics:['edu', 'soc'], difficulty: 'Average'   },  goods:[                   'illegal'], guideCanFind:true,  timeDice:1, timeScale:'d'},
-      morallyNeutral:{name:"Morally Neutral Supplier", skillCheck:{skills:['Streetwise', 'Investigate'], characteristics:['edu', 'soc'], difficulty: 'Difficult' },  goods:['common', 'legal', 'illegal'], guideCanFind:false, timeDice:2, timeScale:'d'},
-      online:        {name:"Online Supplier",          skillCheck:{skills:['Computers'],                 characteristics:['edu'],        difficulty: 'Average'   },  goods:['common', 'legal           '], guideCanFind:false, timeDice:1, timeScale:'h'}
-   };
-
-   //Set the default supplier type
-   smm.buyTradeGoods.supplier = smm.buyTradeGoods.suppliers['standard'];
-
-   smm.buyTradeGoods.onFindSupplierRoll = function() {
-      if (smm.buyTradeGoods.findSupplierResult.roll.pass)
-      {
-         //Record a successful supplier search on this world: -1 for additional searches in the next 30 days
-         var suppliersFound = smm.buyTradeGoods.persistent.suppliersFound[smm.tripData.departureWorld.Hex];
-         if (!suppliersFound)
-         {
-            suppliersFound = [];
-            smm.buyTradeGoods.persistent.suppliersFound[smm.tripData.departureWorld.Hex] = suppliersFound;
-         }
-         suppliersFound.push(smm.log.status.date);
-         smm.buyTradeGoods.setFoundSuppliersExtFactor();
-      }
-   };
-
-smm.passengers={};
-smm.passengers.roundupModifier=0;
-
-smm.passengers.roundupCallback = function() {
-	smm.passengers.roundupModifier=Math.trunc(smm.passengers.roundupResult.roll.effect/2);
-	 smm.logNow(smm.passengers.roundupResult.roll.timing, ""+smm.passengers.roundupResult.character.name+" searched for passengers ("+ smm.passengers.roundupResult.skill.name +", "+smm.passengers.roundupModifier+")");
-};
-
-smm.passengers.generateAvailable=function() {
-		/*
-		 Roll on the Available Passengers table
-			   TODO: modified by events
-			   done: modified by source population
-			   done: modified by trade code table
-			   done: modified by TL difference (max 5)
-			TODO: Every group of 6 passengers taken, 4+ means one is special, roll on passenger table
-		*/
-		if (!smm.passengers.showHuntForPassengersBox) smm.passengers.roundupModifier = 0;
-		smm.availablePassengers = calculatePassengers(smm.tripData.departureWorld,smm.tripData.arrivalWorld, smm.passengers.roundupModifier);
-		}
+   smm.passengers.generateAvailable = function() {
+      /*
+       Roll on the Available Passengers table
+            TODO: modified by events
+            done: modified by source population
+            done: modified by trade code table
+            done: modified by TL difference (max 5)
+         TODO: Every group of 6 passengers taken, 4+ means one is special, roll on passenger table
+      */
+      if (!smm.passengers.showHuntForPassengersBox) smm.passengers.roundupModifier = 0;
+      smm.availablePassengers = calculatePassengers(smm.tripData.departureWorld, smm.tripData.arrivalWorld, smm.passengers.roundupModifier);
+   }
 }]);
 
 var calculatePassengers=function(departureWorld,arrivalWorld,roundupModifier){

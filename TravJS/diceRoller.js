@@ -156,7 +156,7 @@ rollModule.directive('travSkillCheckDm', [function() {
 
       $scope.roll = function()
       {
-         var roll = dicethrow(0, [$scope.results[$scope.selectedCharacterIndex].dm]);
+         var roll = dicethrow(0, [$scope.results[$scope.selectedCharacterIndex].dm], $scope.timeDice);
          $scope.ngModel = {
             roll:roll,
             character:$scope.results[$scope.selectedCharacterIndex].character,
@@ -354,6 +354,7 @@ rollModule.directive('travSkillCheckDm', [function() {
          difficulty: "=",
          extFactors: "=",
          requireAll: "@",
+         timeDice: "@",
          onRoll: "&"
       },
       templateUrl: 'travellerSkillDm.view',
@@ -405,7 +406,7 @@ function rolld66(){
 	
 	}
 	
-function dicethrow(difficulty, DMs){
+function dicethrow(difficulty, DMs, timeDice){
 	var rollresult = rawroll(2,6);
 	var dmtotal = 0;
 
@@ -429,7 +430,10 @@ function dicethrow(difficulty, DMs){
    rollresult.magnitudeString = MAGNITUDE_STRINGS[rollresult.magnitude];
    rollresult.summary = rollresult.magnitudeString + " " + rollresult.passString;
 
-	rollresult.timing=rawroll(1,6).total;
+   if (timeDice === undefined) {
+      timeDice = 1;
+   }
+   rollresult.timing = rawroll(timeDice, 6).total;
 	return rollresult;
 	
 	}	
