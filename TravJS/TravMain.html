@@ -202,25 +202,26 @@
     <div ng-if="shipMan.tripData.departureWorld">
       <strong style="margin-right:5px">Supplier</strong>
       <div class="btn-group" style="margin-bottom:10px">
-        <label class="btn btn-primary" ng-model="shipMan.buyTradeGoods.supplier" uib-btn-radio="shipMan.buyTradeGoods.suppliers['standard']">Standard</label>
-        <label class="btn btn-primary" ng-model="shipMan.buyTradeGoods.supplier" uib-btn-radio="shipMan.buyTradeGoods.suppliers['commonGoods']">Common Goods</label>
-        <label class="btn btn-primary" ng-model="shipMan.buyTradeGoods.supplier" uib-btn-radio="shipMan.buyTradeGoods.suppliers['blackMarket']">Black Market</label>
-        <label class="btn btn-primary" ng-model="shipMan.buyTradeGoods.supplier" uib-btn-radio="shipMan.buyTradeGoods.suppliers['morallyNeutral']">Morally Neutral</label>
+        <label class="btn btn-primary" ng-click="shipMan.buyTradeGoods.changeSupplier()" ng-model="shipMan.buyTradeGoods.supplier" uib-btn-radio="shipMan.buyTradeGoods.suppliers['standard']">Standard</label>
+        <label class="btn btn-primary" ng-click="shipMan.buyTradeGoods.changeSupplier()" ng-model="shipMan.buyTradeGoods.supplier" uib-btn-radio="shipMan.buyTradeGoods.suppliers['commonGoods']">Common Goods</label>
+        <label class="btn btn-primary" ng-click="shipMan.buyTradeGoods.changeSupplier()" ng-model="shipMan.buyTradeGoods.supplier" uib-btn-radio="shipMan.buyTradeGoods.suppliers['blackMarket']">Black Market</label>
+        <label class="btn btn-primary" ng-click="shipMan.buyTradeGoods.changeSupplier()" ng-model="shipMan.buyTradeGoods.supplier" uib-btn-radio="shipMan.buyTradeGoods.suppliers['morallyNeutral']">Morally Neutral</label>
         <!-- online only available on worlds with TL >= 8 -->
-        <label ng-if="shipMan.tripData.departureWorld.UWPsplit.TL >= 8" class="btn btn-primary" ng-model="shipMan.buyTradeGoods.supplier" uib-btn-radio="shipMan.buyTradeGoods.suppliers['online']">Online</label>
+        <label ng-disabled="shipMan.tripData.departureWorld.UWPsplit.TL < 8" class="btn btn-primary" ng-click="shipMan.buyTradeGoods.changeSupplier()" ng-model="shipMan.buyTradeGoods.supplier" uib-btn-radio="shipMan.buyTradeGoods.suppliers['online']">Online</label>
       </div>
       <br>
-      <strong style="margin-right:5px">Assistance in Local Area</strong>
+      <strong style="margin-right:5px">Locate Supplier</strong>
       <div class="btn-group" style="margin-bottom:10px">
-        <label class="btn btn-primary" ng-model="shipMan.buyTradeGoods.assistant" uncheckable uib-btn-radio="'contact'">Contact</label>
-        <label class="btn btn-primary" ng-model="shipMan.buyTradeGoods.assistant" uncheckable uib-btn-radio="'ally'">Ally</label>
+         <label class="btn btn-primary" ng-model="shipMan.buyTradeGoods.supplierLocationMethod" uib-btn-radio="'roll'">Search for Supplier</label>
+         <label class="btn btn-primary" ng-model="shipMan.buyTradeGoods.supplierLocationMethod" uib-btn-radio="'guide'" ng-disabled="!shipMan.buyTradeGoods.supplier.guideCanFind" ng-click="shipMan.buyTradeGoods.findGuideToFindSupplier()">Hire Guide</label>
       </div>
-      <div style="margin-bottom:10px">
-        <button class="btn btn-primary" type="button" ng-click="showFindSupplierBox=!showFindSupplierBox">Roll to Find Supplier</button>
-        <strong style="margin-left:5px;margin-right:5px">OR</strong>
-        <button ng-disabled="!shipMan.buyTradeGoods.supplier.guideCanFind" class="btn btn-primary" type="button" ng-click="shipMan.buyTradeGoods.hireGuideForSupplier()">Hire Guide</button>
-      </div>
-      <div ng-if="showFindSupplierBox" style="margin-bottom:10px">
+      <div ng-if="shipMan.buyTradeGoods.supplierLocationMethod==='roll'" style="margin-bottom:10px">
+        <strong style="margin-right:5px">Assistance in Local Area</strong>
+        <div class="btn-group" style="margin-bottom:10px">
+           <label class="btn btn-primary" ng-model="shipMan.buyTradeGoods.assistant" uncheckable uib-btn-radio="'contact'">Contact</label>
+           <label class="btn btn-primary" ng-model="shipMan.buyTradeGoods.assistant" uncheckable uib-btn-radio="'ally'">Ally</label>
+        </div>
+        <br />
         <trav-skill-check-dm ng-model="shipMan.buyTradeGoods.findSupplierResult"
                              ng-attr-skills="shipMan.buyTradeGoods.supplier.skillCheck.skills"
                              ng-attr-characteristics="shipMan.buyTradeGoods.supplier.skillCheck.characteristics"
@@ -228,12 +229,26 @@
                              ng-attr-ext-factors="[shipMan.buyTradeGoods.externalFactors.findSupplier.starport[shipMan.tripData.departureWorld.UWPsplit.starport],
                                                    shipMan.buyTradeGoods.externalFactors.findSupplier.assistant[shipMan.buyTradeGoods.assistant],
                                                    shipMan.buyTradeGoods.externalFactors.findSupplier.suppliersFound]"
+                             ng-attr-time-dice="{{shipMan.buyTradeGoods.supplier.timeDice}}"
                              ng-attr-require-all="true"
                              ng-attr-on-roll="shipMan.buyTradeGoods.onFindSupplierRoll()">
         </trav-skill-check-dm>
+        <div style="margin-top:10px" ng-if="shipMan.buyTradeGoods.findSupplierResult">
+           <strong>
+             {{shipMan.buyTradeGoods.findSupplierResult.character.name}} rolled {{shipMan.buyTradeGoods.findSupplierResult.roll.effect >= 0 ? "+" : ""}}{{shipMan.buyTradeGoods.findSupplierResult.roll.effect}} ({{shipMan.buyTradeGoods.findSupplierResult.roll.summary}}).
+             <br />
+             The action took {{shipMan.buyTradeGoods.findSupplierResult.roll.timing}}{{shipMan.buyTradeGoods.supplier.timeScale}}.
+           </strong>
+        </div>
       </div>
-      <div ng-if="shipMan.buyTradeGoods.findSupplierResult">
-         Result: {{shipMan.buyTradeGoods.findSupplierResult.roll.summary}}
+      <div ng-if="shipMan.buyTradeGoods.supplierLocationMethod==='guide' && shipMan.buyTradeGoods.supplier.guideCanFind">
+        <div ng-if="!shipMan.buyTradeGoods.guideAccepted">
+          <strong style="margin-right:5px">The guide will charge you Cr. {{shipMan.buyTradeGoods.useGuideResult.cost}} to find a {{shipMan.buyTradeGoods.supplier.name.toLowerCase()}}.</strong>
+          <label class="btn btn-primary" ng-click="shipMan.buyTradeGoods.acceptGuideToFindSupplier()">Accept</label>
+        </div>
+        <div ng-if="shipMan.buyTradeGoods.guideAccepted">
+          <strong>You have paid a guide Cr. {{shipMan.buyTradeGoods.useGuideResult.cost}} to find a {{shipMan.buyTradeGoods.supplier.name.toLowerCase()}}.</strong>
+        </div>
       </div>
     </div>
   </script>
