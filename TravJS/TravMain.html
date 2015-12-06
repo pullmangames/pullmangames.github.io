@@ -646,7 +646,7 @@ Pilot: -1 DM
     <br><br>
     <trav-skill-check-dm ng-model="dmResult"></trav-skill-check-dm>
     <br>
-    <span ng-if="dmResult && dmResult.character && dmResult.roll">{{dmResult.character.name}} rolled a {{dmResult.roll.summary}}.</span>
+    <span ng-if="dmResult && dmResult.character && dmResult.roll">{{dmResult.character.name}} rolled a {{dmResult.roll.summary}} ({{dmResult.roll.effect}}).</span>
   </script>
 
 <!-------------------------- Skill Check DM Template -------------------------->
