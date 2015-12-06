@@ -140,34 +140,43 @@
  <!---------- Accordion: Jump -> Astrogation ----------->
   <script type="text/ng-template" id="shipman.accordion.jump.astrogation.view">
 	       TODO: ext-factor of jump distance
-	        <trav-skill-check-dm ng-model="shipman.AstrogationDM"
+	        <trav-skill-check-dm ng-model="shipMan.AstrogationDM"
                              ng-attr-skills="['Astrogation']"
                              ng-attr-characteristics="['Edu']"
                              ng-attr-difficulty="'Easy'"
                              ng-attr-ext-factors="[]">
         </trav-skill-check-dm>
+        <div ng-if="shipMan.AstrogationDM">
+        	Result: {{shipMan.AstrogationDM.roll.summary}} ({{shipMan.AstrogationDM.roll.effect}})
+	</div>
   </script>
   
    <!---------- Accordion: Jump -> Divert Power ----------->
   <script type="text/ng-template" id="shipman.accordion.jump.divertpower.view">
 
-	        <trav-skill-check-dm ng-model="shipman.divertpowerDM"
+	        <trav-skill-check-dm ng-model="shipMan.divertpowerDM"
                              ng-attr-skills="['Jump Drive (J-Drive)']"
                              ng-attr-characteristics="['Edu']"
                              ng-attr-difficulty="'Average'"
                              ng-attr-ext-factors="[]">
         </trav-skill-check-dm>
+        <div ng-if="shipMan.divertpowerDM">
+        	Result: {{shipMan.divertpowerDM.roll.summary}} ({{shipMan.divertpowerDM.roll.effect}})
+	</div>
   </script>
 
    <!---------- Accordion: Visit Gas Giant -> Skim ----------->
   <script type="text/ng-template" id="shipman.accordion.visitGasGiant.skim.view">
 
-	     <trav-skill-check-dm ng-model="shipman.skimDM"
+	     <trav-skill-check-dm ng-model="shipMan.skimDM"
  							 ng-attr-skills="['Small Craft','Spacecraft']"
                              ng-attr-characteristics="['Dex']"
                              ng-attr-difficulty="'Average'"
                              ng-attr-ext-factors="[]">
         </trav-skill-check-dm>
+	<div ng-if="shipMan.skimDM"> 
+         	Result: {{shipMan.skimDM.roll.summary}} ({{shipMan.skimDM.roll.effect}})
+      	</div>
   </script>
 
 
@@ -460,6 +469,7 @@ Pilot: -1 DM
           <tr><td>Homeworld</td><td><input ng-model="selectedCharacter.homeworld"></td></tr>
           <tr><td>Race</td><td><input ng-model="selectedCharacter.race"></td></tr>
           <tr><td>Racial Traits</td><td><input ng-model="selectedCharacter.racialTraits"></td></tr>
+          <tr><td>Player</td><td><input ng-model="selectedCharacter.player"></td></tr>
         </table>
       </form>
 
@@ -653,7 +663,9 @@ Pilot: -1 DM
     <br><br>
     <trav-skill-check-dm ng-model="dmResult"></trav-skill-check-dm>
     <br>
-    <span ng-if="dmResult && dmResult.character && dmResult.roll">{{dmResult.character.name}} rolled a {{dmResult.roll.summary}}.</span>
+ 	<span ng-if="dmResult && dmResult.character && dmResult.roll">
+ 		{{dmResult.character.name}} rolled a {{dmResult.roll.summary}} ({{dmResult.roll.effect}}).
+ 	</span>
   </script>
 
 <!-------------------------- Skill Check DM Template -------------------------->
