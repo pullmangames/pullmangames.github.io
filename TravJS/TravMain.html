@@ -161,15 +161,15 @@
    <!---------- Accordion: Visit Gas Giant -> Skim ----------->
   <script type="text/ng-template" id="shipman.accordion.visitGasGiant.skim.view">
 
-	     <trav-skill-check-dm ng-model="shipman.skimDM"
+	     <trav-skill-check-dm ng-model="shipMan.skimDM"
  							 ng-attr-skills="['Small Craft','Spacecraft']"
                              ng-attr-characteristics="['Dex']"
                              ng-attr-difficulty="'Average'"
                              ng-attr-ext-factors="[]">
         </trav-skill-check-dm>
-<!--	<div ng-if="shipMan.skimDM"> -->
+	<div ng-if="shipMan.skimDM"> 
          	Result: {{shipMan.skimDM.roll.summary}}
-<!--      	</div>	-->
+      	</div>
   </script>
 
 
