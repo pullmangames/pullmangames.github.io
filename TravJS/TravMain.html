@@ -491,22 +491,26 @@ Pilot: -1 DM
         		<input type="submit" class="btn btn-default" value="add">
 		</form>
       	-->
-      	<!-- The lame version that should be replaced by the cooler version described above -->
+      		<!-- The lame version that should be replaced by the cooler tabular version with rows for each name & description -->
       		<div class="form-group">
           		<textarea input ng-model="selectedCharacter.contacts" 
           			class="form-control" rows="5" id="contacts">
   			</textarea>
           	</div>
       	<h4>Rivals</h4>
-      	      	<!-- The lame version that should be replaced by the cooler version described above -->
-      		<table id="rivalsTable">
-          		<tr><td><input ng-model="selectedCharacter.rivals"></td></tr>
-          	</table>
+      		<!-- The lame version that should be replaced by the cooler tabular version with rows for each name & description -->
+      		<div class="form-group">
+          		<textarea input ng-model="selectedCharacter.rivals" 
+          			class="form-control" rows="5" id="rivals">
+  			</textarea>
+          	</div>
       	<h4>Enemies</h4>
-      	      	<!-- The lame version that should be replaced by the cooler version described above -->
-      		<table id="enemiesTable">
-          		<tr><td><input ng-model="selectedCharacter.enemies"></td></tr>
-          	</table>
+      		<!-- The lame version that should be replaced by the cooler tabular version with rows for each name & description -->
+      		<div class="form-group">
+          		<textarea input ng-model="selectedCharacter.enemies" 
+          			class="form-control" rows="5" id="enemies">
+  			</textarea>
+          	</div>
 
       <h3>Characteristics</h3>
       Click on a box to set the characteristic score
@@ -576,6 +580,11 @@ Pilot: -1 DM
       <form>
         <h3>Equipment<h3>
         <table id="equipmentTable">
+              	<div class="form-group">
+          		<textarea input ng-model="selectedCharacter.equipment" 
+          			class="form-control" rows="5" id="equipment">
+  			</textarea>
+          	</div>
         </table>
       </form>
 
