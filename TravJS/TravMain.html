@@ -480,20 +480,20 @@ Pilot: -1 DM
       		Stuff in CAPS in this seciton needs to be replaced with something real.
       		<Table class= table table-condensed">
       			<tr ng-repeat=MORE_STUFF_GOES_HERE>
-      			<td><span>CONTACT_NAME</span></td>
-      			<td><span>CONTACT_DESCRIPTION</span></td>
+      			<td><span>selectedCharacter.contactName</span></td>
+      			<td><span>selectedCharacter.contactName</span></td>
       			</tr>
       		</table>
       		
       		<form ng-submit="ADD_CONNECTION_FX_GOES_HERE()" class="form-inline">
-      			<input type="text" ng-model="NAME_REF" class="form-control" placeholder="contact name">
-        		<input type="text" ng-model="DESCRIPTION_REF" class="form-control" placeholder="description/details">
+      			<input type="text" ng-model="selectedCharacter.contactName" class="form-control" placeholder="contact name">
+        		<input type="text" ng-model="selectedCharacter.contactDescription" class="form-control" placeholder="description/details">
         		<input type="submit" class="btn btn-default" value="add">
 		</form>
       	-->
       	<!-- The lame version that should be replaced by the cooler version described above -->
       		<table id="contactsTable">
-          		<tr><td><input ng-model="selectedCharacter.contacts"></td></tr>
+          		<tr><td><input ng-model="selectedCharacter.contacts" class="form-control" rows="5"></td></tr>
           	</table>
       	<h4>Rivals</h4>
       	      	<!-- The lame version that should be replaced by the cooler version described above -->
