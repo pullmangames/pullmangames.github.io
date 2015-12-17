@@ -6,11 +6,11 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
    smm.accordionData = [
       { name: "Manual Log Entry/Adjustment",                htmlTemplate: "shipman.accordion.manualOps.view" },
       { name: "Hunt for jobs/patrons/rumors/etc.",          htmlTemplate: "shipman.accordion.TBD.view" },
-      { name: "Find cargos and passengers",                       subSteps: [
-         { name: "Freight",               						htmlTemplate: "shipman.accordion.TBD.view" },
-         { name: "Mail",                 						htmlTemplate: "shipman.accordion.TBD.view" },
-         { name: "Passengers",            						htmlTemplate: "shipman.accordion.destinations.passengers.view" },
-         { name: "Other",                 						htmlTemplate: "shipman.accordion.TBD.view" }]},
+      { name: "Find cargos and passengers",                 subSteps: [
+         { name: "Freight",                                    htmlTemplate: "shipman.accordion.TBD.view" },
+         { name: "Mail",                                       htmlTemplate: "shipman.accordion.TBD.view" },
+         { name: "Passengers",                                 htmlTemplate: "shipman.accordion.destinations.passengers.view" },
+         { name: "Other",                                      htmlTemplate: "shipman.accordion.TBD.view" }]},
       { name: "Buy Trade Goods",                            htmlTemplate: "shipman.accordion.buyTradeGoods.view" },
       { name: "Finalize ship loadout",                      htmlTemplate: "shipman.accordion.finalizeLoadout.view" },
       { name: "Buy life support, fuel, pay berthing costs", htmlTemplate: "shipman.accordion.TBD.view" },
@@ -83,14 +83,20 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       this.status.staterooms=[];
       this.status.lowBerths=[];
       
-      for (var i=0; i<smm.partyShip.numstaterooms; i++)
-      {
-      	this.status.staterooms.push([]);
+      for (var i=0; i<smm.partyShip.numstaterooms; i++) {
+         var stateRoom = {};
+         stateRoom.occupants = [];
+         stateRoom.stateOn = 'glyphicon-unchecked';
+         stateRoom.stateOff = 'glyphicon-ok-circle';
+      	this.status.staterooms.push(stateRoom);
       	//intent is for occupied staterooms to have an array of passengers
       }
-	  for (var i=0; i<smm.partyShip.maxlow; i++)
-      {
-      	this.status.lowBerths.push([]);
+	  for (var i=0; i<smm.partyShip.maxlow; i++) {
+	     var stateRoom = [];
+	     stateRoom.occupants = [];
+	     stateRoom.stateOn = 'glyphicon-inbox';
+	     stateRoom.stateOff = 'glyphicon-ok-circle';
+	     this.status.lowBerths.push(stateRoom);
       	//intent is for occupied staterooms to have an array of passengers
       }
       
@@ -350,33 +356,33 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
    };
    
    smm.manualPassenger=passengerFactory();
-   
-   smm.manualPassengerAdd=function(){
-   		addPassenger(smm.manualPassenger, smm.log.status.staterooms, smm.activeStateroom-1 );
-   		smm.logNow("[manual] Added "+smm.manualPassenger.name+"["+smm.manualPassenger.type+"] in stateroom "+smm.activeStateroom, smm.inputTimeElapsed);
-		smm.manualPassenger=passengerFactory();
-		//console.log(smm.log.status.staterooms);
+
+   smm.manualPassengerAdd = function() {
+      addPassenger(smm.manualPassenger, smm.log.status.staterooms, smm.activeStateroom - 1, 'glyphicon-check');
+      smm.logNow("[manual] Added " + smm.manualPassenger.name + "[" + smm.manualPassenger.type + "] in stateroom " + smm.activeStateroom, smm.inputTimeElapsed);
+      smm.manualPassenger = passengerFactory();
+      //console.log(smm.log.status.staterooms);
    };
-   
-   smm.manualLowPassengerAdd=function(){
-   		addPassenger(smm.manualPassenger, smm.log.status.lowBerths, smm.activeStateroom-1 );
-   		smm.logNow("[manual] Added "+smm.manualPassenger.name+"["+smm.manualPassenger.type+"] in Low Berth "+smm.activeStateroom, smm.inputTimeElapsed);
-		smm.manualPassenger=passengerFactory();
-		//console.log(smm.log.status.lowBerths);
+
+   smm.manualLowPassengerAdd = function() {
+      addPassenger(smm.manualPassenger, smm.log.status.lowBerths, smm.activeStateroom - 1, 'glyphicon-hdd');
+      smm.logNow("[manual] Added " + smm.manualPassenger.name + "[" + smm.manualPassenger.type + "] in Low Berth " + smm.activeStateroom, smm.inputTimeElapsed);
+      smm.manualPassenger = passengerFactory();
+      //console.log(smm.log.status.lowBerths);
    };
    
    	
    	 smm.passengerExplode=function(berthArray){
    		var passengers=[];
-   		for (var i=0; i < berthArray.length; i++)
-   		{
-   			for (var j=0; j < berthArray[i].length; j++) 
+   		for (var i=0; i < berthArray.length; i++) {
+		      var occupants = berthArray[i].occupants;
+		      for (var j = 0; j < occupants.length; j++)
    			{
-   				if ( ! (berthArray[i][j])) continue; //bug now fixed?
+		         if (!(occupants[j])) continue; //bug now fixed?
    				//console.log(i);
    				//console.log(j);
    				//console.log(smm.log.status.staterooms[i][j]);
-   				passengers.push(berthArray[i][j]);
+		         passengers.push(occupants[j]);
    				//console.log(passengers);
    				passengers[passengers.length-1].berthNum=i;
    				passengers[passengers.length-1].occupantNum=j;
@@ -403,41 +409,19 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
    	
    	};
    	
-   	smm.passengerIconifier=function(){
-   		var berthArray=smm.log.status.staterooms
-   		var icons=[];
-   		
-   		for (var i=0; i < berthArray.length; i++) 
-   			if (berthArray[i].length > 0) icons.push( {stateOn: 'glyphicon-check', stateOff: 'glyphicon-ok-circle'} ); //stateoff should never happen in any of these
-   			else icons.push( {stateOn: 'glyphicon-unchecked', stateOff: 'glyphicon-ok-circle'} );
-   			
-   		return icons;
-		};
-		
-	smm.lowPassengerIconifier=function(){ //why is this a copy/paste of the function above, you ask?  Eventually the other one will be more complicated.
-   		var berthArray=smm.log.status.lowBerths
-   		var icons=[];
-   		
-   		for (var i=0; i < berthArray.length; i++) 
-   			if (berthArray[i].length > 0) icons.push( {stateOn: 'glyphicon-hdd', stateOff: 'glyphicon-ok-circle'} ); //stateoff should never happen in any of these
-   			else icons.push( {stateOn: 'glyphicon-inbox', stateOff: 'glyphicon-ok-circle'} );
-   			
-   		return icons;
-		};
-   		
-   smm.manualPassengerDelete=function(){
-   		//console.log(smm.passengerToDelete);
-   		
-   		smm.logNow("[manual] Removed "+smm.log.status.staterooms[smm.passengerToDelete[0]].name+"["+smm.log.status.staterooms[smm.passengerToDelete[0]].type+"] in stateroom "+smm.passengerToDelete[0], smm.inputTimeElapsed);
-		removePassenger(smm.log.status.staterooms, smm.passengerToDelete[0], smm.passengerToDelete[1]);
-      	};
-   
-   smm.manualLowPassengerDelete=function(){
-   		//console.log(smm.passengerToDelete);
-   		
-   		smm.logNow("[manual] Removed "+smm.log.status.lowBerths[smm.lowPassengerToDelete[0]].name+"["+smm.log.status.lowBerths[smm.lowPassengerToDelete[0]].type+"] in Low Berth "+smm.lowPassengerToDelete[0], smm.inputTimeElapsed);
-		removePassenger(smm.log.status.lowBerths, smm.lowPassengerToDelete[0], smm.lowPassengerToDelete[1]);
-      	};
+   smm.manualPassengerDelete = function() {
+      //console.log(smm.passengerToDelete);
+
+      smm.logNow("[manual] Removed " + smm.log.status.staterooms[smm.passengerToDelete[0]].name + "[" + smm.log.status.staterooms[smm.passengerToDelete[0]].type + "] in stateroom " + smm.passengerToDelete[0], smm.inputTimeElapsed);
+      removePassenger(smm.log.status.staterooms, smm.passengerToDelete[0], smm.passengerToDelete[1], 'glyphicon-unchecked');
+   };
+
+   smm.manualLowPassengerDelete = function() {
+      //console.log(smm.passengerToDelete);
+
+      smm.logNow("[manual] Removed " + smm.log.status.lowBerths[smm.lowPassengerToDelete[0]].name + "[" + smm.log.status.lowBerths[smm.lowPassengerToDelete[0]].type + "] in Low Berth " + smm.lowPassengerToDelete[0], smm.inputTimeElapsed);
+      removePassenger(smm.log.status.lowBerths, smm.lowPassengerToDelete[0], smm.lowPassengerToDelete[1], 'glyphicon-inbox');
+   };
    
    
    smm.manualCredits=function(){
@@ -574,18 +558,22 @@ var calculatePassengers=function(departureWorld,arrivalWorld,roundupModifier){
 	return passengers;
 };
 
-var addPassenger = function(newpassenger, locationArray, berthNumber) {
-	console.log("loc:");
+var addPassenger = function(newpassenger, locationArray, berthNumber, icon) {
+   console.log("loc:");
 	console.log(locationArray)
 	console.log("berth:");
 	console.log(berthNumber);
-	locationArray[berthNumber].push(newpassenger);
+	locationArray[berthNumber].occupants.push(newpassenger);
+	locationArray[berthNumber].stateOn = icon;
 };
 
-var removePassenger = function(locationArray, berthNumber, passengerNumber){
-	console.log("attempting to delete "+berthNumber+","+passengerNumber+"from:");
+var removePassenger = function(locationArray, berthNumber, passengerNumber, icon){
+   console.log("attempting to delete " + berthNumber + "," + passengerNumber + "from:");
 	console.log(locationArray);
-	locationArray[berthNumber].splice(passengerNumber,1);
+	locationArray[berthNumber].occupants.splice(passengerNumber, 1);
+	if (!locationArray[berthNumber].occupants.length) {
+	   locationArray[berthNumber].stateOn = icon;
+	}
 	console.log("POST-DELETE:")
 	console.log(locationArray);
 };

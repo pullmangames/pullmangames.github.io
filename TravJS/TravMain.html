@@ -333,9 +333,9 @@
 		<uib-progressbar max="shipMan.partyShip.annualmaint" type="info" value="shipMan.log.status.maintFund"><span style="color:Black; white-space:nowrap;">Maint Fund: {{shipMan.log.status.maintFund}} Cr. / {{shipMan.partyShip.annualmaint}} Cr. ({{shipMan.partyShip.annualmaint - shipMan.log.status.maintFund}} Cr.)</span></uib-progressbar>
 
 Staterooms: <!--Staterooms and low berths are a bit hacky.  Fix.-->
-		<uib-rating readonly="true" ng-model="shipMan.partyShip.numstaterooms" max="shipMan.partyShip.numstaterooms" rating-states="shipMan.passengerIconifier()" titles="shipMan.passengersForBerth(shipMan.log.status.staterooms)" ></uib-rating>
+		<uib-rating readonly="true" ng-model="shipMan.partyShip.numstaterooms" max="shipMan.partyShip.numstaterooms" rating-states="shipMan.log.status.staterooms" titles="shipMan.passengersForBerth(shipMan.log.status.staterooms)" ></uib-rating>
 <br>Low Berths:
-		<uib-rating readonly="true" ng-model="shipMan.partyShip.maxlow" max="shipMan.partyShip.maxlow" rating-states="shipMan.lowPassengerIconifier()" titles="shipMan.passengersForBerth(shipMan.log.status.lowBerths)" ></uib-rating>
+		<uib-rating readonly="true" ng-model="shipMan.partyShip.maxlow" max="shipMan.partyShip.maxlow" rating-states="shipMan.log.status.lowBerths" titles="shipMan.passengersForBerth(shipMan.log.status.lowBerths)" ></uib-rating>
 
 
 
