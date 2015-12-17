@@ -409,6 +409,7 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
    	
    	};
    	
+
    smm.manualPassengerDelete = function() {
       //console.log(smm.passengerToDelete);
 
@@ -422,6 +423,7 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       smm.logNow("[manual] Removed " + smm.log.status.lowBerths[smm.lowPassengerToDelete[0]].name + "[" + smm.log.status.lowBerths[smm.lowPassengerToDelete[0]].type + "] in Low Berth " + smm.lowPassengerToDelete[0], smm.inputTimeElapsed);
       removePassenger(smm.log.status.lowBerths, smm.lowPassengerToDelete[0], smm.lowPassengerToDelete[1], 'glyphicon-inbox');
    };
+
    
    
    smm.manualCredits=function(){
