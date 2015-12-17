@@ -52,7 +52,7 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
    theShip.Jump=2;
    theShip.fuelprocessors=2;
    theShip.streamlined=true;
-   theShip.staterooms=10;
+   theShip.numstaterooms=10;
    theShip.newprice=57885500;
    theShip.discounted=.5;
    theShip.principal=theShip.newprice*theShip.discounted;
@@ -80,6 +80,21 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       this.status.maintFund=0;
       this.status.lastmaint=smm.partyShip.purchasedate;
       this.status.stateroomsused=smm.partyShip.crew/2 + this.status.highpass + this.status.midpass;
+      this.status.staterooms=[];
+      this.status.lowBerths=[];
+      
+      for (var i=0; i<smm.partyShip.numstaterooms; i++)
+      {
+      	this.status.staterooms.push([]);
+      	//intent is for occupied staterooms to have an array of passengers
+      }
+	  for (var i=0; i<smm.partyShip.maxlow; i++)
+      {
+      	this.status.lowBerths.push([]);
+      	//intent is for occupied staterooms to have an array of passengers
+      }
+      
+      
       
       this.status.totalCargo = function(){
          var total=0;
@@ -316,11 +331,7 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
    
    //cargo for sale also has max risk dm, base price, max tons
    
-   
-   smm.manualLog=function(){
-      smm.logEntry(smm.inputYear,smm.inputDate,smm.inputTimeElapsed,smm.logText);
-   };
-   
+
 
    smm.manualCargoAdd=function(){
       var newcargo=cargoFactory();
@@ -338,10 +349,106 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       smm.cargoToDelete = undefined;
    };
    
+   smm.manualPassenger=passengerFactory();
+   
+   smm.manualPassengerAdd=function(){
+   		addPassenger(smm.manualPassenger, smm.log.status.staterooms, smm.activeStateroom-1 );
+   		smm.logNow("[manual] Added "+smm.manualPassenger.name+"["+smm.manualPassenger.type+"] in stateroom "+smm.activeStateroom, smm.inputTimeElapsed);
+		smm.manualPassenger=passengerFactory();
+		//console.log(smm.log.status.staterooms);
+   };
+   
+   smm.manualLowPassengerAdd=function(){
+   		addPassenger(smm.manualPassenger, smm.log.status.lowBerths, smm.activeStateroom-1 );
+   		smm.logNow("[manual] Added "+smm.manualPassenger.name+"["+smm.manualPassenger.type+"] in Low Berth "+smm.activeStateroom, smm.inputTimeElapsed);
+		smm.manualPassenger=passengerFactory();
+		//console.log(smm.log.status.lowBerths);
+   };
+   
+   	
+   	 smm.passengerExplode=function(berthArray){
+   		var passengers=[];
+   		for (var i=0; i < berthArray.length; i++)
+   		{
+   			for (var j=0; j < berthArray[i].length; j++) 
+   			{
+   				if ( ! (berthArray[i][j])) continue; //bug now fixed?
+   				//console.log(i);
+   				//console.log(j);
+   				//console.log(smm.log.status.staterooms[i][j]);
+   				passengers.push(berthArray[i][j]);
+   				//console.log(passengers);
+   				passengers[passengers.length-1].berthNum=i;
+   				passengers[passengers.length-1].occupantNum=j;
+   			}
+   		}
+   		//console.log(passengers)
+   		return passengers;
+   	};
+   	
+   	smm.passengersForBerth=function(berthArray){
+   		var passengers=[];
+   		for (var i=0; i < berthArray.length; i++)
+   		{
+   			var berthstring='';
+   			for (var j=0; j < berthArray[i].length; j++) 
+   			{
+   				berthstring+=berthArray[i][j].name + ": "+berthArray[i][j].type	+"\n"
+   			}
+   			
+   			passengers.push(berthstring);
+   		}	
+   		
+   		return passengers;
+   	
+   	};
+   	
+   	smm.passengerIconifier=function(){
+   		var berthArray=smm.log.status.staterooms
+   		var icons=[];
+   		
+   		for (var i=0; i < berthArray.length; i++) 
+   			if (berthArray[i].length > 0) icons.push( {stateOn: 'glyphicon-check', stateOff: 'glyphicon-ok-circle'} ); //stateoff should never happen in any of these
+   			else icons.push( {stateOn: 'glyphicon-unchecked', stateOff: 'glyphicon-ok-circle'} );
+   			
+   		return icons;
+		};
+		
+	smm.lowPassengerIconifier=function(){ //why is this a copy/paste of the function above, you ask?  Eventually the other one will be more complicated.
+   		var berthArray=smm.log.status.lowBerths
+   		var icons=[];
+   		
+   		for (var i=0; i < berthArray.length; i++) 
+   			if (berthArray[i].length > 0) icons.push( {stateOn: 'glyphicon-hdd', stateOff: 'glyphicon-ok-circle'} ); //stateoff should never happen in any of these
+   			else icons.push( {stateOn: 'glyphicon-inbox', stateOff: 'glyphicon-ok-circle'} );
+   			
+   		return icons;
+		};
+   		
+   smm.manualPassengerDelete=function(){
+   		//console.log(smm.passengerToDelete);
+   		
+   		smm.logNow("[manual] Removed "+smm.log.status.staterooms[smm.passengerToDelete[0]].name+"["+smm.log.status.staterooms[smm.passengerToDelete[0]].type+"] in stateroom "+smm.passengerToDelete[0], smm.inputTimeElapsed);
+		removePassenger(smm.log.status.staterooms, smm.passengerToDelete[0], smm.passengerToDelete[1]);
+      	};
+   
+   smm.manualLowPassengerDelete=function(){
+   		//console.log(smm.passengerToDelete);
+   		
+   		smm.logNow("[manual] Removed "+smm.log.status.lowBerths[smm.lowPassengerToDelete[0]].name+"["+smm.log.status.lowBerths[smm.lowPassengerToDelete[0]].type+"] in Low Berth "+smm.lowPassengerToDelete[0], smm.inputTimeElapsed);
+		removePassenger(smm.log.status.lowBerths, smm.lowPassengerToDelete[0], smm.lowPassengerToDelete[1]);
+      	};
+   
+   
    smm.manualCredits=function(){
       smm.log.status.cash += smm.addMoney;
       smm.logEntry(smm.log.status.year, smm.log.status.today, smm.inputTimeElapsed, "[manual] " + smm.addMoneyDesc + ": " + smm.addMoney + " = " +smm.log.status.cash);
    }
+   
+      
+   smm.manualLog=function(){
+      smm.logEntry(smm.inputYear,smm.inputDate,smm.inputTimeElapsed,smm.logText);
+   };
    
    smm.logEntry=function(newyear, newdate, newelapsed, newtext){
       smm.logEntryRaw({"year":newyear, "startDate":newdate, "elapsed":newelapsed, "text":newtext});
@@ -351,7 +458,7 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       smm.log.entries.push(newEntry);
    };
    
-   smm.logNow=function(newelapsed, newtext) {
+   smm.logNow=function(newtext, newelapsed) {
    	 smm.logEntry(smm.log.status.date.year, smm.log.status.date.day, newelapsed, newtext);
    };
    
@@ -423,18 +530,28 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
 	   smm.logNow(smm.passengers.roundupResult.roll.timing, ""+smm.passengers.roundupResult.character.name+" searched for passengers ("+ smm.passengers.roundupResult.skill.name +", "+smm.passengers.roundupModifier+")");
    };
 
-   smm.passengers.generateAvailable = function() {
-      /*
-       Roll on the Available Passengers table
-            TODO: modified by events
-            done: modified by source population
-            done: modified by trade code table
-            done: modified by TL difference (max 5)
-         TODO: Every group of 6 passengers taken, 4+ means one is special, roll on passenger table
-      */
-      if (!smm.passengers.showHuntForPassengersBox) smm.passengers.roundupModifier = 0;
-      smm.availablePassengers = calculatePassengers(smm.tripData.departureWorld, smm.tripData.arrivalWorld, smm.passengers.roundupModifier);
-   }
+
+smm.passengers={};
+smm.passengers.roundupModifier=0;
+
+smm.passengers.roundupCallback = function() {
+	smm.passengers.roundupModifier=Math.trunc(smm.passengers.roundupResult.roll.effect/2);
+	 smm.logNow(""+smm.passengers.roundupResult.character.name+" searched for passengers ("+ smm.passengers.roundupResult.skill.name +", "+smm.passengers.roundupModifier+")", smm.passengers.roundupResult.roll.timing);
+};
+
+smm.passengers.generateAvailable=function() {
+		/*
+		 Roll on the Available Passengers table
+			   TODO: modified by events
+			   done: modified by source population
+			   done: modified by trade code table
+			   done: modified by TL difference (max 5)
+			TODO: Every group of 6 passengers taken, 4+ means one is special, roll on passenger table
+		*/
+		if (!smm.passengers.showHuntForPassengersBox) smm.passengers.roundupModifier = 0;
+		smm.availablePassengers = calculatePassengers(smm.tripData.departureWorld,smm.tripData.arrivalWorld, smm.passengers.roundupModifier);
+		}
+
 }]);
 
 var calculatePassengers=function(departureWorld,arrivalWorld,roundupModifier){
@@ -457,9 +574,29 @@ var calculatePassengers=function(departureWorld,arrivalWorld,roundupModifier){
 	return passengers;
 };
 
+var addPassenger = function(newpassenger, locationArray, berthNumber) {
+	console.log("loc:");
+	console.log(locationArray)
+	console.log("berth:");
+	console.log(berthNumber);
+	locationArray[berthNumber].push(newpassenger);
+};
+
+var removePassenger = function(locationArray, berthNumber, passengerNumber){
+	console.log("attempting to delete "+berthNumber+","+passengerNumber+"from:");
+	console.log(locationArray);
+	locationArray[berthNumber].splice(passengerNumber,1);
+	console.log("POST-DELETE:")
+	console.log(locationArray);
+};
+
 
 var cargoFactory = function(){
 	return {"type":"", "detail":"", "tons":0};
+};
+
+var passengerFactory = function(){
+	return {"name":"A Person", "type":"crew"};
 };
 
 var dateFactory = function(newyear, newday){

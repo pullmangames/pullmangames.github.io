@@ -20,7 +20,7 @@ app.config(function ($routeProvider) {
       .when("/random",         {controller: "randomController as tables",          templateUrl: "randomtables.view"})
       .when("/decoder",        {controller: "decoderController as decoder",        templateUrl: "decoder.view"})
       .when("/config",         {controller: "configController as config",          templateUrl: "config.view"})
-      .otherwise({redirectTo: "/roll"});
+      .otherwise({redirectTo: "/shipManagement"});
 });
 
 app.config(function(uiSelectConfig) {

@@ -389,11 +389,14 @@ rollModule.service('travRollService', [function() {
 function rawroll(numdice, sides){	
 		var rollresult = { total:0, rolls:[] }
 	
+		rollresult.rolls = new Uint32Array(numdice);
+		window.crypto.getRandomValues(rollresult.rolls);
+		
 		for (var i=0; i<numdice; i++)
 		{
-			var temproll = Math.floor(Math.random()*sides)+1;
-			rollresult.total += temproll;
-			rollresult.rolls.push(temproll);
+			rollresult.rolls[i] = Math.floor(rollresult.rolls[i]%sides)+1;
+			rollresult.total += rollresult.rolls[i];
+			//rollresult.rolls.push(temproll);
 		}
 	
 		return rollresult;
