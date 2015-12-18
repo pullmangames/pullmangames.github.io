@@ -235,8 +235,51 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
          smm.buyTradeGoods.generateGoods(smm.buyTradeGoods.supplier);
       };
 
-      smm.buyTradeGoods.generateGoods = function(supplier) {
+      smm.buyTradeGoods.generateGoods = function (supplier) {
+         //Utility function - add to dest[] the elements of src[] that aren't already present in dst[]
+         var addUnique = function(src, dest) {
+            for (var j = 0; j < src.length; j++) {
+               if (dest.indexOf(src[j]) < 0) {
+                  dest.push(src[j]);
+               }
+            }
+         };
 
+         //Check if the supplier has common goods
+         var availableGoods = [];
+         if (supplier.goods.indexOf("common") >= 0) {
+            findAllCommonGoods(availableGoods);
+         }
+
+         var tradeCodes = smm.tripData.departureWorld.Remarks.split(" ");
+         var moreGoods;
+         var i;
+
+         //Check if the supplier has legal goods
+         if (supplier.goods.indexOf("legal") >= 0) {
+            moreGoods = [];
+            //Get the legal goods always available for this world's trade codes
+            for (i = 0; i < tradeCodes.length; i++) {
+               findAllAvailableLegalGoods(moreGoods, tradeCodes[i]);
+            }
+            addUnique(moreGoods, availableGoods);
+         }
+
+         //Check if the supplier has illegal goods
+         if (supplier.goods.indexOf("illegal") >= 0) {
+            moreGoods = [];
+            //Get the illegal goods always available for this world's trade codes
+            for (i = 0; i < tradeCodes.length; i++) {
+               findAllAvailableIllegalGoods(moreGoods, tradeCodes[i]);
+            }
+            addUnique(moreGoods, availableGoods);
+         }
+
+         //Figure out what additional goods the supplier has
+         var numExtraGoods = rawroll(1, 6).total;
+         for (i = 0; i < numExtraGoods; i++) {
+            findRandomGood(availableGoods, supplier.goods);
+         }
       };
    };
 
