@@ -238,9 +238,9 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       smm.buyTradeGoods.generateGoods = function (supplier) {
          //Utility function - add to dest[] the elements of src[] that aren't already present in dst[]
          var addUnique = function(src, dest) {
-            for (var j = 0; j < src.length; j++) {
-               if (dest.indexOf(src[j]) < 0) {
-                  dest.push(src[j]);
+            for (var k = 0; k < src.length; k++) {
+               if (dest.indexOf(src[k]) < 0) {
+                  dest.push(src[k]);
                }
             }
          };
@@ -280,6 +280,27 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
          for (i = 0; i < numExtraGoods; i++) {
             findRandomGood(availableGoods, supplier.goods);
          }
+
+         //Figure out the defined trade goods and how much of each is available
+         var availableDefinedGoods = {};
+         for (i = 0; i < availableGoods.length; i++) {
+            //Use availableDefinedGoods as a hash (key: name of the parent good) of hahes (key: name of the defined trade good) to make lookup easier
+            if (!availableDefinedGoods[availableGoods[i].type]) {
+               availableDefinedGoods[availableGoods[i].type] = {};
+            }
+            //Get a set of defined trade goods for the given good
+            var newDefinedGoods = enumerateDefinedTradeGoods(availableGoods[i]);
+            for (var j = 0; j < newDefinedGoods.length; j++)
+            {
+               //Add the defined trade goods to our hash of hashes and record how much is available
+               if (!availableDefinedGoods[availableGoods[i].type][newDefinedGoods[j].good.name]) {
+                  availableDefinedGoods[availableGoods[i].type][newDefinedGoods[j].good.name] = { good: newDefinedGoods[j].good, type: availableGoods[i], tons: 0 };
+               }
+               availableDefinedGoods[availableGoods[i].type][newDefinedGoods[j].good.name].tons += newDefinedGoods[j].tons;
+            }
+         }
+
+         
       };
    };
 
