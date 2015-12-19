@@ -4,8 +4,7 @@ var goods = [
          //11
          "type": "Basic Electronics",
          "available": ["All"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 10,
+         "maxTons": function() { return rawroll(1, 6).total * 10 },
          "priceRange": [6000, 14000],
          "purchaseDM": { "In": 2, "Ht": 3, "Ri": 1 },
          "saleDM": { "Ni": 2, "Lt": 1, "Po": 1 },
@@ -44,8 +43,7 @@ var goods = [
          //12
          "type": "Basic Machine Parts",
          "available": ["All"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 10,
+         "maxTons": function () { return rawroll(1, 6).total * 10 },
          "priceRange": [8000, 12000],
          "purchaseDM": { "Na": 2, "In": 5 },
          "saleDM": { "Ni": 3, "Ag": 2 },
@@ -83,8 +81,7 @@ var goods = [
          //13
          "type": "Basic Manufactured Goods",
          "available": ["All"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 10,
+         "maxTons": function () { return rawroll(1, 6).total * 10 },
          "priceRange": [8000, 12000],
          "purchaseDM": { "Na": 2, "In": 5 },
          "saleDM": { "Ni": 3, "Hi": 2 },
@@ -122,8 +119,7 @@ var goods = [
          //14
          "type": "Basic Raw Materials",
          "available": ["All"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 10,
+         "maxTons": function () { return rawroll(1, 6).total * 10 },
          "priceRange": [1000, 9000],
          "purchaseDM": { "Ag": 3, "Ga": 2 },
          "saleDM": { "In": 2, "Po": 2 },
@@ -161,8 +157,7 @@ var goods = [
          //15
          "type": "Basic Consumables",
          "available": ["All"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 10,
+         "maxTons": function () { return rawroll(1, 6).total * 10 },
          "priceRange": [500, 5000],
          "purchaseDM": { "Ag": 3, "Wa": 2, "Ga": 1, "As": 4 },
          "saleDM": { "As": 1, "Fl": 1, "Ic": 1, "Hi": 1 },
@@ -200,8 +195,7 @@ var goods = [
          //16
          "type": "Basic Ore",
          "available": ["All"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 10,
+         "maxTons": function () { return rawroll(1, 6).total * 10 },
          "priceRange": [250, 2000],
          "purchaseDM": { "As": 4 },
          "saleDM": { "In": 3, "Ni": 1 },
@@ -241,8 +235,7 @@ var goods = [
          //21
          "type": "Advanced Electronics",
          "available": ["In", "Ht"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 5,
+         "maxTons": function () { return rawroll(1, 6).total * 5 },
          "priceRange": [25000, 150000],
          "purchaseDM": { "In": 2, "Ht": 3 },
          "saleDM": { "Ni": 1, "Ri": 2, "As": 3 },
@@ -280,8 +273,7 @@ var goods = [
          //22
          "type": "Advanced Machine Parts",
          "available": ["In", "Ht"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 5,
+         "maxTons": function () { return rawroll(1, 6).total * 5 },
          "priceRange": [25000, 100000],
          "purchaseDM": { "In": 2, "Ht": 1 },
          "saleDM": { "As": 2, "Ni": 1 },
@@ -319,8 +311,7 @@ var goods = [
          //23
          "type": "Advanced Manufactured Goods",
          "available": ["In", "Ht"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 5,
+         "maxTons": function () { return rawroll(1, 6).total * 5 },
          "priceRange": [25000, 100000],
          "purchaseDM": { "In": 1 },
          "saleDM": { "Hi": 1, "Ri": 2 },
@@ -358,8 +349,7 @@ var goods = [
          //24
          "type": "Advanced Weapons",
          "available": ["In", "Ht"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 5,
+         "maxTons": function () { return rawroll(1, 6).total * 5 },
          "priceRange": [50000, 250000],
          "purchaseDM": { "Ht": 2 },
          "saleDM": { "Po": 1, "Az": 2, "Rz": 4 },
@@ -397,8 +387,7 @@ var goods = [
          //25
          "type": "Advanced Vehicles",
          "available": ["In", "Ht"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 5,
+         "maxTons": function () { return rawroll(1, 6).total * 5 },
          "priceRange": [100000, 250000],
          "purchaseDM": { "Ht": 2 },
          "saleDM": { "As": 2, "Ri": 2 },
@@ -436,8 +425,7 @@ var goods = [
          //26
          "type": "Biochemicals",
          "available": ["In", "Ht"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 5,
+         "maxTons": function () { return rawroll(1, 6).total * 5 },
          "priceRange": [10000, 80000],
          "purchaseDM": { "Ag": 1, "Wa": 2 },
          "saleDM": { "In": 2 },
@@ -477,8 +465,7 @@ var goods = [
          //31
          "type": "Crystals and Gems",
          "available": ["As", "De", "Ic"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 5,
+         "maxTons": function () { return rawroll(1, 6).total * 5 },
          "priceRange": [5000, 45000],
          "purchaseDM": { "As": 2, "De": 1, "Ic": 1 },
          "saleDM": { "In": 3, "Ri": 2 },
@@ -516,8 +503,7 @@ var goods = [
          //32
          "type": "Cybernetics",
          "available": ["Ht"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 1,
+         "maxTons": function () { return rawroll(1, 6).total },
          "priceRange": [100000, 500000],
          "purchaseDM": {},
          "saleDM": { "As": 1, "Ic": 1, "Ri": 2 },
@@ -555,8 +541,7 @@ var goods = [
          //33
          "type": "Live Animals",
          "available": ["Ag", "Ga"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 10,
+         "maxTons": function () { return rawroll(1, 6).total * 10 },
          "priceRange": [2500, 15000],
          "purchaseDM": { "Ag": 2 },
          "saleDM": { "Lo": 3 },
@@ -594,8 +579,7 @@ var goods = [
          //34
          "type": "Luxury Consumables",
          "available": ["Ag", "Ga", "Wa"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 10,
+         "maxTons": function () { return rawroll(1, 6).total * 10 },
          "priceRange": [5000, 50000],
          "purchaseDM": { "Ag": 2, "Wa": 1 },
          "saleDM": { "Ri": 2, "Hi": 2 },
@@ -633,8 +617,7 @@ var goods = [
          //35
          "type": "Luxury Goods",
          "available": ["Hi"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 1,
+         "maxTons": function () { return rawroll(1, 6).total },
          "priceRange": [50000, 500000],
          "purchaseDM": {},
          "saleDM": { "Ri": 4 },
@@ -672,8 +655,7 @@ var goods = [
          //36
          "type": "Medical Supplies",
          "available": ["Ht", "Hi"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 5,
+         "maxTons": function () { return rawroll(1, 6).total * 5 },
          "priceRange": [10000, 100000],
          "purchaseDM": { "Ht": 2 },
          "saleDM": { "In": 2, "Po": 1, "Ri": 1 },
@@ -713,8 +695,7 @@ var goods = [
          //41
          "type": "Petrochemicals",
          "available": ["De", "Fl", "Ic", "Wa"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 10,
+         "maxTons": function () { return rawroll(1, 6).total * 10 },
          "priceRange": [2500, 30000],
          "purchaseDM": { "De": 2 },
          "saleDM": { "In": 2, "Ag": 1, "Lt": 2 },
@@ -752,8 +733,7 @@ var goods = [
          //42
          "type": "Pharmaceuticals",
          "available": ["As", "De", "Hi", "Wa"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 1,
+         "maxTons": function () { return rawroll(1, 6).total },
          "priceRange": [25000, 500000],
          "purchaseDM": { "As": 2, "Hi": 1 },
          "saleDM": { "Ri": 2, "Lt": 1 },
@@ -791,8 +771,7 @@ var goods = [
          //43
          "type": "Polymers",
          "available": ["In"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 10,
+         "maxTons": function () { return rawroll(1, 6).total * 10 },
          "priceRange": [1000, 10000],
          "purchaseDM": {},
          "saleDM": { "Ri": 2, "Ni": 1 },
@@ -830,8 +809,7 @@ var goods = [
          //44
          "type": "Precious Metals",
          "available": ["As", "De", "Ic", "Fl"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 1,
+         "maxTons": function () { return rawroll(1, 6).total },
          "priceRange": [10000, 100000],
          "purchaseDM": { "As": 3, "De": 1, "Ic": 2 },
          "saleDM": { "Ri": 2, "In": 2, "Ht": 1 },
@@ -869,8 +847,7 @@ var goods = [
          //45
          "type": "Radioactives",
          "available": ["As", "De", "Lo"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 1,
+         "maxTons": function () { return rawroll(1, 6).total },
          "priceRange": [500000, 1500000],
          "purchaseDM": { "As": 2, "Lo": 2 },
          "saleDM": { "In": 3, "Ht": 1, "Ni": -2, "Ag": -3 },
@@ -908,8 +885,7 @@ var goods = [
          //46
          "type": "Robots",
          "available": ["In"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 5,
+         "maxTons": function () { return rawroll(1, 6).total * 5 },
          "priceRange": [150000, 650000],
          "purchaseDM": {},
          "saleDM": { "Ag": 2, "Ht": 1 },
@@ -949,8 +925,7 @@ var goods = [
          //51
          "type": "Spices",
          "available": ["Ga", "De", "Wa"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 5,
+         "maxTons": function () { return rawroll(1, 6).total * 5 },
          "priceRange": [1000, 12000],
          "purchaseDM": { "De": 2 },
          "saleDM": { "Hi": 2, "Ri": 3, "Po": 3 },
@@ -988,8 +963,7 @@ var goods = [
          //52
          "type": "Textiles",
          "available": ["Ag", "Ni"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 10,
+         "maxTons": function () { return rawroll(1, 6).total * 10 },
          "priceRange": [1000, 5000],
          "purchaseDM": { "Ag": 7 },
          "saleDM": { "Hi": 3, "Na": 2 },
@@ -1027,8 +1001,7 @@ var goods = [
          //53
          "type": "Uncommon Ore",
          "available": ["As", "Ic"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 10,
+         "maxTons": function () { return rawroll(1, 6).total * 10 },
          "priceRange": [1000, 10000],
          "purchaseDM": { "As": 4 },
          "saleDM": { "In": 3, "Ni": 1 },
@@ -1066,8 +1039,7 @@ var goods = [
          //54
          "type": "Uncommon Raw Materials",
          "available": ["Ag", "De", "Wa"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 10,
+         "maxTons": function () { return rawroll(1, 6).total * 10 },
          "priceRange": [5000, 50000],
          "purchaseDM": { "Ag": 2, "Wa": 1 },
          "saleDM": { "In": 2, "Ht": 1 },
@@ -1105,8 +1077,7 @@ var goods = [
          //55
          "type": "Wood",
          "available": ["Ag", "Ga"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 10,
+         "maxTons": function () { return rawroll(1, 6).total * 10 },
          "priceRange": [100, 4000],
          "purchaseDM": { "Ag": 6 },
          "saleDM": { "Ri": 2, "In": 1 },
@@ -1144,8 +1115,7 @@ var goods = [
          //56
          "type": "Vehicles",
          "available": ["In", "Ht"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 10,
+         "maxTons": function () { return rawroll(1, 6).total * 10 },
          "priceRange": [5000, 30000],
          "purchaseDM": { "In": 2, "Ht": 1 },
          "saleDM": { "Ni": 2, "Hi": 1 },
@@ -1185,8 +1155,7 @@ var goods = [
          //61
          "type": "Illegal Biochemicals",
          "available": ["Ag", "Wa"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 5,
+         "maxTons": function () { return rawroll(1, 6).total * 5 },
          "priceRange": [10000, 200000],
          "purchaseDM": { "Wa": 2 },
          "saleDM": { "In": 6 },
@@ -1224,8 +1193,7 @@ var goods = [
          //62
          "type": "Illegal Cybernetics",
          "available": ["Ht"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 1,
+         "maxTons": function () { return rawroll(1, 6).total },
          "priceRange": [100000, 650000],
          "purchaseDM": {},
          "saleDM": { "As": 4, "Ic": 4, "Ri": 8, "Az": 6, "Rz": 6 },
@@ -1263,8 +1231,7 @@ var goods = [
          //63
          "type": "Illegal Drugs",
          "available": ["As", "De", "Hi", "Wa"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 1,
+         "maxTons": function () { return rawroll(1, 6).total },
          "priceRange": [25000, 300000],
          "purchaseDM": {},
          "saleDM": { "Ri": 6, "Hi": 6 },
@@ -1302,8 +1269,7 @@ var goods = [
          //64
          "type": "Illegal Luxuries",
          "available": ["Ag", "Ga", "Wa"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 1,
+         "maxTons": function () { return rawroll(1, 6).total },
          "priceRange": [10000, 200000],
          "purchaseDM": { "Ag": 2, "Wa": 1 },
          "saleDM": { "Ri": 6, "Hi": 4 },
@@ -1341,8 +1307,7 @@ var goods = [
          //65
          "type": "Illegal Weapons",
          "available": ["In", "Ht"],
-         "maxTonsDie": "1d6",
-         "maxTonsMult": 5,
+         "maxTons": function () { return rawroll(1, 6).total * 5 },
          "priceRange": [50000, 450000],
          "purchaseDM": { "Ht": 2 },
          "saleDM": { "Po": 6, "Az": 8, "Rz": 10 },
