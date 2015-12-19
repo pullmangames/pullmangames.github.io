@@ -604,23 +604,23 @@ var calculatePassengers=function(departureWorld,arrivalWorld,roundupModifier){
 };
 
 var addPassenger = function(newpassenger, locationArray, berthNumber, icon) {
-   console.log("loc:");
-	console.log(locationArray)
-	console.log("berth:");
-	console.log(berthNumber);
+    //console.log("loc:");
+	//console.log(locationArray)
+	//console.log("berth:");
+	//console.log(berthNumber);
 	locationArray[berthNumber].occupants.push(newpassenger);
 	locationArray[berthNumber].stateOn = icon;
 };
 
 var removePassenger = function(locationArray, berthNumber, passengerNumber, icon){
-   console.log("attempting to delete " + berthNumber + "," + passengerNumber + "from:");
-	console.log(locationArray);
+    //console.log("attempting to delete " + berthNumber + "," + passengerNumber + "from:");
+	//console.log(locationArray);
 	locationArray[berthNumber].occupants.splice(passengerNumber, 1);
 	if (!locationArray[berthNumber].occupants.length) {
 	   locationArray[berthNumber].stateOn = icon;
 	}
-	console.log("POST-DELETE:")
-	console.log(locationArray);
+	//console.log("POST-DELETE:")
+	//console.log(locationArray);
 };
 
 
