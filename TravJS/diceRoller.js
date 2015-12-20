@@ -160,7 +160,8 @@ rollModule.directive('travSkillCheckDm', [function() {
          $scope.ngModel = {
             roll:roll,
             character:$scope.results[$scope.selectedCharacterIndex].character,
-            skill:$scope.selected.skill
+            skill: $scope.selected.skill,
+            dm: $scope.results[$scope.selectedCharacterIndex].dm
          };
          $scope.selectedCharacterIndex = -1;
          if ($scope.onRoll)

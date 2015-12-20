@@ -192,6 +192,10 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
          online:        {name:"Online Supplier",          skillCheck:{skills:['Computers'],                 characteristics:['edu'],        difficulty: 'Average'   },  goods:['common', 'legal           '], guideCanFind:false, guideBaseCost:0,   timeDice:1, timeScale:'h'}
       };
 
+      smm.buyTradeGoods.priceAdjustment = [
+         3, 2, 1.75, 1.5, 1.35, 1.25, 1.2, 1.15, 1.1, 1.05, 1, .95, .9, .85, .8, .75, .7, .65, .6, .55, .5, .45, .4, .3
+      ];
+
       //Set the default supplier type
       smm.buyTradeGoods.supplier = smm.buyTradeGoods.suppliers['standard'];
 
@@ -199,6 +203,7 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
          delete smm.buyTradeGoods.useGuideResult;
          delete smm.buyTradeGoods.findSupplierResult;
          smm.buyTradeGoods.supplierLocationMethod = null;
+         smm.buyTradeGoods.supplierFound = false;
       }
 
       smm.buyTradeGoods.onFindSupplierRoll = function () {
@@ -212,7 +217,7 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
             }
             suppliersFound.push(smm.log.status.date);
             smm.buyTradeGoods.setFoundSuppliersExtFactor();
-            smm.buyTradeGoods.generateGoods(smm.buyTradeGoods.supplier);
+            smm.buyTradeGoods.supplierFound = true;
          }
       };
 
@@ -232,7 +237,7 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       smm.buyTradeGoods.acceptGuideToFindSupplier = function () {
          smm.buyTradeGoods.guideAccepted = true;
          smm.buyTradeGoods.cachedGuideResults = {};
-         smm.buyTradeGoods.generateGoods(smm.buyTradeGoods.supplier);
+         smm.buyTradeGoods.supplierFound = true;
       };
 
       smm.buyTradeGoods.generateGoods = function (supplier) {
@@ -287,6 +292,7 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
             //Use availableDefinedGoods as a hash (key: name of the parent good) of hahes (key: name of the defined trade good) to make lookup easier
             if (!availableDefinedGoods[availableGoods[i].type]) {
                availableDefinedGoods[availableGoods[i].type] = {};
+               availableDefinedGoods[availableGoods[i].type].type = availableGoods[i];
             }
             //Get a set of defined trade goods for the given good
             var newDefinedGoods = enumerateDefinedTradeGoods(availableGoods[i]);
@@ -299,9 +305,72 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
                availableDefinedGoods[availableGoods[i].type][newDefinedGoods[j].good.name].tons += newDefinedGoods[j].tons;
             }
          }
-
-         
+         return availableDefinedGoods;
       };
+
+      smm.buyTradeGoods.haggleResult = null;
+      smm.buyTradeGoods.priceList = [];
+      smm.buyTradeGoods.priceListAvailable = false;
+      smm.buyTradeGoods.onHaggleRoll = function () {
+         var available = smm.buyTradeGoods.generateGoods(smm.buyTradeGoods.supplier);
+         var tradeCodes = smm.tripData.departureWorld.Remarks.split(" ");
+         var inventory = [];
+         var i;
+         //Now that we have the appropriate DM, we can generate the prices
+         for (var type in available) {
+            if (available.hasOwnProperty(type)) {
+               //Find the largest purchase DM
+               var purchaseDm = undefined;
+               for (i = 0; i < tradeCodes.length; i++) {
+                  if (   available[type].type.purchaseDM[tradeCodes[i]]
+                      && (   purchaseDm === undefined
+                          || available[type].type.purchaseDM[tradeCodes[i]] > purchaseDm)) {
+                     purchaseDm = available[type].type.purchaseDM[tradeCodes[i]];
+                  }
+               }
+               //Find the largest sale DM
+               var saleDm = undefined;
+               for (i = 0; i < tradeCodes.length; i++) {
+                  if (   available[type].type.saleDM[tradeCodes[i]]
+                      && (   saleDm === undefined
+                          || available[type].type.saleDM[tradeCodes[i]] > saleDm)) {
+                     saleDm = available[type].type.saleDM[tradeCodes[i]];
+                  }
+               }
+
+               if (!purchaseDm) {
+                  purchaseDm = 0;
+               }
+               if (!saleDm) {
+                  saleDm = 0;
+               }
+               var totalDm = smm.buyTradeGoods.haggleResult.dm + purchaseDm - saleDm;
+
+               var rollTotal = rawroll(3, 6).total + totalDm;
+               var priceMultiplier;
+               if (rollTotal < 0) {
+                  priceMultiplier = 4;
+               } else if (rollTotal >= 24) {
+                  priceMultiplier = 0.25;
+               } else {
+                  priceMultiplier = smm.buyTradeGoods.priceAdjustment[rollTotal];
+               }
+
+               //We're done with the type - it causes problems in this loop, so just delete it
+               delete available[type].type;
+               for (var definedGood in available[type]) {
+                  if (available[type].hasOwnProperty(definedGood)) {
+                     inventory.push({good:available[type][definedGood], ppt:available[type][definedGood].good.basePrice * priceMultiplier});
+                  }
+               }
+            }
+         }
+         smm.buyTradeGoods.priceList.splice(0, smm.buyTradeGoods.priceList.length);
+         for (i = 0; i < inventory.length; i++) {
+            smm.buyTradeGoods.priceList.push(inventory[i]);
+         }
+         smm.buyTradeGoods.priceListAvailable = true;
+      }
    };
 
    _initializeBuyTradeGoods();

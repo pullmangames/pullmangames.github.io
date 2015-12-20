@@ -285,7 +285,7 @@
                              ng-attr-require-all="true"
                              ng-attr-on-roll="shipMan.buyTradeGoods.onFindSupplierRoll()">
         </trav-skill-check-dm>
-        <div style="margin-top:10px" ng-if="shipMan.buyTradeGoods.findSupplierResult">
+        <div style="margin-top:10px;margin-bottom:10px" ng-if="shipMan.buyTradeGoods.findSupplierResult">
            <strong>
              {{shipMan.buyTradeGoods.findSupplierResult.character.name}} rolled {{shipMan.buyTradeGoods.findSupplierResult.roll.effect >= 0 ? "+" : ""}}{{shipMan.buyTradeGoods.findSupplierResult.roll.effect}} ({{shipMan.buyTradeGoods.findSupplierResult.roll.summary}}).
              <br />
@@ -293,7 +293,7 @@
            </strong>
         </div>
       </div>
-      <div ng-if="shipMan.buyTradeGoods.supplierLocationMethod==='guide' && shipMan.buyTradeGoods.supplier.guideCanFind">
+      <div style="margin-bottom:10px" ng-if="shipMan.buyTradeGoods.supplierLocationMethod==='guide' && shipMan.buyTradeGoods.supplier.guideCanFind">
         <div ng-if="!shipMan.buyTradeGoods.guideAccepted">
           <strong style="margin-right:5px">The guide will charge you Cr. {{shipMan.buyTradeGoods.useGuideResult.cost}} to find a {{shipMan.buyTradeGoods.supplier.name.toLowerCase()}}.</strong>
           <label class="btn btn-primary" ng-click="shipMan.buyTradeGoods.acceptGuideToFindSupplier()">Accept</label>
@@ -301,6 +301,29 @@
         <div ng-if="shipMan.buyTradeGoods.guideAccepted">
           <strong>You have paid a guide Cr. {{shipMan.buyTradeGoods.useGuideResult.cost}} to find a {{shipMan.buyTradeGoods.supplier.name.toLowerCase()}}.</strong>
         </div>
+      </div>
+      <div ng-if="shipMan.buyTradeGoods.supplierFound">
+        <strong>Haggle with the supplier:</strong><br />
+        <trav-skill-check-dm ng-model="shipMan.buyTradeGoods.haggleResult"
+                             ng-attr-skills="['Broker']"
+                             ng-attr-characteristics="['Int', 'Soc']"
+                             ng-attr-difficulty="'Average'"
+                             ng-attr-ext-factors="[]"
+                             ng-attr-time-dice="{{0}}"
+                             ng-attr-require-all="true"
+                             ng-attr-on-roll="shipMan.buyTradeGoods.onHaggleRoll()">
+        </trav-skill-check-dm>
+      </div>
+      <div style="margin-top:10px" ng-if="shipMan.buyTradeGoods.priceListAvailable">
+        <table id="priceListTable">
+          <tr><th style="padding:2px">Good</th><th style="padding:2px">Tons</th><th style="padding:2px">Price</th><th style="padding:2px">Base</th></tr>
+          <tr ng-repeat="good in shipMan.buyTradeGoods.priceList">
+            <td style="padding:2px">{{good.good.good.name}}</td>
+            <td style="padding:2px">{{good.good.tons}}</td>
+            <td style="padding:2px">{{good.ppt | number: 0}}</td>
+            <td style="padding:2px">{{good.good.good.basePrice | number: 0}}</td>
+          </tr>
+        </table>
       </div>
     </div>
   </script>
