@@ -31,6 +31,15 @@ h3 {
    width: 25px;
    border: solid black 1px;
 }
+#priceListTable {
+   border-collapse: collapse;
+}
+#priceListTable td, th {
+   border: 1px solid DarkGray;
+}
+#priceListTable tr:nth-child(odd) {
+   background: LightGray;
+}
 .nonSpecialtySkill {
    cursor: pointer;
 }

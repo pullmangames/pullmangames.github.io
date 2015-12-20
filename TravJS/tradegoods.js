@@ -1,1395 +1,1430 @@
-var goods = {
-   "11": {
-      "type": "Basic Electronics",
-      "available": "All",
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 10,
-      "priceRange": [6000, 14000],
-      "purchaseDM": { "In": 2, "Ht": 3, "Ri": 1 },
-      "saleDM": { "Ni": 2, "Lt": 1, "Po": 1 },
-      "maxRisk": 0,
-      "dangerousGoodsDM": -6
-   },
-   "12": {
-      "type": "Basic Machine Parts",
-      "available": ["All"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 10,
-      "priceRange": [8000, 12000],
-      "purchaseDM": { "Na": 2, "In": 5 },
-      "saleDM": { "Ni": 3, "Ag": 2 },
-      "maxRisk": 0,
-      "dangerousGoodsDM": -6
-   },
-   "13": {
-      "type": "Basic Manufactured Goods",
-      "available": ["All"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 10,
-      "priceRange": [8000, 12000],
-      "purchaseDM": { "Na": 2, "In": 5 },
-      "saleDM": { "Ni": 3, "Hi": 2 },
-      "maxRisk": 0,
-      "dangerousGoodsDM": -6
-   },
-   "14": {
-      "type": "Basic Raw Materials",
-      "available": ["All"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 10,
-      "priceRange": [1000, 9000],
-      "purchaseDM": { "Ag": 3, "Ga": 2 },
-      "saleDM": { "In": 2, "Po": 2 },
-      "maxRisk": 0,
-      "dangerousGoodsDM": -6
-   },
-   "15": {
-      "type": "Basic Consumables",
-      "available": ["All"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 10,
-      "priceRange": [500, 5000],
-      "purchaseDM": { "Ag": 3, "Wa": 2, "Ga": 1, "As": 4 },
-      "saleDM": { "As": 1, "Fl": 1, "Ic": 1, "Hi": 1 },
-      "maxRisk": 0,
-      "dangerousGoodsDM": -6
-   },
-   "16": {
-      "type": "Basic Ore",
-      "available": ["All"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 10,
-      "priceRange": [250, 2000],
-      "purchaseDM": { "As": 4 },
-      "saleDM": { "In": 3, "Ni": 1 },
-      "maxRisk": 0,
-      "dangerousGoodsDM": -6
-   },
-   "21": {
-      "type": "Advanced Electronics",
-      "available": ["In", "Ht"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 5,
-      "priceRange": [25000, 150000],
-      "purchaseDM": { "In": 2, "Ht": 3 },
-      "saleDM": { "Ni": 1, "Ri": 2, "As": 3 },
-      "maxRisk": 2,
-      "dangerousGoodsDM": -2
-   },
-   "22": {
-      "type": "Advanced Machine Parts",
-      "available": ["In", "Ht"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 5,
-      "priceRange": [25000, 100000],
-      "purchaseDM": { "In": 2, "Ht": 1 },
-      "saleDM": { "As": 2, "Ni": 1 },
-      "maxRisk": 2,
-      "dangerousGoodsDM": -2
-   },
-   "23": {
-      "type": "Advanced Manufactured Goods",
-      "available": ["In", "Ht"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 5,
-      "priceRange": [25000, 100000],
-      "purchaseDM": { "In": 1 },
-      "saleDM": { "Hi": 1, "Ri": 2 },
-      "maxRisk": 2,
-      "dangerousGoodsDM": -2
-   },
-   "24": {
-      "type": "Advanced Weapons",
-      "available": ["In", "Ht"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 5,
-      "priceRange": [50000, 250000],
-      "purchaseDM": { "Ht": 2 },
-      "saleDM": { "Po": 1, "Az": 2, "Rz": 4 },
-      "maxRisk": 3,
-      "dangerousGoodsDM": 0
-   },
-
-   "25": {
-      "type": "Advanced Vehicles",
-      "available": ["In", "Ht"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 5,
-      "priceRange": [100000, 250000],
-      "purchaseDM": { "Ht": 2 },
-      "saleDM": { "As": 2, "Ri": 2 },
-      "maxRisk": 3,
-      "dangerousGoodsDM": 0
-   },
-   "26": {
-      "type": "Biochemicals",
-      "available": ["In", "Ht"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 5,
-      "priceRange": [10000, 80000],
-      "purchaseDM": { "Ag": 1, "Wa": 2 },
-      "saleDM": { "In": 2 },
-      "maxRisk": 2,
-      "dangerousGoodsDM": 2
-   },
-   "31": {
-      "type": "Crystals and Gems",
-      "available": ["As", "De", "Ic"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 5,
-      "priceRange": [5000, 45000],
-      "purchaseDM": { "As": 2, "De": 1, "Ic": 1 },
-      "saleDM": { "In": 3, "Ri": 2 },
-      "maxRisk": 2,
-      "dangerousGoodsDM": -1
-   },
-   "32": {
-      "type": "Cybernetics",
-      "available": ["Ht"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 1,
-      "priceRange": [100000, 500000],
-      "purchaseDM": {},
-      "saleDM": { "As": 1, "Ic": 1, "Ri": 2 },
-      "maxRisk": 3,
-      "dangerousGoodsDM": 1
-   },
-   "33": {
-      "type": "Live Animals",
-      "available": ["Ag", "Ga"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 10,
-      "priceRange": [2500, 15000],
-      "purchaseDM": { "Ag": 2 },
-      "saleDM": { "Lo": 3 },
-      "maxRisk": 2,
-      "dangerousGoodsDM": 2
-   },
-   "34": {
-      "type": "Luxury Consumables",
-      "available": ["Ag", "Ga", "Wa"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 10,
-      "priceRange": [5000, 50000],
-      "purchaseDM": { "Ag": 2, "Wa": 1 },
-      "saleDM": { "Ri": 2, "Hi": 2 },
-      "maxRisk": 3,
-      "dangerousGoodsDM": 2
-   },
-   "35": {
-      "type": "Luxury Goods",
-      "available": ["Hi"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 1,
-      "priceRange": [50000, 500000],
-      "purchaseDM": {},
-      "saleDM": { "Ri": 4 },
-      "maxRisk": 3,
-      "dangerousGoodsDM": 2
-   },
-   "36": {
-      "type": "Medical Supplies",
-      "available": ["Ht", "Hi"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 5,
-      "priceRange": [10000, 100000],
-      "purchaseDM": { "Ht": 2 },
-      "saleDM": { "In": 2, "Po": 1, "Ri": 1 },
-      "maxRisk": 2,
-      "dangerousGoodsDM": 2
-   },
-   "41": {
-      "type": "Petrochemicals",
-      "available": ["De", "Fl", "Ic", "Wa"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 10,
-      "priceRange": [2500, 30000],
-      "purchaseDM": { "De": 2 },
-      "saleDM": { "In": 2, "Ag": 1, "Lt": 2 },
-      "maxRisk": 2,
-      "dangerousGoodsDM": 2
-   },
-   "42": {
-      "type": "Pharmaceuticals",
-      "available": ["As", "De", "Hi", "Wa"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 1,
-      "priceRange": [25000, 500000],
-      "purchaseDM": { "As": 2, "Hi": 1 },
-      "saleDM": { "Ri": 2, "Lt": 1 },
-      "maxRisk": 2,
-      "dangerousGoodsDM": 3
-   },
-   "43": {
-      "type": "Polymers",
-      "available": ["In"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 10,
-      "priceRange": [1000, 10000],
-      "purchaseDM": {},
-      "saleDM": { "Ri": 2, "Ni": 1 },
-      "maxRisk": 1,
-      "dangerousGoodsDM": 0
-   },
-   "44": {
-      "type": "Precious Metals",
-      "available": ["As", "De", "Ic", "Fl"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 1,
-      "priceRange": [10000, 100000],
-      "purchaseDM": { "As": 3, "De": 1, "Ic": 2 },
-      "saleDM": { "Ri": 2, "In": 2, "Ht": 1 },
-      "maxRisk": 3,
-      "dangerousGoodsDM": 4
-   },
-   "45": {
-      "type": "Radioactives",
-      "available": ["As", "De", "Lo"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 1,
-      "priceRange": [500000, 1500000],
-      "purchaseDM": { "As": 2, "Lo": 2 },
-      "saleDM": { "In": 3, "Ht": 1, "Ni": -2, "Ag": -3 },
-      "maxRisk": 4,
-      "dangerousGoodsDM": 3
-   },
-   "46": {
-      "type": "Robots",
-      "available": ["In"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 5,
-      "priceRange": [150000, 650000],
-      "purchaseDM": {},
-      "saleDM": { "Ag": 2, "Ht": 1 },
-      "maxRisk": 2,
-      "dangerousGoodsDM": 1
-   },
-   "51": {
-      "type": "Spices",
-      "available": ["Ga", "De", "Wa"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 5,
-      "priceRange": [1000, 12000],
-      "purchaseDM": { "De": 2 },
-      "saleDM": { "Hi": 2, "Ri": 3, "Po": 3 },
-      "maxRisk": 2,
-      "dangerousGoodsDM": -1
-   },
-   "52": {
-      "type": "Textiles",
-      "available": ["Ag", "Ni"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 10,
-      "priceRange": [1000, 5000],
-      "purchaseDM": { "Ag": 7 },
-      "saleDM": { "Hi": 3, "Na": 2 },
-      "maxRisk": 1,
-      "dangerousGoodsDM": -2
-   },
-   "53": {
-      "type": "Uncommon Ore",
-      "available": ["As", "Ic"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 10,
-      "priceRange": [1000, 10000],
-      "purchaseDM": { "As": 4 },
-      "saleDM": { "In": 3, "Ni": 1 },
-      "maxRisk": 2,
-      "dangerousGoodsDM": -2
-   },
-   "54": {
-      "type": "Uncommon Raw Materials",
-      "available": ["Ag", "De", "Wa"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 10,
-      "priceRange": [5000, 50000],
-      "purchaseDM": { "Ag": 2, "Wa": 1 },
-      "saleDM": { "In": 2, "Ht": 1 },
-      "maxRisk": 2,
-      "dangerousGoodsDM": -2
-   },
-   "55": {
-      "type": "Wood",
-      "available": ["Ag", "Ga"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 10,
-      "priceRange": [100, 4000],
-      "purchaseDM": { "Ag": 6 },
-      "saleDM": { "Ri": 2, "In": 1 },
-      "maxRisk": 1,
-      "dangerousGoodsDM": -4
-   },
-   "56": {
-      "type": "Vehicles",
-      "available": ["In", "Ht"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 10,
-      "priceRange": [5000, 30000],
-      "purchaseDM": { "In": 2, "Ht": 1 },
-      "saleDM": { "Ni": 2, "Hi": 1 },
-      "maxRisk": 2,
-      "dangerousGoodsDM": -2
-   },
-   "61": {
-      "type": "Illegal Biochemicals",
-      "available": ["Ag", "Wa"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 5,
-      "priceRange": [10000, 200000],
-      "purchaseDM": { "Wa": 2 },
-      "saleDM": { "In": 6 },
-      "maxRisk": 4,
-      "dangerousGoodsDM": 4
-   },
-   "62": {
-      "type": "Illegal Cybernetics",
-      "available": ["Ht"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 1,
-      "priceRange": [100000, 650000],
-      "purchaseDM": {},
-      "saleDM": { "As": 4, "Ic": 4, "Ri": 8, "Az": 6, "Rz": 6 },
-      "maxRisk": 5,
-      "dangerousGoodsDM": 5
-   },
-   "63": {
-      "type": "Illegal Drugs",
-      "available": ["As", "De", "Hi", "Wa"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 1,
-      "priceRange": [25000, 300000],
-      "purchaseDM": {},
-      "saleDM": { "Ri": 6, "Hi": 6 },
-      "maxRisk": 4,
-      "dangerousGoodsDM": 6
-   },
-   "64": {
-      "type": "Illegal Luxuries",
-      "available": ["Ag", "Ga", "Wa"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 1,
-      "priceRange": [10000, 200000],
-      "purchaseDM": { "Ag": 2, "Wa": 1 },
-      "saleDM": { "Ri": 6, "Hi": 4 },
-      "maxRisk": 4,
-      "dangerousGoodsDM": 4
-   },
-   "65": {
-      "type": "Illegal Weapons",
-      "available": ["In", "Ht"],
-      "maxTonsDie": "1d6",
-      "maxTonsMult": 5,
-      "priceRange": [50000, 450000],
-      "purchaseDM": { "Ht": 2 },
-      "saleDM": { "Po": 6, "Az": 8, "Rz": 10 },
-      "maxRisk": 5,
-      "dangerousGoodsDM": 6
-   }
-};
-
-var definedTradeGoods = {
-   11: {
-      2: {
-         "definedTradeGood": "calculators/adding machines",
-         "tons": function() { return rawroll(1, 6).total * 12 },
-         "basePrice": 6000
+var goods = [
+   [
+      {
+         //11
+         "type": "Basic Electronics",
+         "available": ["All"],
+         "maxTons": function() { return rawroll(1, 6).total * 10 },
+         "priceRange": [6000, 14000],
+         "purchaseDM": { "In": 2, "Ht": 3, "Ri": 1 },
+         "saleDM": { "Ni": 2, "Lt": 1, "Po": 1 },
+         "maxRisk": 0,
+         "dangerousGoodsDM": -6,
+         "definedTradeGoods":
+         [
+            {
+               "name": "Calculators/Adding Machines",
+               "tons": function() { return rawroll(1, 6).total * 12 },
+               "basePrice": 6000
+            },
+            {
+               "name": "Video Game and Entertainment Systems",
+               "tons": function() { return rawroll(1, 6).total * 10 },
+               "basePrice": 8000
+            },
+            {
+               "name": "Personal and Commercial Computers",
+               "tons": function() { return rawroll(1, 6).total * 10 },
+               "basePrice": 10000
+            },
+            {
+               "name": "Banking Machines and Security Systems",
+               "tons": function() { return rawroll(1, 6).total * 4 },
+               "basePrice": 12000
+            },
+            {
+               "name": "Microprocessor Assemblies",
+               "tons": function() { return rawroll(1, 6).total * 2 },
+               "basePrice": 14000
+            }
+         ]
       },
-      5: {
-         "definedTradeGood": "video game and entertainment systems",
-         "tons": function() { return rawroll(1, 6).total * 10 },
-         "basePrice": 8000
+      {
+         //12
+         "type": "Basic Machine Parts",
+         "available": ["All"],
+         "maxTons": function () { return rawroll(1, 6).total * 10 },
+         "priceRange": [8000, 12000],
+         "purchaseDM": { "Na": 2, "In": 5 },
+         "saleDM": { "Ni": 3, "Ag": 2 },
+         "maxRisk": 0,
+         "dangerousGoodsDM": -6,
+         "definedTradeGoods": [
+            {
+               "name": "Stamped/Poured Cogs and Sprockets",
+               "tons": function() { return rawroll(1, 6).total * 12 },
+               "basePrice": 8000
+            },
+            {
+               "name": "Piping and Attachment Pieces",
+               "tons": function() { return rawroll(1, 6).total * 10 },
+               "basePrice": 9000
+            },
+            {
+               "name": "Engine Components",
+               "tons": function() { return rawroll(1, 6).total * 10 },
+               "basePrice": 10000
+            },
+            {
+               "name": "Pneumatics and Hydraulics",
+               "tons": function() { return rawroll(1, 6).total * 6 },
+               "basePrice": 11000
+            },
+            {
+               "name": "Starship-Quality Components",
+               "tons": function() { return rawroll(1, 6).total * 4 },
+               "basePrice": 12000
+            }
+         ]
       },
-      8: {
-         "definedTradeGood": "cersonal and commercial computers",
-         "tons": function() { return rawroll(1, 6).total * 10 },
-         "basePrice": 10000
+      {
+         //13
+         "type": "Basic Manufactured Goods",
+         "available": ["All"],
+         "maxTons": function () { return rawroll(1, 6).total * 10 },
+         "priceRange": [8000, 12000],
+         "purchaseDM": { "Na": 2, "In": 5 },
+         "saleDM": { "Ni": 3, "Hi": 2 },
+         "maxRisk": 0,
+         "dangerousGoodsDM": -6,
+         "definedTradeGoods": [
+            {
+               "name": "Second Stage Components",
+               "tons": function() { return rawroll(1, 6).total * 12 },
+               "basePrice": 8000
+            },
+            {
+               "name": "Uniforms/Clothing Products",
+               "tons": function() { return rawroll(1, 6).total * 10 },
+               "basePrice": 9000
+            },
+            {
+               "name": "Residential Appliances",
+               "tons": function() { return rawroll(1, 6).total * 10 },
+               "basePrice": 10000
+            },
+            {
+               "name": "Furniture/Storage Systems/Tools",
+               "tons": function() { return rawroll(1, 6).total * 5 },
+               "basePrice": 11000
+            },
+            {
+               "name": "Vehicle/Survival Accessories",
+               "tons": function() { return rawroll(1, 6).total * 3 },
+               "basePrice": 12000
+            }
+         ]
       },
-      11: {
-         "definedTradeGood": "banking machines and security systems",
-         "tons": function() { return rawroll(1, 6).total * 4 },
-         "basePrice": 12000
+      {
+         //14
+         "type": "Basic Raw Materials",
+         "available": ["All"],
+         "maxTons": function () { return rawroll(1, 6).total * 10 },
+         "priceRange": [1000, 9000],
+         "purchaseDM": { "Ag": 3, "Ga": 2 },
+         "saleDM": { "In": 2, "Po": 2 },
+         "maxRisk": 0,
+         "dangerousGoodsDM": -6,
+         "definedTradeGoods": [
+            {
+               "name": "Foundation Stones and Base Elements",
+               "tons": function() { return rawroll(1, 6).total * 14 },
+               "basePrice": 1000
+            },
+            {
+               "name": "Workable Metals",
+               "tons": function() { return rawroll(1, 6).total * 12 },
+               "basePrice": 3000
+            },
+            {
+               "name": "Workable Alloys",
+               "tons": function() { return rawroll(1, 6).total * 10 },
+               "basePrice": 5000
+            },
+            {
+               "name": "Fabricated Plastics",
+               "tons": function() { return rawroll(1, 6).total * 5 },
+               "basePrice": 7000
+            },
+            {
+               "name": "Chemical Solutions or Compounds",
+               "tons": function() { return rawroll(1, 6).total * 3 },
+               "basePrice": 9000
+            }
+         ]
       },
-      12: {
-         "definedTradeGood": "microprocessor assemblies",
-         "tons": function() { return rawroll(1, 6).total * 2 },
-         "basePrice": 14000
+      {
+         //15
+         "type": "Basic Consumables",
+         "available": ["All"],
+         "maxTons": function () { return rawroll(1, 6).total * 10 },
+         "priceRange": [500, 5000],
+         "purchaseDM": { "Ag": 3, "Wa": 2, "Ga": 1, "As": 4 },
+         "saleDM": { "As": 1, "Fl": 1, "Ic": 1, "Hi": 1 },
+         "maxRisk": 0,
+         "dangerousGoodsDM": -6,
+         "definedTradeGoods": [
+            {
+               "name": "Feed-grade Vegetation",
+               "tons": function() { return rawroll(1, 6).total * 12 },
+               "basePrice": 500
+            },
+            {
+               "name": "Food-grade Vegetation",
+               "tons": function() { return rawroll(1, 6).total * 10 },
+               "basePrice": 1000
+            },
+            {
+               "name": "Pre-packaged Food and Drink",
+               "tons": function() { return rawroll(1, 6).total * 10 },
+               "basePrice": 2000
+            },
+            {
+               "name": "Survival Rations and Storage-packed Liquids",
+               "tons": function() { return rawroll(1, 6).total * 8 },
+               "basePrice": 3000
+            },
+            {
+               "name": "Junk food/Soda/Beer",
+               "tons": function() { return rawroll(1, 6).total * 4 },
+               "basePrice": 5000
+            }
+         ]
+      },
+      {
+         //16
+         "type": "Basic Ore",
+         "available": ["All"],
+         "maxTons": function () { return rawroll(1, 6).total * 10 },
+         "priceRange": [250, 2000],
+         "purchaseDM": { "As": 4 },
+         "saleDM": { "In": 3, "Ni": 1 },
+         "maxRisk": 0,
+         "dangerousGoodsDM": -6,
+         "definedTradeGoods": [
+            {
+               "name": "Bornite or Galena or Sedimentary Stone",
+               "tons": function() { return rawroll(1, 6).total * 14 },
+               "basePrice": 250
+            },
+            {
+               "name": "Chalcocite or Talc",
+               "tons": function() { return rawroll(1, 6).total * 12 },
+               "basePrice": 500
+            },
+            {
+               "name": "Bauxite, Coltan and Wolframite",
+               "tons": function() { return rawroll(1, 6).total * 10 },
+               "basePrice": 1000
+            },
+            {
+               "name": "Acanthite, Cobalitite or Magnetite",
+               "tons": function() { return rawroll(1, 6).total * 8 },
+               "basePrice": 1500
+            },
+            {
+               "name": "Chromite or Cinnabar",
+               "tons": function() { return rawroll(1, 6).total * 4 },
+               "basePrice": 2000
+            }
+         ]
       }
-   },
-   12: {
-      2: {
-         "definedTradeGood": "stamped/poured cogs and sprockets",
-         "tons": function() { return rawroll(1, 6).total * 12 },
-         "basePrice": 8000
+   ],
+   [
+      {
+         //21
+         "type": "Advanced Electronics",
+         "available": ["In", "Ht"],
+         "maxTons": function () { return rawroll(1, 6).total * 5 },
+         "priceRange": [25000, 150000],
+         "purchaseDM": { "In": 2, "Ht": 3 },
+         "saleDM": { "Ni": 1, "Ri": 2, "As": 3 },
+         "maxRisk": 2,
+         "dangerousGoodsDM": -2,
+         "definedTradeGoods": [
+            {
+               "name": "Circuitry Bundles",
+               "tons": function() { return rawroll(1, 6).total * 6 },
+               "basePrice": 25000
+            },
+            {
+               "name": "Fibre-optic Components",
+               "tons": function() { return rawroll(1, 6).total * 5 },
+               "basePrice": 50000
+            },
+            {
+               "name": "VR Computer and Sensor Packages",
+               "tons": function() { return rawroll(1, 6).total * 5 },
+               "basePrice": 100000
+            },
+            {
+               "name": "Weapon Components",
+               "tons": function() { return rawroll(1, 6).total * 2 },
+               "basePrice": 125000
+            },
+            {
+               "name": "Starship Bridge Components",
+               "tons": function() { return rawroll(1, 6).total * 1 },
+               "basePrice": 150000
+            }
+         ]
       },
-      5: {
-         "definedTradeGood": "piping and attachment pieces",
-         "tons": function() { return rawroll(1, 6).total * 10 },
-         "basePrice": 9000
+      {
+         //22
+         "type": "Advanced Machine Parts",
+         "available": ["In", "Ht"],
+         "maxTons": function () { return rawroll(1, 6).total * 5 },
+         "priceRange": [25000, 100000],
+         "purchaseDM": { "In": 2, "Ht": 1 },
+         "saleDM": { "As": 2, "Ni": 1 },
+         "maxRisk": 2,
+         "dangerousGoodsDM": -2,
+         "definedTradeGoods": [
+            {
+               "name": "Alloy and Plastic Tool Kits",
+               "tons": function() { return rawroll(1, 6).total * 6 },
+               "basePrice": 25000
+            },
+            {
+               "name": "Starship Deckplate/Atmospheric Filters",
+               "tons": function() { return rawroll(1, 6).total * 5 },
+               "basePrice": 50000
+            },
+            {
+               "name": "Fusion Conduits/Power Plant Shells",
+               "tons": function() { return rawroll(1, 6).total * 5 },
+               "basePrice": 75000
+            },
+            {
+               "name": "Weapon Cores/Starship Hull",
+               "tons": function() { return rawroll(1, 6).total * 3 },
+               "basePrice": 90000
+            },
+            {
+               "name": "Gravitic Gyros, Navigation Magnetics",
+               "tons": function() { return rawroll(1, 6).total * 1 },
+               "basePrice": 100000
+            }
+         ]
       },
-      8: {
-         "definedTradeGood": "engine components",
-         "tons": function() { return rawroll(1, 6).total * 10 },
-         "basePrice": 10000
+      {
+         //23
+         "type": "Advanced Manufactured Goods",
+         "available": ["In", "Ht"],
+         "maxTons": function () { return rawroll(1, 6).total * 5 },
+         "priceRange": [25000, 100000],
+         "purchaseDM": { "In": 1 },
+         "saleDM": { "Hi": 1, "Ri": 2 },
+         "maxRisk": 2,
+         "dangerousGoodsDM": -2,
+         "definedTradeGoods": [
+            {
+               "name": "High-Pressure or Temperature-Resistant Components",
+               "tons": function() { return rawroll(1, 6).total * 6 },
+               "basePrice": 25000
+            },
+            {
+               "name": "Protective or Specialized Clothing",
+               "tons": function() { return rawroll(1, 6).total * 5 },
+               "basePrice": 50000
+            },
+            {
+               "name": "Survival Equipment/Colonization Kits",
+               "tons": function() { return rawroll(1, 6).total * 5 },
+               "basePrice": 100000
+            },
+            {
+               "name": "Computerized Job-related Gear",
+               "tons": function() { return rawroll(1, 6).total * 2 },
+               "basePrice": 125000
+            },
+            {
+               "name": "Starship Add-Ons/Powered Armour Components",
+               "tons": function() { return rawroll(1, 6).total * 1 },
+               "basePrice": 150000
+            }
+         ]
       },
-      11: {
-         "definedTradeGood": "pneumatics and hydraulics",
-         "tons": function() { return rawroll(1, 6).total * 6 },
-         "basePrice": 11000
+      {
+         //24
+         "type": "Advanced Weapons",
+         "available": ["In", "Ht"],
+         "maxTons": function () { return rawroll(1, 6).total * 5 },
+         "priceRange": [50000, 250000],
+         "purchaseDM": { "Ht": 2 },
+         "saleDM": { "Po": 1, "Az": 2, "Rz": 4 },
+         "maxRisk": 3,
+         "dangerousGoodsDM": 0,
+         "definedTradeGoods": [
+            {
+               "name": "(TL7 or less) Slug Weapons",
+               "tons": function() { return rawroll(1, 6).total * 7 },
+               "basePrice": 50000
+            },
+            {
+               "name": "(TL10 or less) Slug Weapons",
+               "tons": function() { return rawroll(1, 6).total * 6 },
+               "basePrice": 100000
+            },
+            {
+               "name": "(TL12 or less) Slug or Energy Weapons/Heavy Slug Weapons",
+               "tons": function() { return rawroll(1, 6).total * 5 },
+               "basePrice": 150000
+            },
+            {
+               "name": "(TL15 or less) Slug or Energy Weapons/Explosives",
+               "tons": function() { return rawroll(1, 6).total * 3 },
+               "basePrice": 200000
+            },
+            {
+               "name": "Artillery, Heavy Energy Weapons",
+               "tons": function() { return rawroll(1, 6).total * 1 },
+               "basePrice": 250000
+            }
+         ]
       },
-      12: {
-         "definedTradeGood": "starship-quality components",
-         "tons": function() { return rawroll(1, 6).total * 4 },
-         "basePrice": 12000
+      {
+         //25
+         "type": "Advanced Vehicles",
+         "available": ["In", "Ht"],
+         "maxTons": function () { return rawroll(1, 6).total * 5 },
+         "priceRange": [100000, 250000],
+         "purchaseDM": { "Ht": 2 },
+         "saleDM": { "As": 2, "Ri": 2 },
+         "maxRisk": 3,
+         "dangerousGoodsDM": 0,
+         "definedTradeGoods": [
+            {
+               "name": "Engine Components or Packages",
+               "tons": function() { return rawroll(1, 6).total * 5 },
+               "basePrice": 100000
+            },
+            {
+               "name": "Seafaring or Mole Vehicle Components or Packages",
+               "tons": function() { return rawroll(1, 6).total * 5 },
+               "basePrice": 140000
+            },
+            {
+               "name": "Air Raft Components or Packages",
+               "tons": function() { return rawroll(1, 6).total * 5 },
+               "basePrice": 180000
+            },
+            {
+               "name": "Grav-Vehicle Components",
+               "tons": function() { return rawroll(1, 6).total * 2 },
+               "basePrice": 200000
+            },
+            {
+               "name": "Spacecraft Components",
+               "tons": function() { return rawroll(1, 6).total * 1 },
+               "basePrice": 250000
+            }
+         ]
+      },
+      {
+         //26
+         "type": "Biochemicals",
+         "available": ["In", "Ht"],
+         "maxTons": function () { return rawroll(1, 6).total * 5 },
+         "priceRange": [10000, 80000],
+         "purchaseDM": { "Ag": 1, "Wa": 2 },
+         "saleDM": { "In": 2 },
+         "maxRisk": 2,
+         "dangerousGoodsDM": 2,
+         "definedTradeGoods": [
+            {
+               "name": "Organic Glues, Acids or Bases/Vegetable Oil",
+               "tons": function() { return rawroll(1, 6).total * 6 },
+               "basePrice": 10000
+            },
+            {
+               "name": "Ethanol/Fructose Syrup",
+               "tons": function() { return rawroll(1, 6).total * 5 },
+               "basePrice": 25000
+            },
+            {
+               "name": "Biodiesel/Cooking Compounds",
+               "tons": function() { return rawroll(1, 6).total * 5 },
+               "basePrice": 50000
+            },
+            {
+               "name": "Oxygenated Cleaner/Biodegradable Concentrates",
+               "tons": function() { return rawroll(1, 6).total * 3 },
+               "basePrice": 60000
+            },
+            {
+               "name": "Gelid Oxygen-Substitutes/Bio-fusion Cell Fuel",
+               "tons": function() { return rawroll(1, 6).total * 1 },
+               "basePrice": 80000
+            }
+         ]
       }
-   },
-   13: {
-      2: {
-         "definedTradeGood": "second stage components",
-         "tons": function() { return rawroll(1, 6).total * 12 },
-         "basePrice": 8000
+   ],
+   [
+      {
+         //31
+         "type": "Crystals and Gems",
+         "available": ["As", "De", "Ic"],
+         "maxTons": function () { return rawroll(1, 6).total * 5 },
+         "priceRange": [5000, 45000],
+         "purchaseDM": { "As": 2, "De": 1, "Ic": 1 },
+         "saleDM": { "In": 3, "Ri": 2 },
+         "maxRisk": 2,
+         "dangerousGoodsDM": -1,
+         "definedTradeGoods": [
+            {
+               "name": "Rock Salt/Compressed Coal",
+               "tons": function() { return rawroll(1, 6).total * 7 },
+               "basePrice": 5000
+            },
+            {
+               "name": "Graphite/Quartz",
+               "tons": function() { return rawroll(1, 6).total * 6 },
+               "basePrice": 10000
+            },
+            {
+               "name": "Silica/Focuser-Quality Gems",
+               "tons": function() { return rawroll(1, 6).total * 5 },
+               "basePrice": 20000
+            },
+            {
+               "name": "Photonics/Synthetic Gems",
+               "tons": function() { return rawroll(1, 6).total * 3 },
+               "basePrice": 30000
+            },
+            {
+               "name": "Industrial Diamond/Jewellery-Quality Gems",
+               "tons": function() { return rawroll(1, 6).total * 2 },
+               "basePrice": 45000
+            }
+         ]
       },
-      5: {
-         "definedTradeGood": "uniforms/clothing products",
-         "tons": function() { return rawroll(1, 6).total * 10 },
-         "basePrice": 9000
+      {
+         //32
+         "type": "Cybernetics",
+         "available": ["Ht"],
+         "maxTons": function () { return rawroll(1, 6).total },
+         "priceRange": [100000, 500000],
+         "purchaseDM": {},
+         "saleDM": { "As": 1, "Ic": 1, "Ri": 2 },
+         "maxRisk": 3,
+         "dangerousGoodsDM": 1,
+         "definedTradeGoods": [
+            {
+               "name": "Cybernetic Lubricants",
+               "tons": function() { return rawroll(1, 6).total + 2 },
+               "basePrice": 100000
+            },
+            {
+               "name": "Cybernetic Components/Physical Augments",
+               "tons": function() { return rawroll(1, 6).total + 1 },
+               "basePrice": 200000
+            },
+            {
+               "name": "Cyber-Prosthetics",
+               "tons": function() { return rawroll(1, 6).total * 1 },
+               "basePrice": 250000
+            },
+            {
+               "name": "Cosmetic Prosthetics",
+               "tons": function() { return rawroll(1, 6).total * 1 },
+               "basePrice": 350000
+            },
+            {
+               "name": "Real-Life Replacements and Augments",
+               "tons": function() { return 1 },
+               "basePrice": 500000
+            }
+         ]
       },
-      8: {
-         "definedTradeGood": "residential appliances",
-         "tons": function() { return rawroll(1, 6).total * 10 },
-         "basePrice": 10000
+      {
+         //33
+         "type": "Live Animals",
+         "available": ["Ag", "Ga"],
+         "maxTons": function () { return rawroll(1, 6).total * 10 },
+         "priceRange": [2500, 15000],
+         "purchaseDM": { "Ag": 2 },
+         "saleDM": { "Lo": 3 },
+         "maxRisk": 2,
+         "dangerousGoodsDM": 2,
+         "definedTradeGoods": [
+            {
+               "name": "Beasts of Burden",
+               "tons": function() { return rawroll(1, 6).total * 12 },
+               "basePrice": 2500
+            },
+            {
+               "name": "Untrained Riding Animals",
+               "tons": function() { return rawroll(1, 6).total * 10 },
+               "basePrice": 5000
+            },
+            {
+               "name": "Trained Riding Animals/Common Pets",
+               "tons": function() { return rawroll(1, 6).total * 10 },
+               "basePrice": 10000
+            },
+            {
+               "name": "Untrained Guard Animals",
+               "tons": function() { return rawroll(1, 6).total * 6 },
+               "basePrice": 12500
+            },
+            {
+               "name": "Trained Guard Animals/Exotic Pets",
+               "tons": function() { return rawroll(1, 6).total * 3 },
+               "basePrice": 15000
+            }
+         ]
       },
-      11: {
-         "definedTradeGood": "furniture/storage systems/tools",
-         "tons": function() { return rawroll(1, 6).total * 5 },
-         "basePrice": 11000
+      {
+         //34
+         "type": "Luxury Consumables",
+         "available": ["Ag", "Ga", "Wa"],
+         "maxTons": function () { return rawroll(1, 6).total * 10 },
+         "priceRange": [5000, 50000],
+         "purchaseDM": { "Ag": 2, "Wa": 1 },
+         "saleDM": { "Ri": 2, "Hi": 2 },
+         "maxRisk": 3,
+         "dangerousGoodsDM": 2,
+         "definedTradeGoods": [
+            {
+               "name": "Common Desserts/Rare Food Additives",
+               "tons": function() { return rawroll(1, 6).total * 14 },
+               "basePrice": 5000
+            },
+            {
+               "name": "Common Desserts/Common Wine",
+               "tons": function() { return rawroll(1, 6).total * 12 },
+               "basePrice": 10000
+            },
+            {
+               "name": "Rare Foods/Common Liquor",
+               "tons": function() { return rawroll(1, 6).total * 10 },
+               "basePrice": 20000
+            },
+            {
+               "name": "Exotic Foods/Rare Desserts/Rare Liquor",
+               "tons": function() { return rawroll(1, 6).total * 5 },
+               "basePrice": 30000
+            },
+            {
+               "name": "Exotic Desserts/Exotic Liquor",
+               "tons": function() { return rawroll(1, 6).total * 2 },
+               "basePrice": 50000
+            }
+         ]
       },
-      12: {
-         "definedTradeGood": "vehicle/survival accessories",
-         "tons": function() { return rawroll(1, 6).total * 3 },
-         "basePrice": 12000
+      {
+         //35
+         "type": "Luxury Goods",
+         "available": ["Hi"],
+         "maxTons": function () { return rawroll(1, 6).total },
+         "priceRange": [50000, 500000],
+         "purchaseDM": {},
+         "saleDM": { "Ri": 4 },
+         "maxRisk": 3,
+         "dangerousGoodsDM": 2,
+         "definedTradeGoods": [
+            {
+               "name": "Rare Literature/Art",
+               "tons": function() { return rawroll(1, 6).total + 2 },
+               "basePrice": 50000
+            },
+            {
+               "name": "Jewellery/Alien Textiles",
+               "tons": function() { return rawroll(1, 6).total + 1 },
+               "basePrice": 100000
+            },
+            {
+               "name": "Rare Clothing/Home Decorations",
+               "tons": function() { return rawroll(1, 6).total * 1 },
+               "basePrice": 200000
+            },
+            {
+               "name": "VR Electronic Entertainment Devices",
+               "tons": function() { return rawroll(1, 6).total * 1 },
+               "basePrice": 250000
+            },
+            {
+               "name": "Exotic Furnishings/Exquisite Jewellery",
+               "tons": function() { return 1 },
+               "basePrice": 500000
+            }
+         ]
+      },
+      {
+         //36
+         "type": "Medical Supplies",
+         "available": ["Ht", "Hi"],
+         "maxTons": function () { return rawroll(1, 6).total * 5 },
+         "priceRange": [10000, 100000],
+         "purchaseDM": { "Ht": 2 },
+         "saleDM": { "In": 2, "Po": 1, "Ri": 1 },
+         "maxRisk": 2,
+         "dangerousGoodsDM": 2,
+         "definedTradeGoods": [
+            {
+               "name": "Medical Uniforms/Disposable Tools",
+               "tons": function() { return rawroll(1, 6).total * 6 },
+               "basePrice": 10000
+            },
+            {
+               "name": "Cosmetic Chemicals/Practicioner's Tools",
+               "tons": function() { return rawroll(1, 6).total * 5 },
+               "basePrice": 30000
+            },
+            {
+               "name": "General Medical Equipment or Supplies",
+               "tons": function() { return rawroll(1, 6).total * 5 },
+               "basePrice": 50000
+            },
+            {
+               "name": "Specialist Equipment or Supplies",
+               "tons": function() { return rawroll(1, 6).total * 2 },
+               "basePrice": 75000
+            },
+            {
+               "name": "Micro-surgical Equipment or Supplies",
+               "tons": function() { return rawroll(1, 6).total * 1 },
+               "basePrice": 100000
+            }
+         ]
       }
-   },
-   14: {
-      2: {
-         "definedTradeGood": "foudnation stones and base elements",
-         "tons": function() { return rawroll(1, 6).total * 14 },
-         "basePrice": 1000
+   ],
+   [
+      {
+         //41
+         "type": "Petrochemicals",
+         "available": ["De", "Fl", "Ic", "Wa"],
+         "maxTons": function () { return rawroll(1, 6).total * 10 },
+         "priceRange": [2500, 30000],
+         "purchaseDM": { "De": 2 },
+         "saleDM": { "In": 2, "Ag": 1, "Lt": 2 },
+         "maxRisk": 2,
+         "dangerousGoodsDM": 2,
+         "definedTradeGoods": [
+            {
+               "name": "Crude Oil/Diesel",
+               "tons": function() { return rawroll(1, 6).total * 12 },
+               "basePrice": 25000
+            },
+            {
+               "name": "Refined Kerosene/Purified Oil",
+               "tons": function() { return rawroll(1, 6).total * 10 },
+               "basePrice": 5000
+            },
+            {
+               "name": "Gasoline/Machine Lubricants",
+               "tons": function() { return rawroll(1, 6).total * 10 },
+               "basePrice": 10000
+            },
+            {
+               "name": "Jet Fuel/Gelid Adhesives",
+               "tons": function() { return rawroll(1, 6).total * 8 },
+               "basePrice": 20000
+            },
+            {
+               "name": "Rocket Fuel/Power Plant Starter Charges",
+               "tons": function() { return rawroll(1, 6).total * 4 },
+               "basePrice": 30000
+            }
+         ]
       },
-      5: {
-         "definedTradeGood": "workable metals",
-         "tons": function() { return rawroll(1, 6).total * 12 },
-         "basePrice": 3000
+      {
+         //42
+         "type": "Pharmaceuticals",
+         "available": ["As", "De", "Hi", "Wa"],
+         "maxTons": function () { return rawroll(1, 6).total },
+         "priceRange": [25000, 500000],
+         "purchaseDM": { "As": 2, "Hi": 1 },
+         "saleDM": { "Ri": 2, "Lt": 1 },
+         "maxRisk": 2,
+         "dangerousGoodsDM": 3,
+         "definedTradeGoods": [
+            {
+               "name": "OTC Drugs/Antibiotics",
+               "tons": function() { return rawroll(1, 6).total + 3 },
+               "basePrice": 25000
+            },
+            {
+               "name": "Antivenin/Prescription Medications",
+               "tons": function() { return rawroll(1, 6).total + 2 },
+               "basePrice": 50000
+            },
+            {
+               "name": "Prescription Medications/Surgical",
+               "tons": function() { return rawroll(1, 6).total * 1 },
+               "basePrice": 100000
+            },
+            {
+               "name": "Anagathics",
+               "tons": function() { return 2 },
+               "basePrice": 200000
+            },
+            {
+               "name": "Psi-Related Drugs/Viral Therapy Doses",
+               "tons": function() { return 1 },
+               "basePrice": 500000
+            }
+         ]
       },
-      8: {
-         "definedTradeGood": "workable alloys",
-         "tons": function() { return rawroll(1, 6).total * 10 },
-         "basePrice": 5000
+      {
+         //43
+         "type": "Polymers",
+         "available": ["In"],
+         "maxTons": function () { return rawroll(1, 6).total * 10 },
+         "priceRange": [1000, 10000],
+         "purchaseDM": {},
+         "saleDM": { "Ri": 2, "Ni": 1 },
+         "maxRisk": 1,
+         "dangerousGoodsDM": 0,
+         "definedTradeGoods": [
+            {
+               "name": "Rubber/Vinyl Spooling",
+               "tons": function() { return rawroll(1, 6).total * 12 },
+               "basePrice": 1000
+            },
+            {
+               "name": "Insulation/Polyurethane Foam",
+               "tons": function() { return rawroll(1, 6).total * 10 },
+               "basePrice": 3000
+            },
+            {
+               "name": "Poured Plastics/Synthetic Fibre Spools",
+               "tons": function() { return rawroll(1, 6).total * 10 },
+               "basePrice": 7000
+            },
+            {
+               "name": "Kevlar/Teflon",
+               "tons": function() { return rawroll(1, 6).total * 3 },
+               "basePrice": 9000
+            },
+            {
+               "name": "Advanced Ballistic Weave",
+               "tons": function() { return rawroll(1, 6).total * 1 },
+               "basePrice": 10000
+            }
+         ]
       },
-      11: {
-         "definedTradeGood": "fabricated plastics",
-         "tons": function() { return rawroll(1, 6).total * 5 },
-         "basePrice": 7000
+      {
+         //44
+         "type": "Precious Metals",
+         "available": ["As", "De", "Ic", "Fl"],
+         "maxTons": function () { return rawroll(1, 6).total },
+         "priceRange": [10000, 100000],
+         "purchaseDM": { "As": 3, "De": 1, "Ic": 2 },
+         "saleDM": { "Ri": 2, "In": 2, "Ht": 1 },
+         "maxRisk": 3,
+         "dangerousGoodsDM": 4,
+         "definedTradeGoods": [
+            {
+               "name": "Bismuth/Indium",
+               "tons": function() { return rawroll(1, 6).total + 2 },
+               "basePrice": 10000
+            },
+            {
+               "name": "Beryllium/Silver",
+               "tons": function() { return rawroll(1, 6).total + 1 },
+               "basePrice": 25000
+            },
+            {
+               "name": "Ruthenium/Rhenium",
+               "tons": function() { return rawroll(1, 6).total * 1 },
+               "basePrice": 50000
+            },
+            {
+               "name": "Gold/Osmium/Iridium",
+               "tons": function() { return rawroll(1, 6).total * 1 },
+               "basePrice": 75000
+            },
+            {
+               "name": "Platinum/Rhodium",
+               "tons": function() { return 1 },
+               "basePrice": 100000
+            }
+         ]
       },
-      12: {
-         "definedTradeGood": "chemical solutions or compounds",
-         "tons": function() { return rawroll(1, 6).total * 3 },
-         "basePrice": 9000
+      {
+         //45
+         "type": "Radioactives",
+         "available": ["As", "De", "Lo"],
+         "maxTons": function () { return rawroll(1, 6).total },
+         "priceRange": [500000, 1500000],
+         "purchaseDM": { "As": 2, "Lo": 2 },
+         "saleDM": { "In": 3, "Ht": 1, "Ni": -2, "Ag": -3 },
+         "maxRisk": 4,
+         "dangerousGoodsDM": 3,
+         "definedTradeGoods": [
+            {
+               "name": "Nuclear Waste/Deactivated Materials",
+               "tons": function() { return rawroll(1, 6).total + 3 },
+               "basePrice": 500000
+            },
+            {
+               "name": "Industrial Isotopes",
+               "tons": function() { return rawroll(1, 6).total + 2 },
+               "basePrice": 750000
+            },
+            {
+               "name": "Medical Isotopes/Reactor-Grade Uranium",
+               "tons": function() { return rawroll(1, 6).total * 1 },
+               "basePrice": 1000000
+            },
+            {
+               "name": "Weapons-Grade Plutonium/Fusion Cell Rods",
+               "tons": function() { return 1 },
+               "basePrice": 1250000
+            },
+            {
+               "name": "Superwapon-grade Isotopes",
+               "tons": function() { return 1 },
+               "basePrice": 1500000
+            }
+         ]
+      },
+      {
+         //46
+         "type": "Robots",
+         "available": ["In"],
+         "maxTons": function () { return rawroll(1, 6).total * 5 },
+         "priceRange": [150000, 650000],
+         "purchaseDM": {},
+         "saleDM": { "Ag": 2, "Ht": 1 },
+         "maxRisk": 2,
+         "dangerousGoodsDM": 1,
+         "definedTradeGoods": [
+            {
+               "name": "Automated Robotics/Cargo Drones",
+               "tons": function() { return rawroll(1, 6).total * 7 },
+               "basePrice": 150000
+            },
+            {
+               "name": "Industrial or Personal Drones",
+               "tons": function() { return rawroll(1, 6).total * 6 },
+               "basePrice": 300000
+            },
+            {
+               "name": "Combat or Guardian Drones",
+               "tons": function() { return rawroll(1, 6).total * 5 },
+               "basePrice": 400000
+            },
+            {
+               "name": "Scout and Sensor Drones",
+               "tons": function() { return rawroll(1, 6).total * 2 },
+               "basePrice": 500000
+            },
+            {
+               "name": "Advanced Robotics",
+               "tons": function() { return rawroll(1, 6).total * 1 },
+               "basePrice": 650000
+            }
+         ]
       }
-   },
-   15: {
-      2: {
-         "definedTradeGood": "feed-grade vegetation",
-         "tons": function() { return rawroll(1, 6).total * 12 },
-         "basePrice": 500
+   ],
+   [
+      {
+         //51
+         "type": "Spices",
+         "available": ["Ga", "De", "Wa"],
+         "maxTons": function () { return rawroll(1, 6).total * 5 },
+         "priceRange": [1000, 12000],
+         "purchaseDM": { "De": 2 },
+         "saleDM": { "Hi": 2, "Ri": 3, "Po": 3 },
+         "maxRisk": 2,
+         "dangerousGoodsDM": -1,
+         "definedTradeGoods": [
+            {
+               "name": "Table Salt/Black Pepper",
+               "tons": function() { return rawroll(1, 6).total * 6 },
+               "basePrice": 1000
+            },
+            {
+               "name": "Adobo/Basil/Sage",
+               "tons": function() { return rawroll(1, 6).total * 5 },
+               "basePrice": 3000
+            },
+            {
+               "name": "Aniseed/Curry/Fennel/White Pepper",
+               "tons": function() { return rawroll(1, 6).total * 5 },
+               "basePrice": 6000
+            },
+            {
+               "name": "Cinnamon/Marjoram/Wasabi",
+               "tons": function() { return rawroll(1, 6).total * 3 },
+               "basePrice": 9000
+            },
+            {
+               "name": "Black Salt/Saffron/Alien Flavourings",
+               "tons": function() { return rawroll(1, 6).total * 1 },
+               "basePrice": 12000
+            }
+         ]
       },
-      5: {
-         "definedTradeGood": "food-grade vegetation",
-         "tons": function() { return rawroll(1, 6).total * 10 },
-         "basePrice": 1000
+      {
+         //52
+         "type": "Textiles",
+         "available": ["Ag", "Ni"],
+         "maxTons": function () { return rawroll(1, 6).total * 10 },
+         "priceRange": [1000, 5000],
+         "purchaseDM": { "Ag": 7 },
+         "saleDM": { "Hi": 3, "Na": 2 },
+         "maxRisk": 1,
+         "dangerousGoodsDM": -2,
+         "definedTradeGoods": [
+            {
+               "name": "Yarn/Wool/Canvas",
+               "tons": function() { return rawroll(1, 6).total * 12 },
+               "basePrice": 1000
+            },
+            {
+               "name": "Animal-based Fabrics",
+               "tons": function() { return rawroll(1, 6).total * 10 },
+               "basePrice": 2000
+            },
+            {
+               "name": "Cotton or Flax-based Fabrics",
+               "tons": function() { return rawroll(1, 6).total * 10 },
+               "basePrice": 3000
+            },
+            {
+               "name": "Synthetic Silks/Finished Common Clothing",
+               "tons": function() { return rawroll(1, 6).total * 6 },
+               "basePrice": 4000
+            },
+            {
+               "name": "Organic Silk/Satin/Finished Fine Clothing",
+               "tons": function() { return rawroll(1, 6).total * 3 },
+               "basePrice": 5000
+            }
+         ]
       },
-      8: {
-         "definedTradeGood": "pre-packaged food and drink",
-         "tons": function() { return rawroll(1, 6).total * 10 },
-         "basePrice": 2000
+      {
+         //53
+         "type": "Uncommon Ore",
+         "available": ["As", "Ic"],
+         "maxTons": function () { return rawroll(1, 6).total * 10 },
+         "priceRange": [1000, 10000],
+         "purchaseDM": { "As": 4 },
+         "saleDM": { "In": 3, "Ni": 1 },
+         "maxRisk": 2,
+         "dangerousGoodsDM": -2,
+         "definedTradeGoods": [
+            {
+               "name": "Lead/Zinc",
+               "tons": function() { return rawroll(1, 6).total * 10 },
+               "basePrice": 1000
+            },
+            {
+               "name": "Copper/Tin",
+               "tons": function() { return rawroll(1, 6).total * 10 },
+               "basePrice": 2500
+            },
+            {
+               "name": "Nickel/Sodium/Tungsten",
+               "tons": function() { return rawroll(1, 6).total * 10 },
+               "basePrice": 5000
+            },
+            {
+               "name": "Gold/Silver/Ilmenite",
+               "tons": function() { return rawroll(1, 6).total * 5 },
+               "basePrice": 7500
+            },
+            {
+               "name": "Platinum/Uranium",
+               "tons": function() { return rawroll(1, 6).total * 2 },
+               "basePrice": 10000
+            }
+         ]
       },
-      11: {
-         "definedTradeGood": "survival rations and storage-packed liquids",
-         "tons": function() { return rawroll(1, 6).total * 8 },
-         "basePrice": 3000
+      {
+         //54
+         "type": "Uncommon Raw Materials",
+         "available": ["Ag", "De", "Wa"],
+         "maxTons": function () { return rawroll(1, 6).total * 10 },
+         "priceRange": [5000, 50000],
+         "purchaseDM": { "Ag": 2, "Wa": 1 },
+         "saleDM": { "In": 2, "Ht": 1 },
+         "maxRisk": 2,
+         "dangerousGoodsDM": -2,
+         "definedTradeGoods": [
+            {
+               "name": "Aluminium/Brass/Calcium",
+               "tons": function() { return rawroll(1, 6).total * 14 },
+               "basePrice": 5000
+            },
+            {
+               "name": "Carbonate/Magnesium/Meteoric Iron",
+               "tons": function() { return rawroll(1, 6).total * 12 },
+               "basePrice": 10000
+            },
+            {
+               "name": "Marble/Potassium/Titanium",
+               "tons": function() { return rawroll(1, 6).total * 10 },
+               "basePrice": 20000
+            },
+            {
+               "name": "Stellite/Tombac",
+               "tons": function() { return rawroll(1, 6).total * 8 },
+               "basePrice": 35000
+            },
+            {
+               "name": "Depleted Uranium/Ceramic-Alloy",
+               "tons": function() { return rawroll(1, 6).total * 3 },
+               "basePrice": 50000
+            }
+         ]
       },
-      12: {
-         "definedTradeGood": "junk food/soda/beer",
-         "tons": function() { return rawroll(1, 6).total * 4 },
-         "basePrice": 5000
+      {
+         //55
+         "type": "Wood",
+         "available": ["Ag", "Ga"],
+         "maxTons": function () { return rawroll(1, 6).total * 10 },
+         "priceRange": [100, 4000],
+         "purchaseDM": { "Ag": 6 },
+         "saleDM": { "Ri": 2, "In": 1 },
+         "maxRisk": 1,
+         "dangerousGoodsDM": -4,
+         "definedTradeGoods": [
+            {
+               "name": "Low-grade Rough Cuts/Construction Scrap",
+               "tons": function() { return rawroll(1, 6).total * 12 },
+               "basePrice": 100
+            },
+            {
+               "name": "High-Grade Rough-Cut",
+               "tons": function() { return rawroll(1, 6).total * 10 },
+               "basePrice": 500
+            },
+            {
+               "name": "Construction-grade Timber",
+               "tons": function() { return rawroll(1, 6).total * 10 },
+               "basePrice": 1000
+            },
+            {
+               "name": "Furniture-grade Timber/Rare Grades",
+               "tons": function() { return rawroll(1, 6).total * 6 },
+               "basePrice": 2000
+            },
+            {
+               "name": "Exotics (Pernambuco, White Mahogany, etc.)",
+               "tons": function() { return rawroll(1, 6).total * 2 },
+               "basePrice": 4000
+            }
+         ]
+      },
+      {
+         //56
+         "type": "Vehicles",
+         "available": ["In", "Ht"],
+         "maxTons": function () { return rawroll(1, 6).total * 10 },
+         "priceRange": [5000, 30000],
+         "purchaseDM": { "In": 2, "Ht": 1 },
+         "saleDM": { "Ni": 2, "Hi": 1 },
+         "maxRisk": 2,
+         "dangerousGoodsDM": -2,
+         "definedTradeGoods": [
+            {
+               "name": "Wheeled Repair Components",
+               "tons": function() { return rawroll(1, 6).total * 14 },
+               "basePrice": 5000
+            },
+            {
+               "name": "Tracked Repair Components",
+               "tons": function() { return rawroll(1, 6).total * 12 },
+               "basePrice": 10000
+            },
+            {
+               "name": "Wheeled Components or Packages",
+               "tons": function() { return rawroll(1, 6).total * 10 },
+               "basePrice": 15000
+            },
+            {
+               "name": "Wheeled Vehicles/Tracked Components or Packages",
+               "tons": function() { return rawroll(1, 6).total * 6 },
+               "basePrice": 20000
+            },
+            {
+               "name": "Tracked Vehicles",
+               "tons": function() { return rawroll(1, 6).total * 2 },
+               "basePrice": 30000
+            }
+         ]
       }
-   },
-   16: {
-      2: {
-         "definedTradeGood": "bornite or galena or sedimentary stone",
-         "tons": function() { return rawroll(1, 6).total * 14 },
-         "basePrice": 250
+   ],
+   [
+      {
+         //61
+         "type": "Illegal Biochemicals",
+         "available": ["Ag", "Wa"],
+         "maxTons": function () { return rawroll(1, 6).total * 5 },
+         "priceRange": [10000, 200000],
+         "purchaseDM": { "Wa": 2 },
+         "saleDM": { "In": 6 },
+         "maxRisk": 4,
+         "dangerousGoodsDM": 4,
+         "definedTradeGoods": [
+            {
+               "name": "Herbal Stimulants/Ultra-Caffeine",
+               "tons": function() { return rawroll(1, 6).total * 6 },
+               "basePrice": 10000
+            },
+            {
+               "name": "Raw Growth Hormones",
+               "tons": function() { return rawroll(1, 6).total * 5 },
+               "basePrice": 25000
+            },
+            {
+               "name": "Chemical Solvents/Protein Duplexer Steroids",
+               "tons": function() { return rawroll(1, 6).total * 5 },
+               "basePrice": 50000
+            },
+            {
+               "name": "Bio-Acid/Pheromone Extracts",
+               "tons": function() { return 2 },
+               "basePrice": 100000
+            },
+            {
+               "name": "Genetic Mutagens/Organic Toxins",
+               "tons": function() { return 1 },
+               "basePrice": 200000
+            }
+         ]
       },
-      5: {
-         "definedTradeGood": "chalcocite or talc",
-         "tons": function() { return rawroll(1, 6).total * 12 },
-         "basePrice": 500
+      {
+         //62
+         "type": "Illegal Cybernetics",
+         "available": ["Ht"],
+         "maxTons": function () { return rawroll(1, 6).total },
+         "priceRange": [100000, 650000],
+         "purchaseDM": {},
+         "saleDM": { "As": 4, "Ic": 4, "Ri": 8, "Az": 6, "Rz": 6 },
+         "maxRisk": 5,
+         "dangerousGoodsDM": 5,
+         "definedTradeGoods": [
+            {
+               "name": "Unlicensed Augment Tools and Parts",
+               "tons": function() { return rawroll(1, 6).total * 2 },
+               "basePrice": 100000
+            },
+            {
+               "name": "Physical Enhancement Tissues",
+               "tons": function() { return rawroll(1, 6).total * 2 },
+               "basePrice": 150000
+            },
+            {
+               "name": "Unlicensed Augmentatives/Combat Implant Additives",
+               "tons": function() { return rawroll(1, 6).total * 1 },
+               "basePrice": 250000
+            },
+            {
+               "name": "Combat Prosthetics/Surgical Duplications",
+               "tons": function() { return 2 },
+               "basePrice": 400000
+            },
+            {
+               "name": "Mimicry Augmetics",
+               "tons": function() { return 1 },
+               "basePrice": 650000
+            }
+         ]
       },
-      8: {
-         "definedTradeGood": "bauxite, coltan and wolframite",
-         "tons": function() { return rawroll(1, 6).total * 10 },
-         "basePrice": 1000
+      {
+         //63
+         "type": "Illegal Drugs",
+         "available": ["As", "De", "Hi", "Wa"],
+         "maxTons": function () { return rawroll(1, 6).total },
+         "priceRange": [25000, 300000],
+         "purchaseDM": {},
+         "saleDM": { "Ri": 6, "Hi": 6 },
+         "maxRisk": 4,
+         "dangerousGoodsDM": 6,
+         "definedTradeGoods": [
+            {
+               "name": "Herbal Stimulants/Biological Hallucinogens",
+               "tons": function() { return rawroll(1, 6).total + 2 },
+               "basePrice": 25000
+            },
+            {
+               "name": "Chemical Depressants/Natural Narcotics",
+               "tons": function() { return rawroll(1, 6).total + 1 },
+               "basePrice": 50000
+            },
+            {
+               "name": "Chemical Stimulants and Hallucinogens",
+               "tons": function() { return rawroll(1, 6).total * 1 },
+               "basePrice": 100000
+            },
+            {
+               "name": "Designer Narcotics",
+               "tons": function() { return 2 },
+               "basePrice": 200000
+            },
+            {
+               "name": "Alien Synthetics/Psi-Drugs",
+               "tons": function() { return 1 },
+               "basePrice": 300000
+            }
+         ]
       },
-      11: {
-         "definedTradeGood": "acanthite, cobalitite or magnetite",
-         "tons": function() { return rawroll(1, 6).total * 8 },
-         "basePrice": 1500
+      {
+         //64
+         "type": "Illegal Luxuries",
+         "available": ["Ag", "Ga", "Wa"],
+         "maxTons": function () { return rawroll(1, 6).total },
+         "priceRange": [10000, 200000],
+         "purchaseDM": { "Ag": 2, "Wa": 1 },
+         "saleDM": { "Ri": 6, "Hi": 4 },
+         "maxRisk": 4,
+         "dangerousGoodsDM": 4,
+         "definedTradeGoods": [
+            {
+               "name": "Anti-Governmental Propaganda/Endangered Animal Products",
+               "tons": function() { return 1 },
+               "basePrice": 10000
+            },
+            {
+               "name": "Black-data Recordings/Slaving Gear",
+               "tons": function() { return rawroll(1, 6).total * 1 },
+               "basePrice": 25000
+            },
+            {
+               "name": "Extinct Animal Products",
+               "tons": function() { return rawroll(1, 6).total * 1 },
+               "basePrice": 50000
+            },
+            {
+               "name": "BTL Devices/Cloning Equipment",
+               "tons": function() { return 2 },
+               "basePrice": 100000
+            },
+            {
+               "name": "Forbidden Pleasures",
+               "tons": function() { return 1 },
+               "basePrice": 200000
+            }
+         ]
       },
-      12: {
-         "definedTradeGood": "chromite or cinnabar",
-         "tons": function() { return rawroll(1, 6).total * 4 },
-         "basePrice": 2000
+      {
+         //65
+         "type": "Illegal Weapons",
+         "available": ["In", "Ht"],
+         "maxTons": function () { return rawroll(1, 6).total * 5 },
+         "priceRange": [50000, 450000],
+         "purchaseDM": { "Ht": 2 },
+         "saleDM": { "Po": 6, "Az": 8, "Rz": 10 },
+         "maxRisk": 5,
+         "dangerousGoodsDM": 6,
+         "definedTradeGoods": [
+            {
+               "name": "Chain-drive Weaponry/Armour-Piercing Ammunition",
+               "tons": function() { return rawroll(1, 6).total * 6 },
+               "basePrice": 50000
+            },
+            {
+               "name": "Protected Technologies/Explosive or Incendiary Ammunition",
+               "tons": function() { return rawroll(1, 6).total * 5 },
+               "basePrice": 100000
+            },
+            {
+               "name": "Synthetic Poisons/Personal-scale Mass Trauma Explosives",
+               "tons": function() { return rawroll(1, 6).total * 5 },
+               "basePrice": 150000
+            },
+            {
+               "name": "Arclight Weaponry/Biological or Chemical Weaponry/Naval Starship Weaponry",
+               "tons": function() { return rawroll(1, 6).total * 2 },
+               "basePrice": 300000
+            },
+            {
+               "name": "Disintegrators/Psi-Weaponry/Weapons of Mass Destruction",
+               "tons": function() { return rawroll(1, 6).total * 1 },
+               "basePrice": 450000
+            }
+         ]
       }
-   },
-   21: {
-      2: {
-         "definedTradeGood": "circuitry bundles",
-         "tons": function() { return rawroll(1, 6).total * 6 },
-         "basePrice": 25000
-      },
-      5: {
-         "definedTradeGood": "fiber-optic components",
-         "tons": function() { return rawroll(1, 6).total * 5 },
-         "basePrice": 50000
-      },
-      8: {
-         "definedTradeGood": "VR computer and sensor packages",
-         "tons": function() { return rawroll(1, 6).total * 5 },
-         "basePrice": 100000
-      },
-      11: {
-         "definedTradeGood": "weapon components",
-         "tons": function() { return rawroll(1, 6).total * 2 },
-         "basePrice": 125000
-      },
-      12: {
-         "definedTradeGood": "starship bridge components",
-         "tons": function() { return rawroll(1, 6).total * 1 },
-         "basePrice": 150000
-      }
-   },
-   22: {
-      2: {
-         "definedTradeGood": "alloy and plastic tool kits",
-         "tons": function() { return rawroll(1, 6).total * 6 },
-         "basePrice": 25000
-      },
-      5: {
-         "definedTradeGood": "starship deckplate/atmospheric filters",
-         "tons": function() { return rawroll(1, 6).total * 5 },
-         "basePrice": 50000
-      },
-      8: {
-         "definedTradeGood": "fusion conduits/power plant shells",
-         "tons": function() { return rawroll(1, 6).total * 5 },
-         "basePrice": 75000
-      },
-      11: {
-         "definedTradeGood": "weapon cores/starship hull",
-         "tons": function() { return rawroll(1, 6).total * 3 },
-         "basePrice": 90000
-      },
-      12: {
-         "definedTradeGood": "gravitic gyros, navigation magnetics",
-         "tons": function() { return rawroll(1, 6).total * 1 },
-         "basePrice": 100000
-      }
-   },
-   23: {
-      2: {
-         "definedTradeGood": "high-pressure or temperature-resistant components",
-         "tons": function() { return rawroll(1, 6).total * 6 },
-         "basePrice": 25000
-      },
-      5: {
-         "definedTradeGood": "protective or specialized clothing",
-         "tons": function() { return rawroll(1, 6).total * 5 },
-         "basePrice": 50000
-      },
-      8: {
-         "definedTradeGood": "survival equipment/colonization kits",
-         "tons": function() { return rawroll(1, 6).total * 5 },
-         "basePrice": 100000
-      },
-      11: {
-         "definedTradeGood": "computerized job-related gear",
-         "tons": function() { return rawroll(1, 6).total * 2 },
-         "basePrice": 125000
-      },
-      12: {
-         "definedTradeGood": "starship add-ons/powered armor components",
-         "tons": function() { return rawroll(1, 6).total * 1 },
-         "basePrice": 150000
-      }
-   },
-   24: {
-      2: {
-         "definedTradeGood": "(TL7 or less) slug weapons",
-         "tons": function() { return rawroll(1, 6).total * 7 },
-         "basePrice": 50000
-      },
-      5: {
-         "definedTradeGood": "(TL10 or less) slug weapons",
-         "tons": function() { return rawroll(1, 6).total * 6 },
-         "basePrice": 100000
-      },
-      8: {
-         "definedTradeGood": "(TL12 or less) slug or energy weapons/heavy slug weapons",
-         "tons": function() { return rawroll(1, 6).total * 5 },
-         "basePrice": 150000
-      },
-      11: {
-         "definedTradeGood": "(TL15 or less) slug or energy weapons/explosives",
-         "tons": function() { return rawroll(1, 6).total * 3 },
-         "basePrice": 200000
-      },
-      12: {
-         "definedTradeGood": "artillery, heavy energy weapons",
-         "tons": function() { return rawroll(1, 6).total * 1 },
-         "basePrice": 250000
-      }
-   },
-   25: {
-      2: {
-         "definedTradeGood": "engine components or packages",
-         "tons": function() { return rawroll(1, 6).total * 5 },
-         "basePrice": 100000
-      },
-      5: {
-         "definedTradeGood": "seafaring or mole vehicle components or packages",
-         "tons": function() { return rawroll(1, 6).total * 5 },
-         "basePrice": 140000
-      },
-      8: {
-         "definedTradeGood": "air raft components or packages",
-         "tons": function() { return rawroll(1, 6).total * 5 },
-         "basePrice": 180000
-      },
-      11: {
-         "definedTradeGood": "grav-vehicle components",
-         "tons": function() { return rawroll(1, 6).total * 2 },
-         "basePrice": 200000
-      },
-      12: {
-         "definedTradeGood": "spacecraft components",
-         "tons": function() { return rawroll(1, 6).total * 1 },
-         "basePrice": 250000
-      }
-   },
-   26: {
-      2: {
-         "definedTradeGood": "organic glues, acides or bases/vegetable oil",
-         "tons": function() { return rawroll(1, 6).total * 6 },
-         "basePrice": 10000
-      },
-      5: {
-         "definedTradeGood": "ethanol/fructose syrup",
-         "tons": function() { return rawroll(1, 6).total * 5 },
-         "basePrice": 25000
-      },
-      8: {
-         "definedTradeGood": "biodiesel/cooking compounds",
-         "tons": function() { return rawroll(1, 6).total * 5 },
-         "basePrice": 50000
-      },
-      11: {
-         "definedTradeGood": "oxygenated cleaner/biodegradable concentrates",
-         "tons": function() { return rawroll(1, 6).total * 3 },
-         "basePrice": 60000
-      },
-      12: {
-         "definedTradeGood": "gelid oxygen-substitutes/bio-fusion cell fuel",
-         "tons": function() { return rawroll(1, 6).total * 1 },
-         "basePrice": 80000
-      }
-   },
-   31: {
-      2: {
-         "definedTradeGood": "rock salt/compressed coal",
-         "tons": function() { return rawroll(1, 6).total * 7 },
-         "basePrice": 5000
+   ]
+];
+goods.commonGoodsStart = 0;
+goods.commonGoodsEnd = 0;
+goods.legalGoodsStart = 1;
+goods.legalGoodsEnd = 4;
+goods.illegalGoodsStart = 5;
+goods.illegalGoodsEnd = 5;
 
-      },
-      5: {
-         "definedTradeGood": "graphite/quartz",
-         "tons": function() { return rawroll(1, 6).total * 6 },
-         "basePrice": 10000
-
-      },
-      8: {
-         "definedTradeGood": "silicat/focuser-quality gems",
-         "tons": function() { return rawroll(1, 6).total * 5 },
-         "basePrice": 20000
-
-      },
-      11: {
-         "definedTradeGood": "photonics/synthetic gems",
-         "tons": function() { return rawroll(1, 6).total * 3 },
-         "basePrice": 30000
-
-      },
-      12: {
-         "definedTradeGood": "industrial diamond/jewellery-quality gems",
-         "tons": function() { return rawroll(1, 6).total * 2 },
-         "basePrice": 45000
-
-      }
-   },
-   32: {
-      2: {
-         "definedTradeGood": "cybernetic lubricants",
-         "tons": function() { return rawroll(1, 6).total + 2 },
-         "basePrice": 100000
-
-      },
-      5: {
-         "definedTradeGood": "cybernetic components/physical augments",
-         "tons": function() { return rawroll(1, 6).total + 1 },
-         "basePrice": 200000
-
-      },
-      8: {
-         "definedTradeGood": "cyber-prosthetics",
-         "tons": function() { return rawroll(1, 6).total * 1 },
-         "basePrice": 250000
-
-      },
-      11: {
-         "definedTradeGood": "cosmetic prosthetics",
-         "tons": function() { return rawroll(1, 6).total * 1 },
-         "basePrice": 350000
-
-      },
-      12: {
-         "definedTradeGood": "real-life replacements and augments",
-         "tons": function() { return 1 },
-         "basePrice": 500000
-
-      }
-   },
-   33: {
-      2: {
-         "definedTradeGood": "beasts of burden",
-         "tons": function() { return rawroll(1, 6).total * 12 },
-         "basePrice": 2500
-
-      },
-      5: {
-         "definedTradeGood": "untrained riding animals",
-         "tons": function() { return rawroll(1, 6).total * 10 },
-         "basePrice": 5000
-
-      },
-      8: {
-         "definedTradeGood": "trained riding animals/common pets",
-         "tons": function() { return rawroll(1, 6).total * 10 },
-         "basePrice": 10000
-
-      },
-      11: {
-         "definedTradeGood": "untrained guard animals",
-         "tons": function() { return rawroll(1, 6).total * 6 },
-         "basePrice": 12500
-
-      },
-      12: {
-         "definedTradeGood": "trained guard animals/exotic pets",
-         "tons": function() { return rawroll(1, 6).total * 3 },
-         "basePrice": 15000
-
-      }
-   },
-   34: {
-      2: {
-         "definedTradeGood": "common desserts/rare food additives",
-         "tons": function() { return rawroll(1, 6).total * 14 },
-         "basePrice": 5000
-
-      },
-      5: {
-         "definedTradeGood": "common desserts/common wine",
-         "tons": function() { return rawroll(1, 6).total * 12 },
-         "basePrice": 10000
-
-      },
-      8: {
-         "definedTradeGood": "rare foods/common liquor",
-         "tons": function() { return rawroll(1, 6).total * 10 },
-         "basePrice": 20000
-
-      },
-      11: {
-         "definedTradeGood": "exotic foods/rare desserts/rare liquor",
-         "tons": function() { return rawroll(1, 6).total * 5 },
-         "basePrice": 30000
-
-      },
-      12: {
-         "definedTradeGood": "exotic desserts/exotic liquor",
-         "tons": function() { return rawroll(1, 6).total * 2 },
-         "basePrice": 50000
-
-      }
-   },
-   35: {
-      2: {
-         "definedTradeGood": "rare literature/art",
-         "tons": function() { return rawroll(1, 6).total + 2 },
-         "basePrice": 50000
-
-      },
-      5: {
-         "definedTradeGood": "jewellery/alien textiles",
-         "tons": function() { return rawroll(1, 6).total + 1 },
-         "basePrice": 100000
-
-      },
-      8: {
-         "definedTradeGood": "rare clothing/home decorations",
-         "tons": function() { return rawroll(1, 6).total * 1 },
-         "basePrice": 200000
-
-      },
-      11: {
-         "definedTradeGood": "VR electronic entertainment devices",
-         "tons": function() { return rawroll(1, 6).total * 1 },
-         "basePrice": 250000
-
-      },
-      12: {
-         "definedTradeGood": "exotic furnishings/exquisite jewellery",
-         "tons": function() { return 1 },
-         "basePrice": 500000
-
-      }
-   },
-   36: {
-      2: {
-         "definedTradeGood": "medical uniforms/disposable tools",
-         "tons": function() { return rawroll(1, 6).total * 6 },
-         "basePrice": 10000
-
-      },
-      5: {
-         "definedTradeGood": "cosmetic chemicals/practicioner's tools",
-         "tons": function() { return rawroll(1, 6).total * 5 },
-         "basePrice": 30000
-
-      },
-      8: {
-         "definedTradeGood": "general medical equipment or supplies",
-         "tons": function() { return rawroll(1, 6).total * 5 },
-         "basePrice": 50000
-
-      },
-      11: {
-         "definedTradeGood": "specialist equipment or supplies",
-         "tons": function() { return rawroll(1, 6).total * 2 },
-         "basePrice": 75000
-
-      },
-      12: {
-         "definedTradeGood": "micro-surgical equipment or supplies",
-         "tons": function() { return rawroll(1, 6).total * 1 },
-         "basePrice": 100000
-
-      }
-   },
-   41: {
-      2: {
-         "definedTradeGood": "crude oil/diesel",
-         "tons": function() { return rawroll(1, 6).total * 12 },
-         "basePrice": 25000
-
-      },
-      5: {
-         "definedTradeGood": "refined kerosene/purified oil",
-         "tons": function() { return rawroll(1, 6).total * 10 },
-         "basePrice": 5000
-
-      },
-      8: {
-         "definedTradeGood": "gasoline/machine lubricants",
-         "tons": function() { return rawroll(1, 6).total * 10 },
-         "basePrice": 10000
-
-      },
-      11: {
-         "definedTradeGood": "jet fuel/gelid adhesives",
-         "tons": function() { return rawroll(1, 6).total * 8 },
-         "basePrice": 20000
-
-      },
-      12: {
-         "definedTradeGood": "rocket fuel/power plant starter charges",
-         "tons": function() { return rawroll(1, 6).total * 4 },
-         "basePrice": 30000
-
-      }
-   },
-   42: {
-      2: {
-         "definedTradeGood": "OTC drugs/antibiotics",
-         "tons": function() { return rawroll(1, 6).total + 3 },
-         "basePrice": 25000
-
-      },
-      5: {
-         "definedTradeGood": "antivenin/prescription medications",
-         "tons": function() { return rawroll(1, 6).total + 2 },
-         "basePrice": 50000
-
-      },
-      8: {
-         "definedTradeGood": "prescription medications/surgical",
-         "tons": function() { return rawroll(1, 6).total * 1 },
-         "basePrice": 100000
-
-      },
-      11: {
-         "definedTradeGood": "anagathics",
-         "tons": function() { return 2 },
-         "basePrice": 200000
-
-      },
-      12: {
-         "definedTradeGood": "psi-related drugs/viral therapy doses",
-         "tons": function() { return 1 },
-         "basePrice": 500000
-
-      }
-   },
-   43: {
-      2: {
-         "definedTradeGood": "rubber/vinyl spooling",
-         "tons": function() { return rawroll(1, 6).total * 12 },
-         "basePrice": 1000
-
-      },
-      5: {
-         "definedTradeGood": "insulation/polyrethane foam",
-         "tons": function() { return rawroll(1, 6).total * 10 },
-         "basePrice": 3000
-
-      },
-      8: {
-         "definedTradeGood": "poured plastics/synthetic fiber spools",
-         "tons": function() { return rawroll(1, 6).total * 10 },
-         "basePrice": 7000
-
-      },
-      11: {
-         "definedTradeGood": "kevlar/teflon",
-         "tons": function() { return rawroll(1, 6).total * 3 },
-         "basePrice": 9000
-
-      },
-      12: {
-         "definedTradeGood": "advanced ballistic weave",
-         "tons": function() { return rawroll(1, 6).total * 1 },
-         "basePrice": 10000
-
-      }
-   },
-   44: {
-      2: {
-         "definedTradeGood": "bismuth/indium",
-         "tons": function() { return rawroll(1, 6).total + 2 },
-         "basePrice": 10000
-
-      },
-      5: {
-         "definedTradeGood": "beryllium/silver",
-         "tons": function() { return rawroll(1, 6).total + 1 },
-         "basePrice": 25000
-
-      },
-      8: {
-         "definedTradeGood": "ruthenium/rhenium",
-         "tons": function() { return rawroll(1, 6).total * 1 },
-         "basePrice": 50000
-
-      },
-      11: {
-         "definedTradeGood": "gold/osmium/iridium",
-         "tons": function() { return rawroll(1, 6).total * 1 },
-         "basePrice": 75000
-
-      },
-      12: {
-         "definedTradeGood": "platinum/rhodium",
-         "tons": function() { return 1 },
-         "basePrice": 100000
-
-      }
-   },
-   45: {
-      2: {
-         "definedTradeGood": "nuclear waste/deactivated materials",
-         "tons": function() { return rawroll(1, 6).total + 3 },
-         "basePrice": 500000
-
-      },
-      5: {
-         "definedTradeGood": "industrial isotopes",
-         "tons": function() { return rawroll(1, 6).total + 2 },
-         "basePrice": 750000
-
-      },
-      8: {
-         "definedTradeGood": "medical isotopes/reactor-grade uranium",
-         "tons": function() { return rawroll(1, 6).total * 1 },
-         "basePrice": 1000000
-
-      },
-      11: {
-         "definedTradeGood": "weapons-grade plutonium/fusion cell rods",
-         "tons": function() { return 1 },
-         "basePrice": 1250000
-
-      },
-      12: {
-         "definedTradeGood": "superwapon-grade isotopes",
-         "tons": function() { return 1 },
-         "basePrice": 1500000
-      }
-   },
-   46: {
-      2: {
-         "definedTradeGood": "automated robotics/cargo drones",
-         "tons": function() { return rawroll(1, 6).total * 7 },
-         "basePrice": 150000
-
-      },
-      5: {
-         "definedTradeGood": "industrial or personal drones",
-         "tons": function() { return rawroll(1, 6).total * 6 },
-         "basePrice": 300000
-
-      },
-      8: {
-         "definedTradeGood": "combat or guardian drones",
-         "tons": function() { return rawroll(1, 6).total * 5 },
-         "basePrice": 400000
-
-      },
-      11: {
-         "definedTradeGood": "scout and sensor drones",
-         "tons": function() { return rawroll(1, 6).total * 2 },
-         "basePrice": 500000
-
-      },
-      12: {
-         "definedTradeGood": "andvanced robotics",
-         "tons": function() { return rawroll(1, 6).total * 1 },
-         "basePrice": 650000
-
-      }
-   },
-   51: {
-      2: {
-         "definedTradeGood": "table salt/black pepper",
-         "tons": function() { return rawroll(1, 6).total * 6 },
-         "basePrice": 1000
-      },
-      5: {
-         "definedTradeGood": "adobo/basil/sage",
-         "tons": function() { return rawroll(1, 6).total * 5 },
-         "basePrice": 3000
-      },
-      8: {
-         "definedTradeGood": "aniseed/curry/fennel/white pepper",
-         "tons": function() { return rawroll(1, 6).total * 5 },
-         "basePrice": 6000
-      },
-      11: {
-         "definedTradeGood": "cinnamon/marjoram/wasabi",
-         "tons": function() { return rawroll(1, 6).total * 3 },
-         "basePrice": 9000
-      },
-      12: {
-         "definedTradeGood": "black salt/saffron/alien flavoring",
-         "tons": function() { return rawroll(1, 6).total * 1 },
-         "basePrice": 12000
-      }
-   },
-   52: {
-      2: {
-         "definedTradeGood": "yarn/wool/canvas",
-         "tons": function() { return rawroll(1, 6).total * 12 },
-         "basePrice": 1000
-      },
-      5: {
-         "definedTradeGood": "animal-based fabrics",
-         "tons": function() { return rawroll(1, 6).total * 10 },
-         "basePrice": 2000
-      },
-      8: {
-         "definedTradeGood": "cotton or flax-based fabrics",
-         "tons": function() { return rawroll(1, 6).total * 10 },
-         "basePrice": 3000
-      },
-      11: {
-         "definedTradeGood": "synthetic silks/finished common clothing",
-         "tons": function() { return rawroll(1, 6).total * 6 },
-         "basePrice": 4000
-      },
-      12: {
-         "definedTradeGood": "organic silk/satin/finished fine clothing",
-         "tons": function() { return rawroll(1, 6).total * 3 },
-         "basePrice": 5000
-      }
-   },
-   53: {
-      2: {
-         "definedTradeGood": "lead/zinc",
-         "tons": function() { return rawroll(1, 6).total * 10 },
-         "basePrice": 1000
-      },
-      5: {
-         "definedTradeGood": "copper/tin",
-         "tons": function() { return rawroll(1, 6).total * 10 },
-         "basePrice": 2500
-      },
-      8: {
-         "definedTradeGood": "nickel/sodium/tungsten",
-         "tons": function() { return rawroll(1, 6).total * 10 },
-         "basePrice": 5000
-      },
-      11: {
-         "definedTradeGood": "gold/silver/ilmenite",
-         "tons": function() { return rawroll(1, 6).total * 5 },
-         "basePrice": 7500
-      },
-      12: {
-         "definedTradeGood": "platinum/uranium",
-         "tons": function() { return rawroll(1, 6).total * 2 },
-         "basePrice": 10000
-      }
-   },
-   54: {
-      2: {
-         "definedTradeGood": "auluminum/brass/calcium",
-         "tons": function() { return rawroll(1, 6).total * 14 },
-         "basePrice": 5000
-      },
-      5: {
-         "definedTradeGood": "carbonate/magnesium/meteoric iron",
-         "tons": function() { return rawroll(1, 6).total * 12 },
-         "basePrice": 10000
-      },
-      8: {
-         "definedTradeGood": "marble/potassium/titanium",
-         "tons": function() { return rawroll(1, 6).total * 10 },
-         "basePrice": 20000
-      },
-      11: {
-         "definedTradeGood": "stellite/tombac",
-         "tons": function() { return rawroll(1, 6).total * 8 },
-         "basePrice": 35000
-      },
-      12: {
-         "definedTradeGood": "depleted uranium/ceramic-alloy",
-         "tons": function() { return rawroll(1, 6).total * 3 },
-         "basePrice": 50000
-      }
-   },
-   55: {
-      2: {
-         "definedTradeGood": "low-grade rough cuts/construction scrap",
-         "tons": function() { return rawroll(1, 6).total * 12 },
-         "basePrice": 100
-      },
-      5: {
-         "definedTradeGood": "high-grade rough-cut",
-         "tons": function() { return rawroll(1, 6).total * 10 },
-         "basePrice": 500
-      },
-      8: {
-         "definedTradeGood": "construction-grade timber",
-         "tons": function() { return rawroll(1, 6).total * 10 },
-         "basePrice": 1000
-      },
-      11: {
-         "definedTradeGood": "furniture-grade timber/rare grades",
-         "tons": function() { return rawroll(1, 6).total * 6 },
-         "basePrice": 2000
-      },
-      12: {
-         "definedTradeGood": "exptics (pernambuco, white mahogany, etc.)",
-         "tons": function() { return rawroll(1, 6).total * 2 },
-         "basePrice": 4000
-      }
-   },
-   56: {
-      2: {
-         "definedTradeGood": "wheeled repair components",
-         "tons": function() { return rawroll(1, 6).total * 14 },
-         "basePrice": 5000
-      },
-      5: {
-         "definedTradeGood": "tracked repair components",
-         "tons": function() { return rawroll(1, 6).total * 12 },
-         "basePrice": 10000
-      },
-      8: {
-         "definedTradeGood": "wheeled components or packages",
-         "tons": function() { return rawroll(1, 6).total * 10 },
-         "basePrice": 15000
-      },
-      11: {
-         "definedTradeGood": "wheeled vehicles/tracked components or packages",
-         "tons": function() { return rawroll(1, 6).total * 6 },
-         "basePrice": 20000
-      },
-      12: {
-         "definedTradeGood": "tracked vehicles",
-         "tons": function() { return rawroll(1, 6).total * 2 },
-         "basePrice": 30000
-      }
-   },
-   61: {
-      2: {
-         "definedTradeGood": "herbal stimulants/ultra-caffeine",
-         "tons": function() { return rawroll(1, 6).total * 6 },
-         "basePrice": 10000
-      },
-      5: {
-         "definedTradeGood": "raw growth hormones",
-         "tons": function() { return rawroll(1, 6).total * 5 },
-         "basePrice": 25000
-      },
-      8: {
-         "definedTradeGood": "chemical solvents/protein duplexer steroids",
-         "tons": function() { return rawroll(1, 6).total * 5 },
-         "basePrice": 50000
-      },
-      11: {
-         "definedTradeGood": "bio-acid/pheromone extracts",
-         "tons": function() { return 2 },
-         "basePrice": 100000
-      },
-      12: {
-         "definedTradeGood": "genetic mutagens/organic toxins",
-         "tons": function() { return 1 },
-         "basePrice": 200000
-      }
-   },
-   62: {
-      2: {
-         "definedTradeGood": "unlicensed augment tools and parts",
-         "tons": function() { return rawroll(1, 6).total * 2 },
-         "basePrice": 100000
-      },
-      5: {
-         "definedTradeGood": "physical enhancement tissues",
-         "tons": function() { return rawroll(1, 6).total * 2 },
-         "basePrice": 150000
-      },
-      8: {
-         "definedTradeGood": "unlicensed augmentatives/combat implant additives",
-         "tons": function() { return rawroll(1, 6).total * 1 },
-         "basePrice": 250000
-      },
-      11: {
-         "definedTradeGood": "combat prosthetics/surgical duplications",
-         "tons": function() { return 2 },
-         "basePrice": 400000
-      },
-      12: {
-         "definedTradeGood": "mimicry augmentics",
-         "tons": function() { return 1 },
-         "basePrice": 650000
-      }
-   },
-   63: {
-      2: {
-         "definedTradeGood": "herbal stimulants/biological hallucinogens",
-         "tons": function() { return rawroll(1, 6).total + 2 },
-         "basePrice": 25000
-      },
-      5: {
-         "definedTradeGood": "chemical depressants/natural narcotics",
-         "tons": function() { return rawroll(1, 6).total + 1 },
-         "basePrice": 50000
-      },
-      8: {
-         "definedTradeGood": "chemical stimulants and hallucinogens",
-         "tons": function() { return rawroll(1, 6).total * 1 },
-         "basePrice": 100000
-      },
-      11: {
-         "definedTradeGood": "designer narcotics",
-         "tons": function() { return 2 },
-         "basePrice": 200000
-      },
-      12: {
-         "definedTradeGood": "alien synthetics/psi-drugs",
-         "tons": function() { return 1 },
-         "basePrice": 300000
-      }
-   },
-   64: {
-      2: {
-         "definedTradeGood": "anti-governmental propaganda/endangered animal products",
-         "tons": function() { return 1 },
-         "basePrice": 10000
-      },
-      5: {
-         "definedTradeGood": "black-data recordings/slaving gear",
-         "tons": function() { return rawroll(1, 6).total * 1 },
-         "basePrice": 25000
-      },
-      8: {
-         "definedTradeGood": "extinct animal products",
-         "tons": function() { return rawroll(1, 6).total * 1 },
-         "basePrice": 50000
-      },
-      11: {
-         "definedTradeGood": "BTL devices/cloning equipment",
-         "tons": function() { return 2 },
-         "basePrice": 100000
-      },
-      12: {
-         "definedTradeGood": "forbidden pleasures",
-         "tons": function() { return 1 },
-         "basePrice": 200000
-      }
-   },
-   65: {
-      2: {
-         "definedTradeGood": "chain-drive weaponry/armor-piercing ammunition",
-         "tons": function() { return rawroll(1, 6).total * 6 },
-         "basePrice": 50000
-      },
-      5: {
-         "definedTradeGood": "protected technologies/explosive or incendiary ammunition",
-         "tons": function() { return rawroll(1, 6).total * 5 },
-         "basePrice": 100000
-      },
-      8: {
-         "definedTradeGood": "synthetic poisons/personal-scale mass trauma explosives",
-         "tons": function() { return rawroll(1, 6).total * 5 },
-         "basePrice": 150000
-      },
-      11: {
-         "definedTradeGood": "arclight weaponry/biological or chemical weaponry/naval starship weaponry",
-         "tons": function() { return rawroll(1, 6).total * 2 },
-         "basePrice": 300000
-      },
-      12: {
-         "definedTradeGood": "disintegrators/psi-weaponry/weapons of mass destruction",
-         "tons": function() { return rawroll(1, 6).total * 1 },
-         "basePrice": 450000
+function findAllCommonGoods(goodsArray) {
+   for (var i = goods.commonGoodsStart; i <= goods.commonGoodsEnd; i++) {
+      for (var j = 0; j < goods[i].length; j++) {
+         goodsArray.push(goods[i][j]);
       }
    }
 };
+
+function findAllAvailableLegalGoods(goodsArray, availableOn) {
+   for (var i = goods.legalGoodsStart; i <= goods.legalGoodsEnd; i++) {
+      for (var j = 0; j < goods[i].length; j++) {
+         if (goods[i][j].available.indexOf(availableOn) >= 0) {
+            goodsArray.push(goods[i][j]);
+         }
+      }
+   }
+};
+
+function findAllAvailableIllegalGoods(goodsArray, availableOn) {
+   for (var i = goods.illegalGoodsStart; i <= goods.illegalGoodsEnd; i++) {
+      for (var j = 0; j < goods[i].length; j++) {
+         if (goods[i][j].available.indexOf(availableOn) >= 0) {
+            goodsArray.push(goods[i][j]);
+         }
+      }
+   }
+};
+
+function findRandomGood(goodsArray, validClasses) {
+   //TODO: Handle exotic goods properly
+   var d66;
+   do {
+      d66 = rolld66();
+   } while (d66.total === 66)
+
+   var tens = d66.rolls[0] - 1;
+   var ones = d66.rolls[1] - 1;
+
+   if (   (tens >= goods.commonGoodsStart && tens <= goods.commonGoodsEnd && validClasses.indexOf("common") >= 0)
+       || (tens >= goods.legalGoodsStart && tens <= goods.legalGoodsEnd && validClasses.indexOf("legal") >= 0)
+       || (tens >= goods.illegalGoodsStart && tens <= goods.illegalGoodsEnd && validClasses.indexOf("illegal") >= 0)) {
+      goodsArray.push(goods[tens][ones]);
+   }
+}
+
+function getRandomDefinedTradeGood(good) {
+   switch(rawroll(2, 6).total) {
+      case 2:
+         return good.definedTradeGoods[0];
+      case 3:
+      case 4:
+      case 5:
+         return good.definedTradeGoods[1];
+      case 6:
+      case 7:
+      case 8:
+         return good.definedTradeGoods[2];
+      case 9:
+      case 10:
+      case 11:
+         return good.definedTradeGoods[3];
+      case 12:
+         return good.definedTradeGoods[4];
+   }
+}
+
+function enumerateDefinedTradeGoods(good) {
+   var definedTradeGoods = [];
+   var tonsRemaining = good.maxTons();
+   while (tonsRemaining) {
+      var definedTradeGood = getRandomDefinedTradeGood(good);
+      var tons = definedTradeGood.tons();
+      tons = tons > tonsRemaining ? tonsRemaining : tons;
+      tonsRemaining -= tons;
+      definedTradeGoods.push({ good: definedTradeGood, tons: tons });
+   }
+   return definedTradeGoods;
+}
