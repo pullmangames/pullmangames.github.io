@@ -315,8 +315,14 @@
         </trav-skill-check-dm>
       </div>
       <div style="margin-top:10px" ng-if="shipMan.buyTradeGoods.priceListAvailable">
-        <table id="priceListTable">
-          <tr><th style="padding:2px">Good</th><th style="padding:2px">Tons</th><th style="padding:2px">Price</th><th style="padding:2px">Base</th><th style="padding:2px">Avg. Profit</th></tr>
+        <div ng-if="!shipMan.tripData.arrivalWorld.Name">
+          <strong>Select arrival world for more accurate expected profit.</strong>
+        </div>
+        <div ng-if="shipMan.tripData.arrivalWorld.Name">
+          <strong>Expected profit assumes sale on {{shipMan.tripData.arrivalWorld.Name}}.</strong>
+        </div>
+        <table style="margin-top:5px" id="priceListTable">
+          <tr><th style="padding:2px">Good</th><th style="padding:2px">Tons</th><th style="padding:2px">Price</th><th style="padding:2px">Base</th><th style="padding:2px">Exp. Profit</th></tr>
           <tr ng-repeat="item in shipMan.buyTradeGoods.priceList | orderBy: '-expectedProfit'">
             <td style="padding:2px">{{item.good.name}}<br /><small>{{item.type.type}}</small></td>
             <td style="padding:2px">{{item.tons}}</td>
