@@ -412,7 +412,7 @@ Pilot: -1 DM
             </div>
             <div class="col-md-6">
               <h4>Arrival</h4>
-              <ui-select theme="bootstrap" ng-model="shipMan.tripData.arrivalWorld">
+              <ui-select theme="bootstrap" ng-model="shipMan.tripData.arrivalWorld" on-select="shipMan.arrivalWorldChanged()">
                 <ui-select-match placeholder="Select arrival...">{{$select.selected.Name}}</ui-select-match>
                 <ui-select-choices repeat="world in shipMan.tripData.arrivalWorlds | filter: {Name: $select.search}">
                   <span ng-bind-html="world.Name | highlight: $select.search"></span>

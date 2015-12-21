@@ -141,7 +141,56 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
    smm.tripData = {};
    $scope.smmPersistent.tripData = smm.tripData;
 
-   var _initializeBuyTradeGoods = function() {
+   //Calculate the expected sale multiplier
+   var _updateExpectedProfit = function (inventory) {
+      var arrivalTradeCodes = [];
+      if (smm.tripData.arrivalWorld && smm.tripData.arrivalWorld.Remarks) {
+         arrivalTradeCodes = smm.tripData.arrivalWorld.Remarks.split(" ");
+      }
+
+      for (var i = 0; i < inventory.length; i++) {
+         var purchaseDm = undefined;
+         var saleDm = undefined;
+
+         //Find the largest sale DM
+         for (var j = 0; j < arrivalTradeCodes.length; j++) {
+            if (inventory[i].type.saleDM[arrivalTradeCodes[j]]
+                && (saleDm === undefined
+                    || inventory[i].type.saleDM[arrivalTradeCodes[j]] > saleDm)) {
+               saleDm = inventory[i].type.saleDM[arrivalTradeCodes[j]];
+            }
+         }
+         //Find the largest purchase DM
+         for (var j = 0; j < arrivalTradeCodes.length; j++) {
+            if (inventory[i].type.purchaseDM[arrivalTradeCodes[j]]
+               && (purchaseDm === undefined
+                  || inventory[i].type.purchaseDM[arrivalTradeCodes[j]] > purchaseDm)) {
+               purchaseDm = inventory[i].type.purchaseDM[arrivalTradeCodes[j]];
+            }
+         }
+
+         if (!purchaseDm) {
+            purchaseDm = 0;
+         }
+         if (!saleDm) {
+            saleDm = 0;
+         }
+         var totalSaleDm = smm.buyTradeGoods.haggleResult.dm + 18 + saleDm - purchaseDm;
+
+         var saleMult;
+         if (totalSaleDm < 0) {
+            saleMult = 0.25;
+         } else if (totalSaleDm > 38) {
+            saleMult = 4;
+         } else {
+            saleMult = smm.buyTradeGoods.expectedSellModifierByDm[totalSaleDm];
+         }
+
+         inventory[i].expectedProfit = (inventory[i].good.basePrice * saleMult) - inventory[i].pricePerTon;
+      }
+   }
+
+   var _initializeBuyTradeGoods = function () {
       smm.buyTradeGoods = {};
       if ($scope.smmPersistent.buyTradeGoods) {
          smm.buyTradeGoods.persistent = $scope.smmPersistent.buyTradeGoods;
@@ -328,13 +377,10 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       smm.buyTradeGoods.haggleResult = null;
       smm.buyTradeGoods.priceList = [];
       smm.buyTradeGoods.priceListAvailable = false;
+
       smm.buyTradeGoods.onHaggleRoll = function () {
          var available = smm.buyTradeGoods.generateGoods(smm.buyTradeGoods.supplier);
          var tradeCodes = smm.tripData.departureWorld.Remarks.split(" ");
-         var arrivalTradeCodes = [];
-         if (smm.tripData.arrivalWorld && smm.tripData.arrivalWorld.Remarks) {
-            arrivalTradeCodes = smm.tripData.arrivalWorld.Remarks.split(" ");
-         }
          var inventory = [];
          var i;
          //Now that we have the appropriate DM, we can generate the prices
@@ -377,54 +423,18 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
                   priceMultiplier = smm.buyTradeGoods.priceAdjustment[rollTotal];
                }
 
-               //Calculate the expected sale tmultiplier
-               purchaseDm = undefined;
-               saleDm = undefined;
-               //Find the largest sale DM
-               for (i = 0; i < arrivalTradeCodes.length; i++) {
-                  if (   available[type].type.saleDM[arrivalTradeCodes[i]]
-                      && (   saleDm === undefined
-                          || available[type].type.saleDM[arrivalTradeCodes[i]] > saleDm)) {
-                     saleDm = available[type].type.saleDM[arrivalTradeCodes[i]];
-                  }
-               }
-               //Find the largest purchase DM
-               for (i = 0; i < arrivalTradeCodes.length; i++) {
-                  if (   available[type].type.purchaseDM[arrivalTradeCodes[i]]
-                      && (   purchaseDm === undefined
-                          || available[type].type.purchaseDM[arrivalTradeCodes[i]] > purchaseDm)) {
-                     purchaseDm = available[type].type.purchaseDM[arrivalTradeCodes[i]];
-                  }
-               }
-
-               if (!purchaseDm) {
-                  purchaseDm = 0;
-               }
-               if (!saleDm) {
-                  saleDm = 0;
-               }
-               var totalSaleDm = smm.buyTradeGoods.haggleResult.dm + 18 + saleDm - purchaseDm;
-
-               var saleMult;
-               if (totalSaleDm < 0) {
-                  saleMult = 0.25;
-               } else if (totalSaleDm > 38) {
-                  saleMult = 4;
-               } else {
-                  saleMult = smm.buyTradeGoods.expectedSellModifierByDm[totalSaleDm];
-               }
-
                //We're done with the type - it causes problems in this loop, so just delete it
                delete available[type].type;
                for (var definedGood in available[type]) {
                   if (available[type].hasOwnProperty(definedGood)) {
                      available[type][definedGood].pricePerTon = available[type][definedGood].good.basePrice * priceMultiplier;
-                     available[type][definedGood].expectedProfit = (available[type][definedGood].good.basePrice * saleMult) - available[type][definedGood].pricePerTon;
                      inventory.push(available[type][definedGood]);
                   }
                }
+
             }
          }
+         _updateExpectedProfit(inventory);
          smm.buyTradeGoods.priceList.splice(0, smm.buyTradeGoods.priceList.length);
          for (i = 0; i < inventory.length; i++) {
             smm.buyTradeGoods.priceList.push(inventory[i]);
@@ -701,6 +711,10 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       }
    };
    
+   smm.arrivalWorldChanged = function () {
+      _updateExpectedProfit(smm.buyTradeGoods.priceList);
+   }
+
    smm.passengers = {};
    smm.passengers.roundupModifier = 0;
 
