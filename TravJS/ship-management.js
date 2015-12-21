@@ -196,6 +196,23 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
          3, 2, 1.75, 1.5, 1.35, 1.25, 1.2, 1.15, 1.1, 1.05, 1, .95, .9, .85, .8, .75, .7, .65, .6, .55, .5, .45, .4, .3
       ];
 
+      //How to use this table:
+      //Take the total DM for selling the item, add 18 to it, and use it as an offset into this table, unless:
+      //  The value is < 0, in which case use 0.25
+      //  The value is > 38, in which case use 4
+      smm.buyTradeGoods.expectedSellModifierByDm = [
+         0.250231481, 0.251388889, 0.254398148, 0.260416667,
+         0.270833333, 0.287268519, 0.31087963,  0.341666667,
+         0.379166667, 0.422453704, 0.470138889, 0.52037037,
+         0.571527778, 0.622916667, 0.674074074, 0.724768519,
+         0.775,       0.825,       0.875,       0.925231481,
+         0.976388889, 1.030092593, 1.088888889, 1.159722222,
+         1.253935185, 1.381944444, 1.552546296, 1.771527778,
+         2.041666667, 2.352314815, 2.679398148, 3,
+         3.293055556, 3.540740741, 3.728472222, 3.855324074,
+         3.934027778, 3.976851852, 3.99537037
+      ];
+
       //Set the default supplier type
       smm.buyTradeGoods.supplier = smm.buyTradeGoods.suppliers['standard'];
 
@@ -314,6 +331,10 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       smm.buyTradeGoods.onHaggleRoll = function () {
          var available = smm.buyTradeGoods.generateGoods(smm.buyTradeGoods.supplier);
          var tradeCodes = smm.tripData.departureWorld.Remarks.split(" ");
+         var arrivalTradeCodes = [];
+         if (smm.tripData.arrivalWorld && smm.tripData.arrivalWorld.Remarks) {
+            arrivalTradeCodes = smm.tripData.arrivalWorld.Remarks.split(" ");
+         }
          var inventory = [];
          var i;
          //Now that we have the appropriate DM, we can generate the prices
@@ -356,11 +377,50 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
                   priceMultiplier = smm.buyTradeGoods.priceAdjustment[rollTotal];
                }
 
+               //Calculate the expected sale tmultiplier
+               purchaseDm = undefined;
+               saleDm = undefined;
+               //Find the largest sale DM
+               for (i = 0; i < arrivalTradeCodes.length; i++) {
+                  if (   available[type].type.saleDM[arrivalTradeCodes[i]]
+                      && (   saleDm === undefined
+                          || available[type].type.saleDM[arrivalTradeCodes[i]] > saleDm)) {
+                     saleDm = available[type].type.saleDM[arrivalTradeCodes[i]];
+                  }
+               }
+               //Find the largest purchase DM
+               for (i = 0; i < arrivalTradeCodes.length; i++) {
+                  if (   available[type].type.purchaseDM[arrivalTradeCodes[i]]
+                      && (   purchaseDm === undefined
+                          || available[type].type.purchaseDM[arrivalTradeCodes[i]] > purchaseDm)) {
+                     purchaseDm = available[type].type.purchaseDM[arrivalTradeCodes[i]];
+                  }
+               }
+
+               if (!purchaseDm) {
+                  purchaseDm = 0;
+               }
+               if (!saleDm) {
+                  saleDm = 0;
+               }
+               var totalSaleDm = smm.buyTradeGoods.haggleResult.dm + 18 + saleDm - purchaseDm;
+
+               var saleMult;
+               if (totalSaleDm < 0) {
+                  saleMult = 0.25;
+               } else if (totalSaleDm > 38) {
+                  saleMult = 4;
+               } else {
+                  saleMult = smm.buyTradeGoods.expectedSellModifierByDm[totalSaleDm];
+               }
+
                //We're done with the type - it causes problems in this loop, so just delete it
                delete available[type].type;
                for (var definedGood in available[type]) {
                   if (available[type].hasOwnProperty(definedGood)) {
-                     inventory.push({good:available[type][definedGood], ppt:available[type][definedGood].good.basePrice * priceMultiplier});
+                     available[type][definedGood].pricePerTon = available[type][definedGood].good.basePrice * priceMultiplier;
+                     available[type][definedGood].expectedProfit = (available[type][definedGood].good.basePrice * saleMult) - available[type][definedGood].pricePerTon;
+                     inventory.push(available[type][definedGood]);
                   }
                }
             }

@@ -316,12 +316,13 @@
       </div>
       <div style="margin-top:10px" ng-if="shipMan.buyTradeGoods.priceListAvailable">
         <table id="priceListTable">
-          <tr><th style="padding:2px">Good</th><th style="padding:2px">Tons</th><th style="padding:2px">Price</th><th style="padding:2px">Base</th></tr>
-          <tr ng-repeat="good in shipMan.buyTradeGoods.priceList">
-            <td style="padding:2px">{{good.good.good.name}}</td>
-            <td style="padding:2px">{{good.good.tons}}</td>
-            <td style="padding:2px">{{good.ppt | number: 0}}</td>
-            <td style="padding:2px">{{good.good.good.basePrice | number: 0}}</td>
+          <tr><th style="padding:2px">Good</th><th style="padding:2px">Tons</th><th style="padding:2px">Price</th><th style="padding:2px">Base</th><th style="padding:2px">Avg. Profit</th></tr>
+          <tr ng-repeat="item in shipMan.buyTradeGoods.priceList | orderBy: '-expectedProfit'">
+            <td style="padding:2px">{{item.good.name}}<br /><small>{{item.type.type}}</small></td>
+            <td style="padding:2px">{{item.tons}}</td>
+            <td style="padding:2px">{{item.pricePerTon | number: 0}}</td>
+            <td style="padding:2px">{{item.good.basePrice | number: 0}}</td>
+            <td style="padding:2px">{{item.expectedProfit | number: 0}}</td>
           </tr>
         </table>
       </div>
