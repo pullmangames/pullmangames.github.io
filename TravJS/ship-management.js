@@ -141,7 +141,56 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
    smm.tripData = {};
    $scope.smmPersistent.tripData = smm.tripData;
 
-   var _initializeBuyTradeGoods = function() {
+   //Calculate the expected sale multiplier
+   var _updateExpectedProfit = function (inventory) {
+      var arrivalTradeCodes = [];
+      if (smm.tripData.arrivalWorld && smm.tripData.arrivalWorld.Remarks) {
+         arrivalTradeCodes = smm.tripData.arrivalWorld.Remarks.split(" ");
+      }
+
+      for (var i = 0; i < inventory.length; i++) {
+         var purchaseDm = undefined;
+         var saleDm = undefined;
+
+         //Find the largest sale DM
+         for (var j = 0; j < arrivalTradeCodes.length; j++) {
+            if (inventory[i].type.saleDM[arrivalTradeCodes[j]]
+                && (saleDm === undefined
+                    || inventory[i].type.saleDM[arrivalTradeCodes[j]] > saleDm)) {
+               saleDm = inventory[i].type.saleDM[arrivalTradeCodes[j]];
+            }
+         }
+         //Find the largest purchase DM
+         for (var j = 0; j < arrivalTradeCodes.length; j++) {
+            if (inventory[i].type.purchaseDM[arrivalTradeCodes[j]]
+               && (purchaseDm === undefined
+                  || inventory[i].type.purchaseDM[arrivalTradeCodes[j]] > purchaseDm)) {
+               purchaseDm = inventory[i].type.purchaseDM[arrivalTradeCodes[j]];
+            }
+         }
+
+         if (!purchaseDm) {
+            purchaseDm = 0;
+         }
+         if (!saleDm) {
+            saleDm = 0;
+         }
+         var totalSaleDm = smm.buyTradeGoods.haggleResult.dm + 18 + saleDm - purchaseDm;
+
+         var saleMult;
+         if (totalSaleDm < 0) {
+            saleMult = 0.25;
+         } else if (totalSaleDm > 38) {
+            saleMult = 4;
+         } else {
+            saleMult = smm.buyTradeGoods.expectedSellModifierByDm[totalSaleDm];
+         }
+
+         inventory[i].expectedProfit = (inventory[i].good.basePrice * saleMult) - inventory[i].pricePerTon;
+      }
+   }
+
+   var _initializeBuyTradeGoods = function () {
       smm.buyTradeGoods = {};
       if ($scope.smmPersistent.buyTradeGoods) {
          smm.buyTradeGoods.persistent = $scope.smmPersistent.buyTradeGoods;
@@ -194,6 +243,23 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
 
       smm.buyTradeGoods.priceAdjustment = [
          3, 2, 1.75, 1.5, 1.35, 1.25, 1.2, 1.15, 1.1, 1.05, 1, .95, .9, .85, .8, .75, .7, .65, .6, .55, .5, .45, .4, .3
+      ];
+
+      //How to use this table:
+      //Take the total DM for selling the item, add 18 to it, and use it as an offset into this table, unless:
+      //  The value is < 0, in which case use 0.25
+      //  The value is > 38, in which case use 4
+      smm.buyTradeGoods.expectedSellModifierByDm = [
+         0.250231481, 0.251388889, 0.254398148, 0.260416667,
+         0.270833333, 0.287268519, 0.31087963,  0.341666667,
+         0.379166667, 0.422453704, 0.470138889, 0.52037037,
+         0.571527778, 0.622916667, 0.674074074, 0.724768519,
+         0.775,       0.825,       0.875,       0.925231481,
+         0.976388889, 1.030092593, 1.088888889, 1.159722222,
+         1.253935185, 1.381944444, 1.552546296, 1.771527778,
+         2.041666667, 2.352314815, 2.679398148, 3,
+         3.293055556, 3.540740741, 3.728472222, 3.855324074,
+         3.934027778, 3.976851852, 3.99537037
       ];
 
       //Set the default supplier type
@@ -311,6 +377,7 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       smm.buyTradeGoods.haggleResult = null;
       smm.buyTradeGoods.priceList = [];
       smm.buyTradeGoods.priceListAvailable = false;
+
       smm.buyTradeGoods.onHaggleRoll = function () {
          var available = smm.buyTradeGoods.generateGoods(smm.buyTradeGoods.supplier);
          var tradeCodes = smm.tripData.departureWorld.Remarks.split(" ");
@@ -360,11 +427,14 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
                delete available[type].type;
                for (var definedGood in available[type]) {
                   if (available[type].hasOwnProperty(definedGood)) {
-                     inventory.push({good:available[type][definedGood], ppt:available[type][definedGood].good.basePrice * priceMultiplier});
+                     available[type][definedGood].pricePerTon = available[type][definedGood].good.basePrice * priceMultiplier;
+                     inventory.push(available[type][definedGood]);
                   }
                }
+
             }
          }
+         _updateExpectedProfit(inventory);
          smm.buyTradeGoods.priceList.splice(0, smm.buyTradeGoods.priceList.length);
          for (i = 0; i < inventory.length; i++) {
             smm.buyTradeGoods.priceList.push(inventory[i]);
@@ -641,6 +711,10 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       }
    };
    
+   smm.arrivalWorldChanged = function () {
+      _updateExpectedProfit(smm.buyTradeGoods.priceList);
+   }
+
    smm.passengers = {};
    smm.passengers.roundupModifier = 0;
 

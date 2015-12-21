@@ -315,13 +315,20 @@
         </trav-skill-check-dm>
       </div>
       <div style="margin-top:10px" ng-if="shipMan.buyTradeGoods.priceListAvailable">
-        <table id="priceListTable">
-          <tr><th style="padding:2px">Good</th><th style="padding:2px">Tons</th><th style="padding:2px">Price</th><th style="padding:2px">Base</th></tr>
-          <tr ng-repeat="good in shipMan.buyTradeGoods.priceList">
-            <td style="padding:2px">{{good.good.good.name}}</td>
-            <td style="padding:2px">{{good.good.tons}}</td>
-            <td style="padding:2px">{{good.ppt | number: 0}}</td>
-            <td style="padding:2px">{{good.good.good.basePrice | number: 0}}</td>
+        <div ng-if="!shipMan.tripData.arrivalWorld.Name">
+          <strong>Select arrival world for more accurate expected profit.</strong>
+        </div>
+        <div ng-if="shipMan.tripData.arrivalWorld.Name">
+          <strong>Expected profit assumes sale on {{shipMan.tripData.arrivalWorld.Name}}.</strong>
+        </div>
+        <table style="margin-top:5px" id="priceListTable">
+          <tr><th style="padding:2px">Good</th><th style="padding:2px">Tons</th><th style="padding:2px">Price</th><th style="padding:2px">Base</th><th style="padding:2px">Exp. Profit</th></tr>
+          <tr ng-repeat="item in shipMan.buyTradeGoods.priceList | orderBy: '-expectedProfit'">
+            <td style="padding:2px">{{item.good.name}}<br /><small>{{item.type.type}}</small></td>
+            <td style="padding:2px">{{item.tons}}</td>
+            <td style="padding:2px">{{item.pricePerTon | number: 0}}</td>
+            <td style="padding:2px">{{item.good.basePrice | number: 0}}</td>
+            <td style="padding:2px">{{item.expectedProfit | number: 0}}</td>
           </tr>
         </table>
       </div>
@@ -411,7 +418,7 @@ Pilot: -1 DM
             </div>
             <div class="col-md-6">
               <h4>Arrival</h4>
-              <ui-select theme="bootstrap" ng-model="shipMan.tripData.arrivalWorld">
+              <ui-select theme="bootstrap" ng-model="shipMan.tripData.arrivalWorld" on-select="shipMan.arrivalWorldChanged()">
                 <ui-select-match placeholder="Select arrival...">{{$select.selected.Name}}</ui-select-match>
                 <ui-select-choices repeat="world in shipMan.tripData.arrivalWorlds | filter: {Name: $select.search}">
                   <span ng-bind-html="world.Name | highlight: $select.search"></span>
