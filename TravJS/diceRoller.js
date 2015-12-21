@@ -387,22 +387,23 @@ rollModule.service('travRollService', [function() {
 }]);
 
 //------------------Raw JS (no Angular junk) below this line ----------------
-function rawroll(numdice, sides){	
-		var rollresult = { total:0, rolls:[] }
-	
-		rollresult.rolls = new Uint32Array(numdice);
-		window.crypto.getRandomValues(rollresult.rolls);
-		
-		for (var i=0; i<numdice; i++)
-		{
-			rollresult.rolls[i] = Math.floor(rollresult.rolls[i]%sides)+1;
-			rollresult.total += rollresult.rolls[i];
-			//rollresult.rolls.push(temproll);
-		}
-	
-		return rollresult;
-}	
-		
+function rawroll(numdice, sides) {
+   var rollresult = { total: 0, rolls: [] }
+
+   if (numdice > 0) {
+      rollresult.rolls = new Uint32Array(numdice);
+      window.crypto.getRandomValues(rollresult.rolls);
+   }
+
+   for (var i = 0; i < numdice; i++) {
+      rollresult.rolls[i] = Math.floor(rollresult.rolls[i] % sides) + 1;
+      rollresult.total += rollresult.rolls[i];
+      //rollresult.rolls.push(temproll);
+   }
+
+   return rollresult;
+}
+
 function rolld66(){
 	var rollresult = rawroll(2,6);
 	rollresult.total=rollresult.rolls[0]*10+rollresult.rolls[1];
@@ -437,6 +438,7 @@ function dicethrow(difficulty, DMs, timeDice){
    if (timeDice === undefined) {
       timeDice = 1;
    }
+   timeDice = Number(timeDice);
    rollresult.timing = rawroll(timeDice, 6).total;
 	return rollresult;
 	
