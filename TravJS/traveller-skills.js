@@ -361,7 +361,7 @@ skillsModule.service('skillsService', ['dataStorageService', function(dataStorag
       {
          this.skillExternalFactors[skillName] = [];
       }
-      var newEfObj = {externalFactor, value};
+      var newEfObj = {externalFactor:externalFactor, value:value};
       this.skillExternalFactors[skillName].push(newEfObj);
       _skillEFsDict[lcSkillName][lcEf] = newEfObj;
    }

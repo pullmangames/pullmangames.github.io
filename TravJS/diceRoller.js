@@ -391,8 +391,14 @@ function rawroll(numdice, sides) {
    var rollresult = { total: 0, rolls: [] }
 
    if (numdice > 0) {
-      rollresult.rolls = new Uint32Array(numdice);
-      window.crypto.getRandomValues(rollresult.rolls);
+      if (window.crypto && window.crypto.getRandomValues) {
+         rollresult.rolls = new Uint32Array(numdice);
+         window.crypto.getRandomValues(rollresult.rolls);
+      } else {
+         for (var i = 0; i < numdice; i++) {
+            rollresult.rolls.push(Math.floor(Math.random() * sides));
+         }
+      }
    }
 
    for (var i = 0; i < numdice; i++) {
