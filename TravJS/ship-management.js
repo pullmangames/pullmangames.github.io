@@ -829,8 +829,9 @@ var dateFactory = function(newyear, newday){
 	//for the other two increments
 	newdate.incrementinternaluse=function(daystochange){
 		var currentdays=(this.year*365)+this.day-1; //The -1 and +1 are to remove day 0, but it's a weird hack and I don't like it.
-		var newdays=currentdays+daystochange;
-		var calcyear=Math.trunc(newdays/365);
+		var newdays = currentdays + daystochange;
+	   var func = newdays > 0 ? Math.floor : Math.ceil;
+		var calcyear=func(newdays/365);
 		var calcday=newdays%365+1;
 		return [calcyear,calcday];
 	};
