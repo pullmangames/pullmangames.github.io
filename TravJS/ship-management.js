@@ -1,8 +1,8 @@
 shipManModule = angular.module('shipManagement', []); //declare the module for managing the ship
-      
-shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataStorageService', 'alertsService', function ($scope, $http, dataStorageService, alertsService) {
+
+shipManModule.controller('shipManagementController', ['$scope', '$http', '$filter', 'dataStorageService', 'alertsService', function ($scope, $http, $filter, dataStorageService, alertsService) {
    var smm=this;
-   
+
    smm.accordionData = [
       { name: "Manual Log Entry/Adjustment",                htmlTemplate: "shipman.accordion.manualOps.view" },
       { name: "Hunt for jobs/patrons/rumors/etc.",          htmlTemplate: "shipman.accordion.TBD.view" },
@@ -39,7 +39,7 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       { name: "Find a trade goods buyer",                   htmlTemplate: "shipman.accordion.TBD.view" },
       { name: "Tax",                                        htmlTemplate: "shipman.accordion.TBD.view" },
    ];
-   
+
    var theShip={}
    theShip.name="Chameleon";
    theShip.size=200;
@@ -82,7 +82,7 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       this.status.stateroomsused=smm.partyShip.crew/2 + this.status.highpass + this.status.midpass;
       this.status.staterooms=[];
       this.status.lowBerths=[];
-      
+
       for (var i=0; i<smm.partyShip.numstaterooms; i++) {
          var stateRoom = {};
          stateRoom.occupants = [];
@@ -99,9 +99,9 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
 	     this.status.lowBerths.push(stateRoom);
       	//intent is for occupied staterooms to have an array of passengers
       }
-      
-      
-      
+
+
+
       this.status.totalCargo = function(){
          var total=0;
          for (var i=0;i<this.cargo.length;i++)
@@ -124,7 +124,7 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       this.status.daysUntilMortgage = function(){
          return this.date.daysaway(this.dueDate());
       };
-      
+
       this.status.maintDate = function(){
          return  this.lastmaint.cloneandincrement(365);
       };
@@ -247,8 +247,8 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
 
       //How to use this table:
       //Take the total DM for selling the item, add 18 to it, and use it as an offset into this table, unless:
-      //  The value is < 0, in which case use 0.25
-      //  The value is > 38, in which case use 4
+      //  The result is < 0, in which case use 0.25
+      //  The result is > 38, in which case use 4
       smm.buyTradeGoods.expectedSellModifierByDm = [
          0.250231481, 0.251388889, 0.254398148, 0.260416667,
          0.270833333, 0.287268519, 0.31087963,  0.341666667,
@@ -427,7 +427,7 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
                delete available[type].type;
                for (var definedGood in available[type]) {
                   if (available[type].hasOwnProperty(definedGood)) {
-                     available[type][definedGood].pricePerTon = available[type][definedGood].good.basePrice * priceMultiplier;
+                     available[type][definedGood].pricePerTon = Math.round(available[type][definedGood].good.basePrice * priceMultiplier);
                      inventory.push(available[type][definedGood]);
                   }
                }
@@ -437,9 +437,61 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
          _updateExpectedProfit(inventory);
          smm.buyTradeGoods.priceList.splice(0, smm.buyTradeGoods.priceList.length);
          for (i = 0; i < inventory.length; i++) {
+            inventory[i].tonsToBuy = 0;
             smm.buyTradeGoods.priceList.push(inventory[i]);
          }
          smm.buyTradeGoods.priceListAvailable = true;
+      }
+
+      smm.buyTradeGoods.totalCost = function() {
+         var totalCost = 0;
+         for (var i = 0; i < smm.buyTradeGoods.priceList.length; i++) {
+            totalCost += (smm.buyTradeGoods.priceList[i].tonsToBuy * smm.buyTradeGoods.priceList[i].pricePerTon);
+         }
+         return totalCost;
+      }
+
+      smm.buyTradeGoods.totalTons = function() {
+         var totalTons = 0;
+         for (var i = 0; i < smm.buyTradeGoods.priceList.length; i++) {
+            totalTons += smm.buyTradeGoods.priceList[i].tonsToBuy;
+         }
+         return totalTons;
+      }
+
+      smm.buyTradeGoods.totalExpectedProfit = function() {
+         var totalExpectedProfit = 0;
+         for (var i = 0; i < smm.buyTradeGoods.priceList.length; i++) {
+            totalExpectedProfit += (smm.buyTradeGoods.priceList[i].tonsToBuy * smm.buyTradeGoods.priceList[i].expectedProfit);
+         }
+         return totalExpectedProfit;
+      }
+
+      smm.buyTradeGoods.onBuy = function() {
+         var totalTons = 0;
+         var i;
+         for (i = 0; i < smm.buyTradeGoods.priceList.length; i++) {
+            totalTons += smm.buyTradeGoods.priceList[i].tonsToBuy;
+         }
+         var tonsRemaining = smm.partyShip.maxcargo - smm.log.status.totalCargo();
+         if (totalTons > tonsRemaining) {
+            alertsService.addAlert("warning", "Unable to buy " + totalTons + " tons of cargo. Ship only has " + tonsRemaining + " tons of cargo space remaining.");
+         } else {
+            for (i = 0; i < smm.buyTradeGoods.priceList.length; i++) {
+               if (smm.buyTradeGoods.priceList[i].tonsToBuy > 0) {
+                  var good = smm.buyTradeGoods.priceList[i];
+                  var cargo = cargoFactory();
+                  cargo.type = good.type.type;
+                  cargo.detail = good.good.name;
+                  cargo.tons = good.tonsToBuy;
+                  cargo.paid = good.pricePerTon;
+                  good.tons -= good.tonsToBuy;
+                  good.tonsToBuy = 0;
+                  smm.log.status.cargo.push(cargo);
+                  smm.logNow("Purchased " + cargo.tons + " dT " + cargo.type + " (" + cargo.detail + ") @ Cr. " + $filter('number')(good.pricePerTon, 0) + "/dT", 0);
+               }
+            }
+         }
       }
    };
 
@@ -530,16 +582,16 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
    };
 
    dataStorageService.register($scope, 'smmPersistent', _buildSmmPersistentDataFromJson);
-   
+
    smm.inputYear = smm.log.status.date.year;
    smm.inputDate = smm.log.status.date.day;
-   
-   
+
+
    //cargo on the ship looks like this:
    //type, detail, tons, price paid, Risk DM, Danger DM, purchase DM, sale DM,
-   
+
    //cargo for sale also has max risk dm, base price, max tons
-   
+
 
 
    smm.manualCargoAdd=function(){
@@ -551,13 +603,13 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       smm.log.status.cargo.push(newcargo);
       smm.logEntry(smm.log.status.year, smm.log.status.today, smm.inputTimeElapsed, "[manual] loaded " + smm.addCargoType + ": "  +smm.addCargoTons + " dT");
    };
-   
+
    smm.manualCargoDelete = function() {
       var cargo = smm.log.status.cargo;
       cargo.splice(cargo.indexOf(smm.cargoToDelete, 1));
       smm.cargoToDelete = undefined;
    };
-   
+
    smm.manualPassenger=passengerFactory();
 
    smm.manualPassengerAdd = function() {
@@ -573,8 +625,8 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       smm.manualPassenger = passengerFactory();
       //console.log(smm.log.status.lowBerths);
    };
-   
-   	
+
+
    	 smm.passengerExplode=function(berthArray){
    		var passengers=[];
    		for (var i=0; i < berthArray.length; i++) {
@@ -594,24 +646,24 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
    		//console.log(passengers)
    		return passengers;
    	};
-   	
+
    	smm.passengersForBerth=function(berthArray){
    		var passengers=[];
    		for (var i=0; i < berthArray.length; i++)
    		{
    			var berthstring='';
-   			for (var j=0; j < berthArray[i].length; j++) 
+   			for (var j=0; j < berthArray[i].length; j++)
    			{
    				berthstring+=berthArray[i][j].name + ": "+berthArray[i][j].type	+"\n"
    			}
-   			
+
    			passengers.push(berthstring);
-   		}	
-   		
+   		}
+
    		return passengers;
-   	
+
    	};
-   	
+
 
    smm.manualPassengerDelete = function() {
       //console.log(smm.passengerToDelete);
@@ -627,18 +679,18 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       removePassenger(smm.log.status.lowBerths, smm.lowPassengerToDelete[0], smm.lowPassengerToDelete[1], 'glyphicon-inbox');
    };
 
-   
-   
+
+
    smm.manualCredits=function(){
       smm.log.status.cash += smm.addMoney;
       smm.logEntry(smm.log.status.year, smm.log.status.today, smm.inputTimeElapsed, "[manual] " + smm.addMoneyDesc + ": " + smm.addMoney + " = " +smm.log.status.cash);
    }
-   
-      
+
+
    smm.manualLog=function(){
       smm.logEntry(smm.inputYear,smm.inputDate,smm.inputTimeElapsed,smm.logText);
    };
-   
+
    smm.logEntry=function(newyear, newdate, newelapsed, newtext){
       smm.logEntryRaw({"year":newyear, "startDate":newdate, "elapsed":newelapsed, "text":newtext});
    };
@@ -646,11 +698,11 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
    smm.logEntryRaw=function(newEntry) {
       smm.log.entries.push(newEntry);
    };
-   
+
    smm.logNow=function(newtext, newelapsed) {
    	 smm.logEntry(smm.log.status.date.year, smm.log.status.date.day, newelapsed, newtext);
    };
-   
+
    smm.manualSetDate=function(){
        smm.log.status.date=dateFactory(smm.inputYear,smm.inputDate);
        //The date has changed - some suppliers we found may now have been > 30 days ago
@@ -686,7 +738,7 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
             {
                //Decode each world's UWP data
                smm.tripData.arrivalWorlds[i].UWPsplit = uwpsplit(smm.tripData.arrivalWorlds[i].UWP);
-               //One of the arrival worlds returned by travellermaps.com will actually be the departure world, but with more data. Save it.
+               //One of the arrival worlds returned by travellermap.com will actually be the departure world, but with more data. Save it.
                if (smm.tripData.arrivalWorlds[i].Name === smm.tripData.departureWorldSearchResults.World.Name)
                {
                   smm.tripData.departureWorld = smm.tripData.arrivalWorlds[i];
@@ -710,7 +762,7 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
          smm.tripData.arrivalWorlds = smm.tripData.arrivalWorlds.splice(0, smm.tripData.arrivalWorlds.length);
       }
    };
-   
+
    smm.arrivalWorldChanged = function () {
       _updateExpectedProfit(smm.buyTradeGoods.priceList);
    }
@@ -749,7 +801,7 @@ smm.passengers.generateAvailable=function() {
 
 var calculatePassengers=function(departureWorld,arrivalWorld,roundupModifier){
 
-	
+
 	var departremarksmod=modifiersPerTradeCode(PassengersByTradeType.departure, departureWorld.Remarks, departureWorld.Zone);
 	var arrivalremarksmod=modifiersPerTradeCode(PassengersByTradeType.arrival, arrivalWorld.Remarks, departureWorld.Zone);
 
@@ -757,7 +809,7 @@ var calculatePassengers=function(departureWorld,arrivalWorld,roundupModifier){
 									+ departremarksmod + arrivalremarksmod
 									- Math.min(Math.abs(departureWorld.UWPsplit["TL"]-arrivalWorld.UWPsplit["TL"]),5)
 									+ roundupModifier;
-									//TODO + events table 
+									//TODO + events table
 
 	AvailablePassengersEntry=Math.min(16,Math.max(0,AvailablePassengersEntry)); //values to 0-16 only
 	var passengers={"low":AvailablePassengers.low[AvailablePassengersEntry](),
@@ -800,32 +852,32 @@ var dateFactory = function(newyear, newday){
 	var newdate={};
 	newdate.year=newyear;
 	newdate.day=newday;
-	
+
 	newdate.toString=function(){
 		return this.year+":"+new Intl.NumberFormat('en-US', { minimumIntegerDigits: 3 }).format(this.day);
 	};
-	
+
 	newdate.diffdays=function(otherdate){
-		return (otherdate.year - this.year) * 365 + (otherdate.day - this.day); 		
+		return (otherdate.year - this.year) * 365 + (otherdate.day - this.day);
 	};
-	
+
 	newdate.daysaway=function(otherdate){
 		var numdays=this.diffdays(otherdate);
 		if (numdays<0) return ""+Math.abs(numdays)+" days ago";
 		else return ""+numdays+" days away";
 	};
-	
+
 	newdate.increment=function(daystochange){
 		var result=this.incrementinternaluse(daystochange);
 		this.year=result[0];
 		this.day=result[1];
 	};
-	
+
 	newdate.cloneandincrement=function(daystochange){
 		var result=this.incrementinternaluse(daystochange)
 		return dateFactory(result[0],result[1]);
 	};
-	
+
 	//for the other two increments
 	newdate.incrementinternaluse=function(daystochange){
 		var currentdays=(this.year*365)+this.day-1; //The -1 and +1 are to remove day 0, but it's a weird hack and I don't like it.
@@ -836,7 +888,7 @@ var dateFactory = function(newyear, newday){
 		return [calcyear,calcday];
 	};
 
-   return newdate;   
+   return newdate;
 };
 
 var calculateDueDate = function(monthly, currentpaid, purchasedate){
@@ -844,7 +896,7 @@ var calculateDueDate = function(monthly, currentpaid, purchasedate){
    var totalprice=monthly*480;
    var paymentsmade=currentpaid/monthly +1 ; //+1 because otherwise it'll be the purchase date for first payment
    return purchasedate.cloneandincrement(paymentsmade*28);
-   
+
 }
 
 var uwpsplit = function(uwp) {
@@ -864,10 +916,10 @@ var uwpsplit = function(uwp) {
 var modifiersPerTradeCode = function(table, remarks, zone){
    var total=0;
    var remarklist=remarks.split(" ");
-   
+
    if (zone=='R') remarklist.push("Rz");
    if (zone=='A') remarklist.push("Az");
-   
+
    for (var i=0;i<remarklist.length;i++){
       if (remarklist[i] in table)
          total+=table[remarklist[i]];
@@ -912,15 +964,15 @@ var modifiersPerTradeCode = function(table, remarks, zone){
       c. collect passenger pay
    19. Sell trade goods (find buyer, etc)
    20. Pay Tax
-      
+
 Above is main sequence, but should be organized flexibly ( ship could go out to skim at any time, for example)
 
 Ongoing: Encounters for time spent at port
          encounters for time spent in space
       For each activity, determine participants, track time.
-      
+
    */
-   
+
 //--------------------------------------------------------------------
 // Freight Section
 
@@ -928,7 +980,7 @@ Ongoing: Encounters for time spent at port
 
 // Steps:
 //    Find a source
-      //Diplomat, Investigate, Streetwise (Average). Effect is days taken or wasted. 
+      //Diplomat, Investigate, Streetwise (Average). Effect is days taken or wasted.
       //Attempts per month = pop/3
 //    determine cargo specs
       //lot sizes:  Major = 1d6x10, Minor = 1d6x5, incidental = 1, no splitting
