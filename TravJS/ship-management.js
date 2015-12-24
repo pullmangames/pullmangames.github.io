@@ -1,6 +1,6 @@
 shipManModule = angular.module('shipManagement', []); //declare the module for managing the ship
 
-shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataStorageService', 'alertsService', function ($scope, $http, dataStorageService, alertsService) {
+shipManModule.controller('shipManagementController', ['$scope', '$http', '$filter', 'dataStorageService', 'alertsService', function ($scope, $http, $filter, dataStorageService, alertsService) {
    var smm=this;
 
    smm.accordionData = [
@@ -427,7 +427,7 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
                delete available[type].type;
                for (var definedGood in available[type]) {
                   if (available[type].hasOwnProperty(definedGood)) {
-                     available[type][definedGood].pricePerTon = available[type][definedGood].good.basePrice * priceMultiplier;
+                     available[type][definedGood].pricePerTon = Math.round(available[type][definedGood].good.basePrice * priceMultiplier);
                      inventory.push(available[type][definedGood]);
                   }
                }
@@ -446,7 +446,7 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
       smm.buyTradeGoods.totalCost = function() {
          var totalCost = 0;
          for (var i = 0; i < smm.buyTradeGoods.priceList.length; i++) {
-            totalCost += (smm.buyTradeGoods.priceList[i].tonsToBuy * smm.buyTradeGoods.priceList[i].pricePerTon)
+            totalCost += (smm.buyTradeGoods.priceList[i].tonsToBuy * smm.buyTradeGoods.priceList[i].pricePerTon);
          }
          return totalCost;
       }
@@ -457,6 +457,14 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
             totalTons += smm.buyTradeGoods.priceList[i].tonsToBuy;
          }
          return totalTons;
+      }
+
+      smm.buyTradeGoods.totalExpectedProfit = function() {
+         var totalExpectedProfit = 0;
+         for (var i = 0; i < smm.buyTradeGoods.priceList.length; i++) {
+            totalExpectedProfit += (smm.buyTradeGoods.priceList[i].tonsToBuy * smm.buyTradeGoods.priceList[i].expectedProfit);
+         }
+         return totalExpectedProfit;
       }
 
       smm.buyTradeGoods.onBuy = function() {
@@ -471,7 +479,16 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', 'dataSt
          } else {
             for (i = 0; i < smm.buyTradeGoods.priceList.length; i++) {
                if (smm.buyTradeGoods.priceList[i].tonsToBuy > 0) {
-
+                  var good = smm.buyTradeGoods.priceList[i];
+                  var cargo = cargoFactory();
+                  cargo.type = good.type.type;
+                  cargo.detail = good.good.name;
+                  cargo.tons = good.tonsToBuy;
+                  cargo.paid = good.pricePerTon;
+                  good.tons -= good.tonsToBuy;
+                  good.tonsToBuy = 0;
+                  smm.log.status.cargo.push(cargo);
+                  smm.logNow("Purchased " + cargo.tons + " dT " + cargo.type + " (" + cargo.detail + ") @ Cr. " + $filter('number')(good.pricePerTon, 0) + "/dT", 0);
                }
             }
          }

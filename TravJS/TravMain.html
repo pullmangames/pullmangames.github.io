@@ -329,10 +329,10 @@
           </tr>
         </table>
         <div style="margin-bottom:10px" ng-if="!shipMan.tripData.arrivalWorld.Name">
-          <strong>Expected profit assumes sale by {{shipMan.buyTradeGoods.haggleResult.character.name}}. Select arrival world for better accuracy.</strong>
+          <strong>Expected profit (Cr. {{shipMan.buyTradeGoods.totalExpectedProfit() | number: 0}}) assumes sale by {{shipMan.buyTradeGoods.haggleResult.character.name}}. Select arrival world for better accuracy.</strong>
         </div>
         <div style="margin-bottom:10px" ng-if="shipMan.tripData.arrivalWorld.Name">
-          <strong>Expected profit assumes sale by {{shipMan.buyTradeGoods.haggleResult.character.name}} on {{shipMan.tripData.arrivalWorld.Name}}.</strong>
+          <strong>Expected profit (Cr. {{shipMan.buyTradeGoods.totalExpectedProfit() | number: 0}}) assumes sale by {{shipMan.buyTradeGoods.haggleResult.character.name}} on {{shipMan.tripData.arrivalWorld.Name}}.</strong>
         </div>
         <button type="button" class="btn btn-primary" style="margin-bottom:5px" ng-click="shipMan.buyTradeGoods.onBuy()">Buy {{shipMan.buyTradeGoods.totalTons() | number: 0}} Tons of Goods for Cr. {{shipMan.buyTradeGoods.totalCost() | number: 0}}</button>
       </div>
@@ -403,7 +403,7 @@ Pilot: -1 DM
           Cargo Bay
           <ul class="list-group">
             <li class="list-group-item" ng-repeat="acargo in shipMan.log.status.cargo track by $index">
-              <span> {{acargo.type}}({{acargo.detail}}) paid {{acargo.paid}}[{{acargo.paid*acargo.tons}}] - {{acargo.tons}} dT </span>
+              <span> {{acargo.type}}({{acargo.detail}}) paid {{acargo.paid | number: 0}}[{{acargo.paid*acargo.tons | number: 0}}] - {{acargo.tons}} dT </span>
             </li>
           </ul>
         </div>
