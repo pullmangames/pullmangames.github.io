@@ -303,7 +303,7 @@
         </div>
       </div>
       <div ng-if="shipMan.buyTradeGoods.supplierFound">
-        <strong>Haggle with the supplier:</strong><br />
+        <div style="margin-bottom:5px"><strong>Haggle with the supplier:</strong></div>
         <trav-skill-check-dm ng-model="shipMan.buyTradeGoods.haggleResult"
                              ng-attr-skills="['Broker']"
                              ng-attr-characteristics="['Int', 'Soc']"
@@ -314,23 +314,27 @@
                              ng-attr-on-roll="shipMan.buyTradeGoods.onHaggleRoll()">
         </trav-skill-check-dm>
       </div>
-      <div style="margin-top:10px" ng-if="shipMan.buyTradeGoods.priceListAvailable">
-        <div ng-if="!shipMan.tripData.arrivalWorld.Name">
-          <strong>Select arrival world for more accurate expected profit.</strong>
-        </div>
-        <div ng-if="shipMan.tripData.arrivalWorld.Name">
-          <strong>Expected profit assumes sale on {{shipMan.tripData.arrivalWorld.Name}}.</strong>
-        </div>
-        <table style="margin-top:5px" id="priceListTable">
-          <tr><th style="padding:2px">Good</th><th style="padding:2px">Tons</th><th style="padding:2px">Price</th><th style="padding:2px">Base</th><th style="padding:2px">Exp. Profit</th></tr>
+      <div style="margin-top:10px;margin-bottom:10px" ng-if="shipMan.buyTradeGoods.priceListAvailable">
+        <table style="margin-bottom:10px" id="priceListTable">
+          <tr><th style="padding:2px">Good</th><th style="padding:2px">Buy (tons)</th><th style="padding:2px">Price</th><th style="padding:2px">Base</th><th style="padding:2px">Exp. Profit/Ton</th></tr>
           <tr ng-repeat="item in shipMan.buyTradeGoods.priceList | orderBy: '-expectedProfit'">
             <td style="padding:2px">{{item.good.name}}<br /><small>{{item.type.type}}</small></td>
-            <td style="padding:2px">{{item.tons}}</td>
+            <td style="padding:2px">
+              <input type="number" min="0" max="{{item.tons}}" style="width:40px" ng-model="item.tonsToBuy">
+              / {{item.tons}}
+            </td>
             <td style="padding:2px">{{item.pricePerTon | number: 0}}</td>
             <td style="padding:2px">{{item.good.basePrice | number: 0}}</td>
             <td style="padding:2px">{{item.expectedProfit | number: 0}}</td>
           </tr>
         </table>
+        <div style="margin-bottom:10px" ng-if="!shipMan.tripData.arrivalWorld.Name">
+          <strong>Expected profit assumes sale by {{shipMan.buyTradeGoods.haggleResult.character.name}}. Select arrival world for better accuracy.</strong>
+        </div>
+        <div style="margin-bottom:10px" ng-if="shipMan.tripData.arrivalWorld.Name">
+          <strong>Expected profit assumes sale by {{shipMan.buyTradeGoods.haggleResult.character.name}} on {{shipMan.tripData.arrivalWorld.Name}}.</strong>
+        </div>
+        <button type="button" class="btn btn-primary" style="margin-bottom:5px" ng-click="shipMan.buyTradeGoods.onBuy()">Buy {{shipMan.buyTradeGoods.totalTons() | number: 0}} Tons of Goods for Cr. {{shipMan.buyTradeGoods.totalCost() | number: 0}}</button>
       </div>
     </div>
   </script>
