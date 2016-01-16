@@ -485,6 +485,8 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', '$filte
                   cargo.detail = good.good.name;
                   cargo.tons = good.tonsToBuy;
                   cargo.paid = good.pricePerTon;
+                  cargo.isGood = true;
+                  cargo.good = smm.buyTradeGoods.priceList[i].good;
                   good.tons -= good.tonsToBuy;
                   good.tonsToBuy = 0;
                   smm.log.status.cargo.push(cargo);
@@ -712,7 +714,7 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', '$filte
    smm.departureWorlds = [];
    smm.refreshDepartureWorlds = function(worldName) {
       var params = {q: worldName};
-      return $http.get('http://travellermap.com/api/search', {params: params})
+      return $http.get('https://travellermap.com/api/search', {params: params})
       .then(function(response) {
          smm.departureWorlds = response.data.Results.Items;
       });
@@ -725,7 +727,7 @@ shipManModule.controller('shipManagementController', ['$scope', '$http', '$filte
       {
          var dw = smm.tripData.departureWorldSearchResults.World;
          var params = {sx:dw.SectorX, sy:dw.SectorY, hx:dw.HexX, hy:dw.HexY, jump:smm.partyShip.Jump};
-         return $http.get('http://travellermap.com/api/jumpworlds', {params: params})
+         return $http.get('https://travellermap.com/api/jumpworlds', {params: params})
          .then(function(response) {
             if (!smm.tripData.arrivalWorlds)
             {
