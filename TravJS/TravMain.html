@@ -27,6 +27,7 @@
     <script src="datatables.js"></script>
     <script src="passengertables.js"></script>
     <script src="decoder.js"></script>
+    <script src="combat.js"></script>
     <link rel="stylesheet" href="travmain.css">
 
     <!-- bootstrap layout thing -->
@@ -47,6 +48,7 @@
           <li> <a href="#/shipManagement">Ship Management</a></li>
           <li> <a href="#/random">Random Generators</a></li>
           <li> <a href="#/decoder">Decoder</a></li>
+          <li> <a href="#/combat">Combat</a><li>
           <li> <a href="#/config">Config</a></li>
         </ul>
       </div>
@@ -710,6 +712,20 @@ Pilot: -1 DM
 
   </script>
 
+<!----------------------------------Combat!-------------------------->
+<script type="text/ng-template" id="combat.view">
+  
+    <!-- Skill Check DM Test -->
+    <br><br>
+    <trav-skill-check-dm ng-model="combat.dmResult"></trav-skill-check-dm>
+    <br>
+ 	<span ng-if="combat.dmResult && combat.dmResult.character && combat.dmResult.roll">
+ 		{{combat.dmResult.character.name}} rolled a {{combat.dmResult.roll.summary}} ({{combat.dmResult.roll.effect}}).
+ 	</span>
+ 	
+ 	<button class="btn btn-primary" type="button" ng-click="combat.theDebug()">Debugit</button>
+ 	
+</script>
 
 <!----------------------------------Roller View-------------------------->
 
@@ -892,6 +908,7 @@ Pilot: -1 DM
     <a href="images/Octagon.pdf">Octagon Book</a><br>
     <a href="images/Fulacin.pdf">Welcome to Fulacin</a><br>
     <a href="images/FulacinSurvey.pdf">Survey</a><br>
+    <a href="images/Catalog.pdf">Catalog</a><br>
  <h2>Hidden stuff and decoder ring</h2>
   <uib-accordion close-others="True">
     <uib-accordion-group heading="Decoder" is-open="status.isFirstOpen">

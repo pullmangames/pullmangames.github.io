@@ -10,7 +10,8 @@ app = angular.module('TravApp', ['ngRoute',
                                  'diceRoller',
                                  'shipManagement',
                                  'randomModule',
-                                 'decoder']) //declare the main module
+                                 'decoder',
+                                 'combatModule']) //declare the main module
       
 app.config(function ($routeProvider) {
    $routeProvider
@@ -20,6 +21,7 @@ app.config(function ($routeProvider) {
       .when("/random",         {controller: "randomController as tables",          templateUrl: "randomtables.view"})
       .when("/decoder",        {controller: "decoderController as decoder",        templateUrl: "decoder.view"})
       .when("/config",         {controller: "configController as config",          templateUrl: "config.view"})
+      .when("/combat",         {controller: "combatController as combat",          templateUrl: "combat.view"})
       .otherwise({redirectTo: "/shipManagement"});
 });
 
